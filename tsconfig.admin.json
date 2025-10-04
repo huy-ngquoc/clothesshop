@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./src/main/webapp/resources/admin/js"
+    },
+    "include": [
+        "./src/main/webapp/resources/admin/ts/**/*.ts"
+    ]
+}

@@ -1,0 +1,21 @@
+spring:
+    application:
+        name: clothesshop 
+    config:
+        import: optional:file:.env[.properties]
+    datasource:
+        url: ${DB_URL}
+        username: ${DB_USERNAME}
+        password: ${DB_PASSWORD}
+    jpa:
+        hibernate:
+            ddl-auto: update
+            naming:
+                implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+                physical-strategy: vn.uit.clothesshop.config.CamelCaseNamingStrategy
+        show-sql: true
+        properties:
+            hibernate:
+                "[globally_quoted_identifiers]": true
+                "[globally_quoted_identifiers_skip_column_definitions]": true
+            
