@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.User;
 import vn.uit.clothesshop.dto.response.UserBasicInfoResponseDto;
+import vn.uit.clothesshop.dto.response.UserDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.UserRepository;
 
 @Service
@@ -35,6 +36,23 @@ public class UserService {
     @NotNull
     public List<@NotNull User> findAllUsers() {
         return this.userRepository.findAll();
+    }
+
+    @Nullable
+    public UserDetailInfoResponseDto handleFindUserById(final long id) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return null;
+        }
+
+        return new UserDetailInfoResponseDto(
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getAvatarFileName(), // TODO: change file name to path
+                user.getRole());
     }
 
     @Nullable
