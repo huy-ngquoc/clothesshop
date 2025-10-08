@@ -6,6 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
 import vn.uit.clothesshop.config.SecurityConfiguration;
@@ -13,6 +14,11 @@ import vn.uit.clothesshop.config.SecurityConfiguration;
 @Entity
 @FieldNameConstants
 public class User {
+    public enum Role {
+        USER,
+        ADMIN,
+    }
+
     public static final int MIN_LENGTH_USERNAME = 2;
     public static final int MAX_LENGTH_USERNAME = 50;
     public static final int MIN_LENGTH_FIRST_NAME = 3;
@@ -58,6 +64,9 @@ public class User {
     @Size(max = MAX_LENGTH_AVATAR_FILE_NAME)
     private String avatarFileName = "";
 
+    @NotNull
+    private Role role = Role.USER;
+
     User() {
     }
 
@@ -68,7 +77,8 @@ public class User {
             final String lastName,
             final String email,
             final String phoneNumber,
-            final String avatarFileName) {
+            final String avatarFileName,
+            final Role role) {
         this.username = username;
         this.hashedPassword = hashedPassword;
         this.firstName = firstName;
@@ -76,6 +86,7 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.avatarFileName = avatarFileName;
+        this.role = role;
     }
 
     public long getId() {
@@ -143,6 +154,14 @@ public class User {
 
     public void setAvatarFileName(final String avatarFileName) {
         this.avatarFileName = avatarFileName;
+    }
+
+    public Role getRole() {
+        return this.role;
+    }
+
+    public void setRole(final Role role) {
+        this.role = role;
     }
 
     void setId(final long id) {
