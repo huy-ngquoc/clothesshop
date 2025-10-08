@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <form:form method="post" action="/admin/user/create" enctype="multipart/form-data" modelAttribute="requestDto">
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <c:set var="errorFirstName">
+                    <form:errors cssClass="invalid-feedback" path="firstName" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputFirstName" path="firstName">First name:</form:label>
+                <form:input id="inputFirstName" class="form-control ${not empty errorFirstName ? 'is-invalid' : ''}"
+                    type="text" path="firstName" />
+                ${errorFirstName}
+            </div>
+            <div class="col-md-6 col-12">
+                <c:set var="errorLastName">
+                    <form:errors cssClass="invalid-feedback" path="lastName" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputLastName" path="lastName">Last name:</form:label>
+                <form:input id="inputLastName" class="form-control ${not empty errorLastName ? 'is-invalid' : ''}"
+                    type="text" path="lastName" />
+                ${errorLastName}
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <c:set var="errorUsername">
+                    <form:errors cssClass="invalid-feedback" path="username" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputUsername" path="username">Username:</form:label>
+                <form:input id="inputUsername" class="form-control ${not empty errorUsername ? 'is-invalid' : ''}"
+                    type="text" path="username" />
+                ${errorUsername}
+            </div>
+            <div class="col-md-6 col-12">
+                <c:set var="errorPassword">
+                    <form:errors cssClass="invalid-feedback" path="password" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputPassword" path="password">Password:</form:label>
+                <form:input id="inputPassword" class="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                    type="password" path="password" />
+                ${errorPassword}
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-7 col-12">
+                <c:set var="errorEmail">
+                    <form:errors cssClass="invalid-feedback" path="email" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputEmail" path="email">Email:</form:label>
+                <form:input id="inputEmail" class="form-control ${not empty errorEmail ? 'is-invalid' : ''}" type="text"
+                    path="email" />
+                ${errorEmail}
+            </div>
+            <div class="col-md-5 col-12">
+                <c:set var="errorPhoneNumber">
+                    <form:errors cssClass="invalid-feedback" path="phoneNumber" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputPhoneNumber" path="phoneNumber">Phone Number:</form:label>
+                <form:input id="inputPhoneNumber" class="form-control ${not empty errorPhoneNumber ? 'is-invalid' : ''}"
+                    type="text" path="phoneNumber" />
+                ${errorPhoneNumber}
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-5 col-12">
+                <c:set var="errorRole">
+                    <form:errors cssClass="invalid-feedback" path="role" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputRole" path="role">Role:</form:label>
+                <form:select id="inputRole" class="form-select ${not empty errorRole ? 'is-invalid' : ''}" path="role">
+                    <form:option value="USER">User</form:option>
+                    <form:option value="ADMIN">Admin</form:option>
+                </form:select>
+                ${errorRole}
+            </div>
+            <div class="col-md-7 col-12">
+                <c:set var="errorAvatarFile">
+                    <form:errors cssClass="invalid-feedback" path="avatarFile" />
+                </c:set>
+
+                <form:label class="form-label" for="inputAvatarFile" path="avatarFile">Avatar:</form:label>
+                <form:input id="inputAvatarFile" class="form-control ${not empty errorAvatarFile ? 'is-invalid' : ''}"
+                    type="file" path="avatarFile" accept="image/*" />
+                ${errorAvatarFile}
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <img id="avatarFilePreview"
+                    style="max-width: 100%; max-height: 300px; height: auto; width: auto; display: none;"
+                    alt="Avatar File Preview" />
+                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+                    crossorigin="anonymous"></script>
+                <script>
+                    $(document).ready(() => {
+                        const inputAvatarFile = $("#inputAvatarFile");
+                        inputAvatarFile.change(function (e) {
+                            const imgURL = URL.createObjectURL(e.target.files[0]);
+                            $("#avatarFilePreview").attr("src", imgURL);
+                            $("#avatarFilePreview").css({ "display": "block" });
+                        });
+                    });
+                </script>
+            </div>
+        </div>
+        <div class="row g-3 mb-5">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form:form>
+
+</jsp:root>

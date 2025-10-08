@@ -3,7 +3,6 @@ package vn.uit.clothesshop.dto.response;
 import vn.uit.clothesshop.domain.User.Role;
 
 public final class UserDetailInfoResponseDto {
-    private final long id;
     private final String username;
     private final String firstName;
     private final String lastName;
@@ -13,7 +12,6 @@ public final class UserDetailInfoResponseDto {
     private final Role role;
 
     public UserDetailInfoResponseDto(
-            final long id,
             final String username,
             final String firstName,
             final String lastName,
@@ -21,7 +19,6 @@ public final class UserDetailInfoResponseDto {
             final String phoneNumber,
             final String avatarFilePath,
             final Role role) {
-        this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -29,10 +26,6 @@ public final class UserDetailInfoResponseDto {
         this.phoneNumber = phoneNumber;
         this.avatarFilePath = avatarFilePath;
         this.role = role;
-    }
-
-    public long getId() {
-        return this.id;
     }
 
     public String getUsername() {
