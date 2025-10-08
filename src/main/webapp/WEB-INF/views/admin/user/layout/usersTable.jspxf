@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <div class="mt-sm-5 mt-1">
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <div class="d-sm-flex justify-content-between">
+                    <h2>Users table</h2>
+                    <a class="btn btn-primary" href="/admin/user/create">Create a new user</a>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <table class="table table-responsive table-bordered table-hover">
+                    <thead class="text-center align-middle">
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <c:forEach var="user" items="${users}">
+                            <tr>
+                                <td class="fw-bold">${user.id}</td>
+                                <td>${user.fullName}</td>
+                                <td>${user.email}</td>
+                                <td>${user.role.name}</td>
+                                <td class="d-flex justify-content-center align-items-center gap-2">
+                                    <a class="btn btn-success" href="/admin/user/${user.id}">View</a>
+                                    <a class="btn btn-warning" href="/admin/user/update/${user.id}">Update</a>
+                                    <a class="btn btn-danger" href="/admin/user/delete/${user.id}">Delete</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</jsp:root>

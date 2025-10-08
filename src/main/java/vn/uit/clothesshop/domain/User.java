@@ -8,31 +8,54 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
+import vn.uit.clothesshop.config.SecurityConfiguration;
 
 @Entity
 @FieldNameConstants
 public class User {
+    public static final int MIN_LENGTH_USERNAME = 2;
+    public static final int MAX_LENGTH_USERNAME = 50;
+    public static final int MIN_LENGTH_FIRST_NAME = 3;
+    public static final int MAX_LENGTH_FIRST_NAME = 20;
+    public static final int MIN_LENGTH_LAST_NAME = 3;
+    public static final int MAX_LENGTH_LAST_NAME = 20;
+    public static final String EMAIL_REG_EXP = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
+    public static final int MAX_LENGTH_EMAIL = 128;
+    public static final int MIN_LENGTH_PHONE_NUMBER = 5;
+    public static final int MAX_LENGTH_PHONE_NUMBER = 15;
+    public static final int MAX_LENGTH_AVATAR_FILE_NAME = 255;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
 
     @NotBlank
-    @Size(min = 2)
+    @Size(min = MIN_LENGTH_USERNAME, max = MAX_LENGTH_USERNAME)
     private String username = "";
 
     @NotBlank
-    @Size(max = 256)
+    @Size(max = SecurityConfiguration.BCRYPT_ENCODE_LENGTH)
     private String hashedPassword = "";
 
     @NotBlank
-    @Email(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")
-    @Size(max = 128)
+    @Size(min = MIN_LENGTH_FIRST_NAME, max = MAX_LENGTH_FIRST_NAME)
+    private String firstName = "";
+
+    @NotBlank
+    @Size(min = MIN_LENGTH_LAST_NAME, max = MAX_LENGTH_LAST_NAME)
+    private String lastName = "";
+
+    @NotBlank
+    @Email(regexp = EMAIL_REG_EXP)
+    @Size(max = MAX_LENGTH_EMAIL)
     private String email = "";
 
     @NotBlank
+    @Size(min = MIN_LENGTH_PHONE_NUMBER, max = MAX_LENGTH_PHONE_NUMBER)
     private String phoneNumber = "";
 
     @NotBlank
+    @Size(max = MAX_LENGTH_AVATAR_FILE_NAME)
     private String avatarFileName = "";
 
     User() {
@@ -41,11 +64,15 @@ public class User {
     public User(
             final String username,
             final String hashedPassword,
+            final String firstName,
+            final String lastName,
             final String email,
             final String phoneNumber,
             final String avatarFileName) {
         this.username = username;
         this.hashedPassword = hashedPassword;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.avatarFileName = avatarFileName;
@@ -69,6 +96,29 @@ public class User {
 
     public void setHashedPassword(final String hashedPassword) {
         this.hashedPassword = hashedPassword;
+    }
+
+    public String getFirstName() {
+        return this.firstName;
+    }
+
+    public void setFirstName(final String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
+    }
+
+    public void setLastName(final String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return String.format(
+                "%s %s",
+                this.firstName,
+                this.lastName);
     }
 
     public String getEmail() {

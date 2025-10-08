@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Nullable;
@@ -17,13 +19,18 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @NotNull
+    public List<@NotNull User> findAllUsers() {
+        return this.userRepository.findAll();
+    }
+
     @Nullable
     public User findUserById(final long id) {
         return this.userRepository.findById(id).orElse(null);
     }
 
     @Nullable
-    public User saveUser(@NotNull final User user) {
+    public User handleSaveUser(@NotNull final User user) {
         try {
             return this.userRepository.save(user);
         } catch (final Exception exception) {
