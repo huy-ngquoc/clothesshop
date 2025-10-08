@@ -8,6 +8,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.User;
+import vn.uit.clothesshop.dto.response.UserBasicInfoResponseDto;
 import vn.uit.clothesshop.repository.UserRepository;
 
 @Service
@@ -17,6 +18,18 @@ public class UserService {
 
     public UserService(final UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    @NotNull
+    public List<@NotNull UserBasicInfoResponseDto> handleFindAllUsers() {
+        return this.findAllUsers()
+                .stream()
+                .map((final var user) -> new UserBasicInfoResponseDto(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getFullName(),
+                        user.getRole()))
+                .toList();
     }
 
     @NotNull
@@ -30,7 +43,7 @@ public class UserService {
     }
 
     @Nullable
-    public User handleSaveUser(@NotNull final User user) {
+    private User handleSaveUser(@NotNull final User user) {
         try {
             return this.userRepository.save(user);
         } catch (final Exception exception) {

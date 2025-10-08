@@ -19,8 +19,8 @@ public class UserController {
 
     @GetMapping("/admin/user")
     public String getUserPage(final Model model) {
-        final var users = this.userService.findAllUsers();
-        model.addAttribute("users", users);
+        final var responseDtoList = this.userService.handleFindAllUsers();
+        model.addAttribute("responseDtoList", responseDtoList);
         return "admin/user/show";
     }
 }
