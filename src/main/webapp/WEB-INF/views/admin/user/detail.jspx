@@ -66,7 +66,11 @@
                                     </div>
                                 </div>
                             </c:if>
-                            <a class="btn btn-success mb-3" href="/admin/user">Back</a>
+                            <div class="d-flex gap-3 mb-3">
+                                <a class="btn btn-success" href="/admin/user">Back</a>
+                                <a class="btn btn-warning" href="/admin/user/update/info/${id}">Update</a>
+                                <a class="btn btn-danger" href="/admin/user/delete/${id}">Delete</a>
+                            </div>
                         </div>
                     </div>
                 </main>

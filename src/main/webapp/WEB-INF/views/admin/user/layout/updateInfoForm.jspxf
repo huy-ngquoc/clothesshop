@@ -62,7 +62,10 @@
                 </div>
             </div>
         </c:if>
-        <button type="submit" class="btn btn-warning">Update</button>
+        <div class="d-flex gap-3 mb-3">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a class="btn btn-success" href="/admin/user/">Back</a>
+        </div>
     </form:form>
 
 </jsp:root>
