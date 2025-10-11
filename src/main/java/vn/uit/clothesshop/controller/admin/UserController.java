@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.dto.request.UserCreationRequestDto;
+import vn.uit.clothesshop.dto.request.UserUpdateAvatarRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdateInfoRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdatePasswordRequestDto;
 import vn.uit.clothesshop.service.UserService;
@@ -119,10 +120,12 @@ public class UserController {
     public String getUserUpdateAvatarPage(
             final Model model,
             @PathVariable final long id) {
-        final var middleDto = this.userService.handleCreateMiddleDtoForUpdateAvatar(id);
+        final var avatarFilePath = this.userService.findAvatarFilePathOfUserById(id);
+
         model.addAttribute("id", id);
-        model.addAttribute("avatarFilePath", middleDto.getAvatarFilePath());
-        model.addAttribute("requestDto", middleDto.getRequestDto());
+        model.addAttribute("avatarFilePath", avatarFilePath);
+        model.addAttribute("requestDto", new UserUpdateAvatarRequestDto());
+
         return "admin/user/update/avatar";
     }
 
@@ -132,6 +135,26 @@ public class UserController {
             @PathVariable final long id,
             @ModelAttribute("avatarFile") final MultipartFile avatarFile) {
         this.userService.handleUpdateUserAvatar(id, avatarFile);
+        return "redirect:/admin/user/update/info/" + id;
+    }
+
+    @GetMapping("/update/avatar/delete/{id}")
+    public String getUserUpdateAvatarDeletionPage(
+            final Model model,
+            @PathVariable final long id) {
+        final var avatarFilePath = this.userService.findAvatarFilePathOfUserById(id);
+
+        model.addAttribute("id", id);
+        model.addAttribute("avatarFilePath", avatarFilePath);
+
+        return "admin/user/update/avatarDeletion";
+    }
+
+    @PostMapping("/update/avatar/delete/{id}")
+    public String updateUserAvatarDeletion(
+            final Model model,
+            @PathVariable final long id) {
+        this.userService.handleUpdateUserAvatarDeletion(id);
         return "redirect:/admin/user/update/info/" + id;
     }
 

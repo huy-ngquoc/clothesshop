@@ -45,9 +45,12 @@
                 </script>
             </div>
         </div>
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-warning">Submit</button>
-            <button type="reset" class="btn btn-danger">Clear</button>
+        <div class="d-flex gap-3 mb-3">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <c:if test="${not empty avatarFilePath}">
+                <a class="btn btn-danger" href="/admin/user/update/avatar/delete/${id}">Delete</a>
+            </c:if>
+            <a class="btn btn-success" href="/admin/user/update/info/${id}">Back</a>
         </div>
     </form:form>
 

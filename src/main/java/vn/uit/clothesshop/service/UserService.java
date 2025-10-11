@@ -11,10 +11,8 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.User;
-import vn.uit.clothesshop.dto.middle.UserUpdateAvatarMiddleDto;
 import vn.uit.clothesshop.dto.middle.UserUpdateInfoMiddleDto;
 import vn.uit.clothesshop.dto.request.UserCreationRequestDto;
-import vn.uit.clothesshop.dto.request.UserUpdateAvatarRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdateInfoRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdatePasswordRequestDto;
 import vn.uit.clothesshop.dto.response.UserBasicInfoResponseDto;
@@ -88,6 +86,16 @@ public class UserService {
     }
 
     @Nullable
+    public String findAvatarFilePathOfUserById(final long id) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return null;
+        }
+
+        return this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME);
+    }
+
+    @Nullable
     public Long handleCreateUser(@NotNull final UserCreationRequestDto requestDto) {
         final var hashedPassword = this.passwordEncoder.encode(requestDto.getPassword());
 
@@ -126,18 +134,6 @@ public class UserService {
                 user.getUsername(),
                 this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
                 requestDto);
-    }
-
-    @Nullable
-    public UserUpdateAvatarMiddleDto handleCreateMiddleDtoForUpdateAvatar(final long id) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return null;
-        }
-
-        return new UserUpdateAvatarMiddleDto(
-                this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
-                new UserUpdateAvatarRequestDto());
     }
 
     public boolean handleUpdateUserInfo(
@@ -195,6 +191,27 @@ public class UserService {
             this.imageFileService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
             return false;
         }
+
+        return true;
+    }
+
+    public boolean handleUpdateUserAvatarDeletion(final long id) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return false;
+        }
+
+        var avatarFile = user.getAvatarFileName();
+        if (!StringUtils.hasText(avatarFile)) {
+            return true;
+        }
+
+        user.setAvatarFileName(null);
+
+        if (this.handleSaveUser(user) == null) {
+            return false;
+        }
+        this.imageFileService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
 
         return true;
     }
