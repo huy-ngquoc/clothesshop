@@ -6,7 +6,7 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/user/update/${id}" modelAttribute="requestDto">
+    <form:form method="post" action="/admin/user/update/info/${id}" modelAttribute="requestDto">
         <div class="row g-3 mb-3">
             <div class="col-md-3 col-12">
                 <label class="form-label" for="inputId">ID:</label>
@@ -44,7 +44,7 @@
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
                 <form:label class="form-label" for="inputRole" path="role">Role:</form:label>
-                <form:select id="inputRole" class="form-select" path="role.name">
+                <form:select id="inputRole" class="form-select" path="role">
                     <form:option value="USER">User</form:option>
                     <form:option value="ADMIN">Admin</form:option>
                 </form:select>
