@@ -162,7 +162,11 @@ public class UserController {
     public String getUserDeletionConfirmPage(
             @PathVariable final long id,
             final Model model) {
+        final var avatarFilePath = this.userService.findAvatarFilePathOfUserById(id);
+
         model.addAttribute("id", id);
+        model.addAttribute("avatarFilePath", avatarFilePath);
+
         return "admin/user/delete";
     }
 
