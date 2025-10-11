@@ -4,12 +4,19 @@ import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.User;
+import vn.uit.clothesshop.dto.middle.UserUpdateAvatarMiddleDto;
+import vn.uit.clothesshop.dto.middle.UserUpdateInfoMiddleDto;
 import vn.uit.clothesshop.dto.request.UserCreationRequestDto;
+import vn.uit.clothesshop.dto.request.UserUpdateAvatarRequestDto;
+import vn.uit.clothesshop.dto.request.UserUpdateInfoRequestDto;
+import vn.uit.clothesshop.dto.request.UserUpdatePasswordRequestDto;
 import vn.uit.clothesshop.dto.response.UserBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.UserDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.UserRepository;
@@ -61,13 +68,17 @@ public class UserService {
             return null;
         }
 
+        final var avatarFilePath = this.imageUploadService.getPathString(
+                user.getAvatarFileName(),
+                IMAGE_SUB_FOLDER_NAME);
+
         return new UserDetailInfoResponseDto(
                 user.getUsername(),
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
                 user.getPhoneNumber(),
-                user.getAvatarFileName(), // TODO: change file name to path
+                avatarFilePath,
                 user.getRole());
     }
 
@@ -78,13 +89,6 @@ public class UserService {
 
     @Nullable
     public Long handleCreateUser(@NotNull final UserCreationRequestDto requestDto) {
-        final var avatarFileName = this.imageUploadService.handleSaveUploadFile(
-                requestDto.getAvatarFile(),
-                IMAGE_SUB_FOLDER_NAME);
-        if (avatarFileName == null) {
-            return null;
-        }
-
         final var hashedPassword = this.passwordEncoder.encode(requestDto.getPassword());
 
         final var user = new User(
@@ -94,7 +98,6 @@ public class UserService {
                 requestDto.getLastName(),
                 requestDto.getEmail(),
                 requestDto.getPhoneNumber(),
-                avatarFileName,
                 requestDto.getRole());
 
         final var savedUser = this.handleSaveUser(user);
@@ -103,6 +106,101 @@ public class UserService {
         }
 
         return savedUser.getId();
+    }
+
+    @Nullable
+    public UserUpdateInfoMiddleDto handleCreateMiddleDtoForUpdateInfo(final long id) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return null;
+        }
+
+        final var requestDto = new UserUpdateInfoRequestDto(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber(),
+                user.getRole());
+
+        return new UserUpdateInfoMiddleDto(
+                user.getUsername(),
+                this.imageUploadService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
+                requestDto);
+    }
+
+    @Nullable
+    public UserUpdateAvatarMiddleDto handleCreateMiddleDtoForUpdateAvatar(final long id) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return null;
+        }
+
+        return new UserUpdateAvatarMiddleDto(
+                this.imageUploadService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
+                new UserUpdateAvatarRequestDto());
+    }
+
+    public boolean handleUpdateUserInfo(
+            final long id,
+            @NotNull final UserUpdateInfoRequestDto requestDto) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return false;
+        }
+
+        user.setFirstName(requestDto.getFirstName());
+        user.setLastName(requestDto.getLastName());
+        user.setEmail(requestDto.getEmail());
+        user.setPhoneNumber(requestDto.getPhoneNumber());
+        user.setRole(requestDto.getRole());
+
+        return this.handleSaveUser(user) != null;
+    }
+
+    public boolean handleUpdateUserPassword(
+            final long id,
+            @NotNull final UserUpdatePasswordRequestDto requestDto) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return false;
+        }
+
+        final var newHashedPassword = this.passwordEncoder.encode(requestDto.getNewPassword());
+        user.setHashedPassword(newHashedPassword);
+
+        return this.handleSaveUser(user) != null;
+    }
+
+    public boolean handleUpdateUserAvatar(
+            final long id,
+            final MultipartFile file) {
+        final var user = this.findUserById(id);
+        if (user == null) {
+            return false;
+        }
+
+        var avatarFile = user.getAvatarFileName();
+        if (!StringUtils.hasText(avatarFile)) {
+            avatarFile = this.imageUploadService.handleSaveUploadFile(file, IMAGE_SUB_FOLDER_NAME);
+        } else {
+            avatarFile = this.imageUploadService.handleUpdateUploadFile(avatarFile, file, IMAGE_SUB_FOLDER_NAME);
+        }
+
+        if (!StringUtils.hasText(avatarFile)) {
+            return false;
+        }
+
+        user.setAvatarFileName(avatarFile);
+        if (this.handleSaveUser(user) == null) {
+            this.imageUploadService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
+            return false;
+        }
+
+        return true;
+    }
+
+    public void deleteUserById(final long id) {
+        this.userRepository.deleteById(id);
     }
 
     @Nullable

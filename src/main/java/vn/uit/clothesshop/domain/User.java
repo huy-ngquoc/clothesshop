@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.domain;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -62,9 +63,9 @@ public class User {
     @Size(min = MIN_LENGTH_PHONE_NUMBER, max = MAX_LENGTH_PHONE_NUMBER)
     private String phoneNumber = "";
 
-    @NotBlank
+    @Nullable
     @Size(max = MAX_LENGTH_AVATAR_FILE_NAME)
-    private String avatarFileName = "";
+    private String avatarFileName = null;
 
     @NotNull
     @Enumerated(EnumType.STRING)
@@ -80,7 +81,6 @@ public class User {
             final String lastName,
             final String email,
             final String phoneNumber,
-            final String avatarFileName,
             final Role role) {
         this.username = username;
         this.hashedPassword = hashedPassword;
@@ -88,7 +88,6 @@ public class User {
         this.lastName = lastName;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.avatarFileName = avatarFileName;
         this.role = role;
     }
 

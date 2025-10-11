@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +33,7 @@ public class ImageUploadService {
             final MultipartFile avatarFile,
             @NotBlank final String targetSubFolder) {
         final var rootPath = this.servletContext.getRealPath(IMAGE_FOLDER_PATH);
-        final var dir = new File(rootPath + File.separator + targetSubFolder);
+        final var dir = new File(rootPath + "/" + targetSubFolder);
 
         return ImageUploadService.handleSaveUpdateFile(avatarFile, dir);
     }
@@ -69,6 +70,35 @@ public class ImageUploadService {
             Files.delete(file.toPath());
         } catch (final Exception exception) {
             log.error(String.format("Cannot delete file/folder: %s", file.getAbsolutePath()), exception);
+        }
+    }
+
+    @Nullable
+    public String getPathString(
+            @Nullable final String fileName,
+            @NotBlank final String targetSubFolder) {
+        if ((fileName == null) || (fileName.isBlank())) {
+            return null;
+        }
+
+        return targetSubFolder + "/" + fileName;
+    }
+
+    public Path getPath(
+            @Nullable final String fileName,
+            @NotBlank final String targetSubFolder) {
+        return Path.of(this.getPathString(fileName, targetSubFolder));
+    }
+
+    public byte[] readFile(
+            @NotBlank final String fileName,
+            @NotBlank final String targetSubFolder) {
+        final var filePath = this.getPath(fileName, targetSubFolder);
+        try {
+            return Files.readAllBytes(filePath);
+        } catch (final Exception exception) {
+            log.error(String.format("Error reading file: %s", filePath.toString()), exception);
+            return new byte[] {};
         }
     }
 

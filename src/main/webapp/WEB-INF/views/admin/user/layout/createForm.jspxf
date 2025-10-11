@@ -86,35 +86,6 @@
                 </form:select>
                 ${errorRole}
             </div>
-            <div class="col-md-7 col-12">
-                <c:set var="errorAvatarFile">
-                    <form:errors cssClass="invalid-feedback" path="avatarFile" />
-                </c:set>
-
-                <form:label class="form-label" for="inputAvatarFile" path="avatarFile">Avatar:</form:label>
-                <form:input id="inputAvatarFile" class="form-control ${not empty errorAvatarFile ? 'is-invalid' : ''}"
-                    type="file" path="avatarFile" accept="image/*" />
-                ${errorAvatarFile}
-            </div>
-        </div>
-        <div class="row g-3 mb-3">
-            <div class="col-12">
-                <img id="avatarFilePreview"
-                    style="max-width: 100%; max-height: 300px; height: auto; width: auto; display: none;"
-                    alt="Avatar File Preview" />
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-                    crossorigin="anonymous"></script>
-                <script>
-                    $(document).ready(() => {
-                        const inputAvatarFile = $("#inputAvatarFile");
-                        inputAvatarFile.change(function (e) {
-                            const imgURL = URL.createObjectURL(e.target.files[0]);
-                            $("#avatarFilePreview").attr("src", imgURL);
-                            $("#avatarFilePreview").css({ "display": "block" });
-                        });
-                    });
-                </script>
-            </div>
         </div>
         <div class="row g-3 mb-5">
             <div class="col-12">

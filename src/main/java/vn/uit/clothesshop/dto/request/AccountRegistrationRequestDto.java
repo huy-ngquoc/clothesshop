@@ -1,7 +1,5 @@
 package vn.uit.clothesshop.dto.request;
 
-import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class AccountRegistrationRequestDto {

@@ -7,15 +7,7 @@ import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.domain.User;
 import vn.uit.clothesshop.domain.User.Role;
 
-public final class UserCreationRequestDto {
-    @NotBlank
-    @Size(min = User.MIN_LENGTH_USERNAME, max = User.MAX_LENGTH_USERNAME)
-    private String username = "";
-
-    @NotNull
-    @Size(min = 3, max = 72)
-    private String password = "";
-
+public class UserUpdateInfoRequestDto {
     @NotBlank
     @Size(min = User.MIN_LENGTH_FIRST_NAME, max = User.MAX_LENGTH_FIRST_NAME)
     private String firstName = "";
@@ -36,56 +28,53 @@ public final class UserCreationRequestDto {
     @NotNull
     private Role role = Role.USER;
 
-    public String getUsername() {
-        return this.username;
-    }
-
-    public String getPassword() {
-        return this.password;
+    public UserUpdateInfoRequestDto(
+            final String firstName,
+            final String lastName,
+            final String email,
+            final String phoneNumber,
+            final Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.role = role;
     }
 
     public String getFirstName() {
         return this.firstName;
     }
 
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public String getEmail() {
-        return this.email;
-    }
-
-    public String getPhoneNumber() {
-        return this.phoneNumber;
-    }
-
-    public Role getRole() {
-        return this.role;
-    }
-
-    public void setUsername(final String username) {
-        this.username = username;
-    }
-
-    public void setPassword(final String password) {
-        this.password = password;
-    }
-
     public void setFirstName(final String firstName) {
         this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return this.lastName;
     }
 
     public void setLastName(final String lastName) {
         this.lastName = lastName;
     }
 
+    public String getEmail() {
+        return this.email;
+    }
+
     public void setEmail(final String email) {
         this.email = email;
     }
 
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    }
+
     public void setPhoneNumber(final String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Role getRole() {
+        return this.role;
     }
 
     public void setRole(final Role role) {

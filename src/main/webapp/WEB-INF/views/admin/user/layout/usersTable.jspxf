@@ -36,7 +36,8 @@
                                 <td>${responseDto.role}</td>
                                 <td class="d-flex justify-content-center align-items-center gap-2">
                                     <a class="btn btn-success" href="/admin/user/${responseDto.id}">View</a>
-                                    <a class="btn btn-warning" href="/admin/user/update/${responseDto.id}">Update</a>
+                                    <a class="btn btn-warning"
+                                        href="/admin/user/update/info/${responseDto.id}">Update</a>
                                     <a class="btn btn-danger" href="/admin/user/delete/${responseDto.id}">Delete</a>
                                 </td>
                             </tr>
