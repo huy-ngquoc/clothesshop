@@ -1,16 +1,14 @@
 package vn.uit.clothesshop.dto.request;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public final class UserUpdateAvatarRequestDto {
-    private MultipartFile avatarFile = null;
+    private byte[] avatarFile = new byte[] {};
 
-    public MultipartFile getAvatarFile() {
-        return this.avatarFile;
+    public byte[] getAvatarFile() {
+        return this.avatarFile.clone();
     }
 
-    public void setAvatarFile(MultipartFile avatarFile) {
-        this.avatarFile = avatarFile;
+    public void setAvatarFile(final byte[] avatarFile) {
+        this.avatarFile = avatarFile.clone();
     }
 
 }

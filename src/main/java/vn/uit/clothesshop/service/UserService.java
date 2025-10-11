@@ -30,17 +30,17 @@ public class UserService {
     private final UserRepository userRepository;
 
     @NotNull
-    private final ImageUploadService imageUploadService;
+    private final ImageFileService imageFileService;
 
     @NotNull
     private final PasswordEncoder passwordEncoder;
 
     public UserService(
             final UserRepository userRepository,
-            final ImageUploadService imageUploadService,
+            final ImageFileService imageFileService,
             final PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.imageUploadService = imageUploadService;
+        this.imageFileService = imageFileService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -68,7 +68,7 @@ public class UserService {
             return null;
         }
 
-        final var avatarFilePath = this.imageUploadService.getPathString(
+        final var avatarFilePath = this.imageFileService.getPathString(
                 user.getAvatarFileName(),
                 IMAGE_SUB_FOLDER_NAME);
 
@@ -124,7 +124,7 @@ public class UserService {
 
         return new UserUpdateInfoMiddleDto(
                 user.getUsername(),
-                this.imageUploadService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
+                this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
                 requestDto);
     }
 
@@ -136,7 +136,7 @@ public class UserService {
         }
 
         return new UserUpdateAvatarMiddleDto(
-                this.imageUploadService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
+                this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
                 new UserUpdateAvatarRequestDto());
     }
 
@@ -181,9 +181,9 @@ public class UserService {
 
         var avatarFile = user.getAvatarFileName();
         if (!StringUtils.hasText(avatarFile)) {
-            avatarFile = this.imageUploadService.handleSaveUploadFile(file, IMAGE_SUB_FOLDER_NAME);
+            avatarFile = this.imageFileService.handleSaveUploadFile(file, IMAGE_SUB_FOLDER_NAME);
         } else {
-            avatarFile = this.imageUploadService.handleUpdateUploadFile(avatarFile, file, IMAGE_SUB_FOLDER_NAME);
+            avatarFile = this.imageFileService.handleUpdateUploadFile(avatarFile, file, IMAGE_SUB_FOLDER_NAME);
         }
 
         if (!StringUtils.hasText(avatarFile)) {
@@ -192,7 +192,7 @@ public class UserService {
 
         user.setAvatarFileName(avatarFile);
         if (this.handleSaveUser(user) == null) {
-            this.imageUploadService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
+            this.imageFileService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
             return false;
         }
 
@@ -200,6 +200,17 @@ public class UserService {
     }
 
     public void deleteUserById(final long id) {
+        final var user = this.findUserById(id);
+
+        if (user == null) {
+            return;
+        }
+
+        final var avatarFileName = user.getAvatarFileName();
+        if (StringUtils.hasText(avatarFileName)) {
+            this.imageFileService.handleDeleteUploadFile(avatarFileName, IMAGE_SUB_FOLDER_NAME);
+        }
+
         this.userRepository.deleteById(id);
     }
 
