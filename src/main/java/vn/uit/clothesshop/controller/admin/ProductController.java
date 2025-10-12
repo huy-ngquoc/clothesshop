@@ -25,6 +25,13 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @GetMapping
+    public String getProductPage(final Model model) {
+        final var responseDtoList = this.productService.handleFindAllProduct();
+        model.addAttribute("responseDtoList", responseDtoList);
+        return "admin/product/show";
+    }
+
     @GetMapping("/{id}")
     public String getProductDetailPage(
             final Model model,
@@ -34,7 +41,7 @@ public class ProductController {
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
 
-        return "";
+        return "admin/product/detail";
     }
 
     @GetMapping("/create")
@@ -42,7 +49,7 @@ public class ProductController {
             final Model model) {
         final var requestDto = new ProductCreationRequestDto();
         model.addAttribute("requestDto", requestDto);
-        return "";
+        return "admin/product/create";
     }
 
     @PostMapping("/create")
@@ -51,11 +58,11 @@ public class ProductController {
             @ModelAttribute("requestDto") final ProductCreationRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "";
+            return "admin/product/create";
         }
 
         this.productService.handleCreateProduct(requestDto);
-        return "";
+        return "admin/product/show";
     }
 
     @GetMapping("/update/{id}")

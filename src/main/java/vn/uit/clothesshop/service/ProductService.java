@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Nullable;
@@ -8,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
+import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 
@@ -20,6 +23,22 @@ public class ProductService {
     public ProductService(
             @NotNull final ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+
+    @NotNull
+    public List<@NotNull ProductBasicInfoResponseDto> handleFindAllProduct() {
+        return this.findAllProduct()
+                .stream()
+                .map((final var product) -> new ProductBasicInfoResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getShortDesc()))
+                .toList();
+    }
+
+    @NotNull
+    public List<@NotNull Product> findAllProduct() {
+        return this.productRepository.findAll();
     }
 
     @Nullable
