@@ -31,7 +31,7 @@ public class ProductService {
             return null;
         }
 
-        return new ProductDetailInfoResponseDto(
+        return new ProductDetailInfoResponseDto(product.getId(),
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc());

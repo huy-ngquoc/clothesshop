@@ -40,7 +40,7 @@ public class ProductController {
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
 
-        return "";
+        return "admin/product/detail";
     }
 
     @GetMapping("/create")
