@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
+import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.service.ProductService;
@@ -24,7 +26,11 @@ public class ProductController {
             @NotNull final ProductService productService) {
         this.productService = productService;
     }
-
+    @GetMapping
+    public String getProductPage(final Model model) {
+        model.addAttribute("responseDtoList", productService.getAllProduct());
+        return "admin/product/show";
+    }
     @GetMapping("/{id}")
     public String getProductDetailPage(
             final Model model,
@@ -42,46 +48,49 @@ public class ProductController {
             final Model model) {
         final var requestDto = new ProductCreationRequestDto();
         model.addAttribute("requestDto", requestDto);
-        return "";
+        return "admin/product/create";
     }
 
     @PostMapping("/create")
     public String createProduct(
             final Model model,
-            @ModelAttribute("requestDto") final ProductCreationRequestDto requestDto,
+            @Valid @ModelAttribute("requestDto") final ProductCreationRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "";
+            System.out.println("Has Error");
+            return "admin/product/create";
         }
 
         this.productService.handleCreateProduct(requestDto);
-        return "";
+        return "redirect:/admin/product";
     }
 
     @GetMapping("/update/{id}")
     private String getProductUpdatePage(
             final Model model,
             @PathVariable final long id) {
-        final var requestDto = new ProductUpdateRequestDto();
+        
 
         model.addAttribute("id", id);
+        Product product = productService.findProductById(id);
+        ProductUpdateRequestDto requestDto= new ProductUpdateRequestDto(product.getName(), product.getShortDesc(), product.getDetailDesc());
         model.addAttribute("requestDto", requestDto);
 
-        return "";
+        return "admin/product/update";
     }
 
     @PostMapping("/update/{id}")
     private String updateProduct(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") final ProductUpdateRequestDto requestDto,
+            @Valid @ModelAttribute("requestDto") final ProductUpdateRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "";
+            return "admin/product/update";
         }
 
         this.productService.handleUpdateProduct(id, requestDto);
-        return "";
+        return "redirect:/admin/product";
     }
 
     @GetMapping("/delete/{id}")

@@ -31,7 +31,7 @@ public class Product {
     private String shortDesc = "";
 
     @NotBlank
-    @Size(min = MAX_LENGTH_DETAIL_DESC, max = MAX_LENGTH_DETAIL_DESC)
+    @Size(min = MIN_LENGTH_DETAIL_DESC, max = MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
     Product() {

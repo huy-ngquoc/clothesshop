@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Nullable;
@@ -33,6 +35,9 @@ public class ProductService {
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc());
+    }
+    public List<Product> getAllProduct(){
+        return productRepository.findAll();
     }
 
     @Nullable

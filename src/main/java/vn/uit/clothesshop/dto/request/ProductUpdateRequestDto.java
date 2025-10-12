@@ -2,8 +2,11 @@ package vn.uit.clothesshop.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import vn.uit.clothesshop.domain.Product;
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class ProductUpdateRequestDto {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
@@ -14,7 +17,7 @@ public class ProductUpdateRequestDto {
     private String shortDesc = "";
 
     @NotBlank
-    @Size(min = Product.MAX_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
+    @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
     public String getName() {

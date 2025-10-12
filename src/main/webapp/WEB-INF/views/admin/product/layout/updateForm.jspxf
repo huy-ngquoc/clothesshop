@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" pageEncoding="UTF-8" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <form:form method="post" action="/admin/product/update/${id}" modelAttribute="requestDto">
+        <div class="row g-3 mb-3">
+            <div class="col-md-12 col-12">
+                <c:set var="errorName">
+                    <form:errors cssClass="invalid-feedback" path="name" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputName" path="name">Product Name:</form:label>
+                <form:input id="inputName"
+                    cssClass="form-control ${not empty errorName ? 'is-invalid' : ''}"
+                    type="text" path="name" />
+                ${errorName}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-md-12 col-12">
+                <c:set var="errorShortDesc">
+                    <form:errors cssClass="invalid-feedback" path="shortDesc" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputShortDesc" path="shortDesc">Short Description:</form:label>
+                <form:input id="inputShortDesc"
+                    cssClass="form-control ${not empty errorShortDesc ? 'is-invalid' : ''}"
+                    type="text" path="shortDesc" />
+                ${errorShortDesc}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-12 col-12">
+                <c:set var="errorDetailDesc">
+                    <form:errors cssClass="invalid-feedback" path="detailDesc" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputDetailDesc" path="detailDesc">Detail Description:</form:label>
+                <form:textarea id="inputDetailDesc"
+                    cssClass="form-control ${not empty errorDetailDesc ? 'is-invalid' : ''}"
+                    rows="4" path="detailDesc" />
+                ${errorDetailDesc}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form:form>
+
+</jsp:root>

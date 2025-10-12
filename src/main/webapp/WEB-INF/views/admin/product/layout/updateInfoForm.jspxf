@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <form:form method="post" action="/admin/user/update/info/${id}" modelAttribute="requestDto">
+        <div class="row g-3 mb-3">
+            <div class="col-md-3 col-12">
+                <label class="form-label" for="inputId">ID:</label>
+                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+            </div>
+            <div class="col-md-6 col-12">
+                <label class="form-label" for="inputUsername">Username:</label>
+                <input id="inputUsername" class="form-control" type="text" value="${username}" readonly="true" />
+            </div>
+            <div class="col-md-3 col-12">
+                <p class="form-label">Password:</p>
+                <a class="btn btn-primary w-100" href="/admin/user/update/password/${id}">Change password</a>
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <form:label class="form-label" for="inputFirstName" path="firstName">First name:</form:label>
+                <form:input id="inputFirstName" class="form-control" type="text" path="firstName" />
+            </div>
+            <div class="col-md-6 col-12">
+                <form:label class="form-label" for="inputLastName" path="lastName">Last Name:</form:label>
+                <form:input id="inputLastName" class="form-control" type="text" path="lastName" />
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-7 col-12">
+                <form:label class="form-label" for="inputEmail" path="email">Email:</form:label>
+                <form:input id="inputEmail" class="form-control" type="text" path="email" />
+            </div>
+            <div class="col-md-5 col-12">
+                <form:label class="form-label" for="inputPhoneNumber" path="phoneNumber">Phone number:</form:label>
+                <form:input id="inputPhoneNumber" class="form-control" type="text" path="phoneNumber" />
+            </div>
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-md-6 col-12">
+                <form:label class="form-label" for="inputRole" path="role">Role:</form:label>
+                <form:select id="inputRole" class="form-select" path="role">
+                    <form:option value="USER">User</form:option>
+                    <form:option value="ADMIN">Admin</form:option>
+                </form:select>
+            </div>
+            <div class="col-md-6 col-12">
+                <p class="form-label">Avatar:</p>
+                <a class="btn btn-primary w-100" href="/admin/user/update/avatar/${id}">Change avatar</a>
+            </div>
+        </div>
+        <c:if test="${not empty avatarFilePath}">
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <img src="/img/${avatarFilePath}" alt="User Avatar"
+                        style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                </div>
+            </div>
+        </c:if>
+        <div class="d-flex gap-3 mb-3">
+            <button type="submit" class="btn btn-warning">Update</button>
+            <a class="btn btn-success" href="/admin/user">Back</a>
+        </div>
+    </form:form>
+
+</jsp:root>
