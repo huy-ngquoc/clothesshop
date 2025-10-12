@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import vn.uit.clothesshop.domain.Product;
+
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUpdateRequestDto {

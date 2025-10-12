@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.service.ProductService;
@@ -26,11 +25,14 @@ public class ProductController {
             @NotNull final ProductService productService) {
         this.productService = productService;
     }
+
     @GetMapping
     public String getProductPage(final Model model) {
-        model.addAttribute("responseDtoList", productService.getAllProduct());
+        final var responseDtoList = this.productService.handleFindAllProduct();
+        model.addAttribute("responseDtoList", responseDtoList);
         return "admin/product/show";
     }
+
     @GetMapping("/{id}")
     public String getProductDetailPage(
             final Model model,
@@ -54,10 +56,9 @@ public class ProductController {
     @PostMapping("/create")
     public String createProduct(
             final Model model,
-            @Valid @ModelAttribute("requestDto") final ProductCreationRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid final ProductCreationRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            System.out.println("Has Error");
             return "admin/product/create";
         }
 
@@ -66,24 +67,22 @@ public class ProductController {
     }
 
     @GetMapping("/update/{id}")
-    private String getProductUpdatePage(
+    public String getProductUpdatePage(
             final Model model,
             @PathVariable final long id) {
-        
+        final var requestDto = this.productService.handleCreateRequestDtoForUpdate(id);
 
         model.addAttribute("id", id);
-        Product product = productService.findProductById(id);
-        ProductUpdateRequestDto requestDto= new ProductUpdateRequestDto(product.getName(), product.getShortDesc(), product.getDetailDesc());
         model.addAttribute("requestDto", requestDto);
 
         return "admin/product/update";
     }
 
     @PostMapping("/update/{id}")
-    private String updateProduct(
+    public String updateProduct(
             final Model model,
             @PathVariable final long id,
-            @Valid @ModelAttribute("requestDto") final ProductUpdateRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid final ProductUpdateRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/update";
@@ -108,5 +107,5 @@ public class ProductController {
         this.productService.deleteProductById(id);
         return "redirect:/admin/product";
     }
-    
+
 }

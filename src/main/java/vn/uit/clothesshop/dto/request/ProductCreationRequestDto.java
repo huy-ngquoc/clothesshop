@@ -14,7 +14,7 @@ public final class ProductCreationRequestDto {
     private String shortDesc = "";
 
     @NotBlank
-    @Size(min = Product.MAX_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
+    @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
     public String getName() {

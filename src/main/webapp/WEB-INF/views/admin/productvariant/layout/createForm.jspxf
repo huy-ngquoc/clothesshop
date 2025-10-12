@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<jsp:root version="2.0"
-    xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.page contentType="application/xhtml+xml" pageEncoding="UTF-8" />
@@ -10,7 +8,7 @@
 
     <form:form method="post" action="/admin/product_variant/add_variant" modelAttribute="requestDto">
         <form:hidden path="productId" />
-<p class="text-muted small">Product ID: ${requestDto.productId}</p>
+        <p class="text-muted small">Product ID: ${requestDto.productId}</p>
         <!-- COLOR -->
         <div class="row g-3 mb-3">
             <div class="col-md-12 col-12">
@@ -19,8 +17,7 @@
                 </c:set>
 
                 <form:label cssClass="form-label" for="inputColor" path="color">Color:</form:label>
-                <form:input id="inputColor"
-                    cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
+                <form:input id="inputColor" cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
                     type="text" path="color" />
                 ${errorColor}
             </div>
@@ -34,8 +31,7 @@
                 </c:set>
 
                 <form:label cssClass="form-label" for="inputSize" path="size">Size:</form:label>
-                <form:input id="inputSize"
-                    cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
+                <form:input id="inputSize" cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
                     type="text" path="size" />
                 ${errorSize}
             </div>
@@ -48,10 +44,11 @@
                     <form:errors cssClass="invalid-feedback" path="stockQuantity" />
                 </c:set>
 
-                <form:label cssClass="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:</form:label>
+                <form:label cssClass="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:
+                </form:label>
                 <form:input id="inputStockQuantity"
-                    cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}"
-                    type="number" min="0" path="stockQuantity" />
+                    cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}" type="number" min="0"
+                    path="stockQuantity" />
                 ${errorStockQuantity}
             </div>
         </div>
@@ -65,8 +62,8 @@
 
                 <form:label cssClass="form-label" for="inputPriceCents" path="priceCents">Price (cents):</form:label>
                 <form:input id="inputPriceCents"
-                    cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}"
-                    type="number" min="0" path="priceCents" />
+                    cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}" type="number" min="0"
+                    path="priceCents" />
                 ${errorPriceCents}
             </div>
         </div>
@@ -80,8 +77,8 @@
 
                 <form:label cssClass="form-label" for="inputWeightGrams" path="weightGrams">Weight (grams):</form:label>
                 <form:input id="inputWeightGrams"
-                    cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}"
-                    type="number" min="0" path="weightGrams" />
+                    cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}" type="number" min="0"
+                    path="weightGrams" />
                 ${errorWeightGrams}
             </div>
         </div>
@@ -92,7 +89,7 @@
                 <button type="submit" class="btn btn-primary">Submit</button>
             </div>
         </div>
-        
+
     </form:form>
 
 </jsp:root>
