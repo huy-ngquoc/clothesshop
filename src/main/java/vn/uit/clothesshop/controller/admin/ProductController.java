@@ -98,7 +98,7 @@ public class ProductController {
             final Model model,
             @PathVariable final long id) {
         model.addAttribute("id", id);
-        return "";
+        return "admin/product/delete";
     }
 
     @PostMapping("/delete/{id}")
@@ -106,6 +106,6 @@ public class ProductController {
             final Model model,
             @PathVariable final long id) {
         this.productService.deleteProductById(id);
-        return "";
+        return "redirect:/admin/product";
     }
 }

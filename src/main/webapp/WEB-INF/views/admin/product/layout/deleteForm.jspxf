@@ -6,8 +6,8 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/user/delete/${id}">
-        <p class="alert alert-danger">Are you sure you want to delete this user?</p>
+    <form:form method="post" action="/admin/product/delete/${id}">
+        <p class="alert alert-danger">Are you sure you want to delete this product?</p>
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
                 <label class="form-label" for="inputId">ID:</label>
@@ -23,7 +23,7 @@
             </div>
         </c:if>
         <div class="d-flex gap-3 mb-3">
-            <a class="btn btn-success" href="/admin/user">Back</a>
+            <a class="btn btn-success" href="/admin/product">Back</a>
             <button type="submit" class="btn btn-danger">Confirm</button>
         </div>
     </form:form>
