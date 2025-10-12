@@ -25,6 +25,7 @@
             <a class="btn btn-success" href="/admin/product">Back</a>
             <a class="btn btn-warning" href="/admin/product/update/${responseDto.id}">Update</a>
             <a class="btn btn-danger" href="/admin/product/delete/${responseDto.id}">Delete</a>
+            <a class="btn btn-primary" href="/admin/product_variant/add_variant/${responseDto.id}">Add Variant</a>
         </div>
     </c:if>
 

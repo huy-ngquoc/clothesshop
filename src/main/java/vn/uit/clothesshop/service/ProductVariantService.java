@@ -1,7 +1,6 @@
 package vn.uit.clothesshop.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -11,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
+import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 @Service
@@ -58,4 +58,15 @@ public class ProductVariantService {
             return null;
         }
     }
+    public ProductVariant createProductVariant(ProductVariantCreateRequest request) {
+        Product product = productService.findProductById(request.getProductId());
+        if(product==null) {
+             System.out.println("NULLLLLL");
+            return null;
+        }
+        ProductVariant newVariant = new ProductVariant(product, request.getColor(), request.getSize(), request.getStockQuantity(), request.getPriceCents(), request.getWeightGrams());
+        newVariant=productVariantRepository.save(newVariant);
+        return newVariant;
+    }
+    
 }
