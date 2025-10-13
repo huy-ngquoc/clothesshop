@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
+import vn.uit.clothesshop.dto.response.FullProductDataDto;
 import vn.uit.clothesshop.service.ProductService;
 
 @Controller
@@ -37,7 +38,7 @@ public class ProductController {
     public String getProductDetailPage(
             final Model model,
             @PathVariable final long id) {
-        final var responseDto = this.productService.handleFindProductById(id);
+        final FullProductDataDto responseDto = this.productService.getFullDataById(id);
 
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);

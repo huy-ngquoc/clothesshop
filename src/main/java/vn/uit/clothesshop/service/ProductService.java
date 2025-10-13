@@ -10,19 +10,25 @@ import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
+import vn.uit.clothesshop.dto.response.FullProductDataDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
+import vn.uit.clothesshop.dto.selectcolumninteface.ProductVariantInfo;
 import vn.uit.clothesshop.repository.ProductRepository;
+import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 @Service
 @Slf4j
 public class ProductService {
     @NotNull
     private final ProductRepository productRepository;
+    @NotNull
+    private final ProductVariantRepository productVariantRepository;
 
     public ProductService(
-            @NotNull final ProductRepository productRepository) {
+            @NotNull final ProductRepository productRepository, ProductVariantRepository productVariantRepository) {
         this.productRepository = productRepository;
+        this.productVariantRepository= productVariantRepository;
     }
 
     @NotNull
@@ -119,5 +125,14 @@ public class ProductService {
             log.error("Error saving product", exception);
             return null;
         }
+    }
+
+    public FullProductDataDto getFullDataById(long id) {
+        Product p = productRepository.findById(id).orElse(null);
+        if(p==null) {
+            return null;
+        } 
+        List<ProductVariantInfo> listVariants = productVariantRepository.findByProduct_Id(p.getId());
+        return new FullProductDataDto(p.getId(), p.getName(), p.getShortDesc(), p.getDetailDesc(), listVariants);
     }
 }

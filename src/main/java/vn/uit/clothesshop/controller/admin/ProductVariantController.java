@@ -112,5 +112,12 @@ public class ProductVariantController {
         return "redirect:/admin/product/"+pv.getProductId();
     }
 
+    @GetMapping("/{variantId}")
+    public String getProductVariantDetail(final Model model, @PathVariable long variantId) {
+        ProductVariant pv = productVariantService.findProductVariantById(variantId);
+        model.addAttribute("variant",pv);
+        return "admin/productvariant/detail";
+    }
+
     
 }
