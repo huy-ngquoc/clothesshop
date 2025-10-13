@@ -20,9 +20,14 @@ public class ProductService {
     @NotNull
     private final ProductRepository productRepository;
 
+    @NotNull
+    private final ProductVariantService productVariantService;
+
     public ProductService(
-            @NotNull final ProductRepository productRepository) {
+            @NotNull final ProductRepository productRepository,
+            @NotNull final ProductVariantService productVariantService) {
         this.productRepository = productRepository;
+        this.productVariantService = productVariantService;
     }
 
     @NotNull
@@ -51,16 +56,17 @@ public class ProductService {
         return new ProductDetailInfoResponseDto(
                 product.getName(),
                 product.getShortDesc(),
-                product.getDetailDesc());
-    }
-
-    public List<Product> getAllProduct() {
-        return productRepository.findAll();
+                product.getDetailDesc(),
+                productVariantService.handleFindAllProductVariantsByProduct(product));
     }
 
     @Nullable
     public Product findProductById(final long id) {
         return this.productRepository.findById(id).orElse(null);
+    }
+
+    public boolean existsProductById(final long id) {
+        return this.productRepository.existsById(id);
     }
 
     @Nullable
@@ -112,7 +118,7 @@ public class ProductService {
     }
 
     @Nullable
-    private Product handleSaveProduct(final Product product) {
+    private Product handleSaveProduct(@NotNull final Product product) {
         try {
             return this.productRepository.save(product);
         } catch (final Exception exception) {

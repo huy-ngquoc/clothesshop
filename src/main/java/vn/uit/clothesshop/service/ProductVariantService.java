@@ -10,23 +10,25 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
-import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
+import vn.uit.clothesshop.dto.request.ProductVariantCreateRequestDto;
+import vn.uit.clothesshop.dto.response.ProductVariantBasicInfoResponseDto;
+import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 @Service
 @Slf4j
 public class ProductVariantService {
     @NotNull
-    private ProductVariantRepository productVariantRepository;
+    private final ProductVariantRepository productVariantRepository;
 
     @NotNull
-    private ProductService productService;
+    private final ProductRepository productRepository;
 
     public ProductVariantService(
             @NotNull final ProductVariantRepository productVariantRepository,
-            @NotNull final ProductService productService) {
+            @NotNull final ProductRepository productRepository) {
         this.productVariantRepository = productVariantRepository;
-        this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @Nullable
@@ -36,12 +38,26 @@ public class ProductVariantService {
 
     @NotNull
     public List<ProductVariant> findAllProductVariantsByProductId(final long productId) {
-        final var product = this.productService.findProductById(productId);
+        final var product = this.productRepository.findById(productId).orElse(null);
         if (product == null) {
             return new ArrayList<>(0);
         }
 
         return this.findAllProductVariantsByProduct(product);
+    }
+
+    @NotNull
+    public List<@NotNull ProductVariantBasicInfoResponseDto> handleFindAllProductVariantsByProduct(
+            @NotNull final Product product) {
+        return this.findAllProductVariantsByProduct(product)
+                .stream()
+                .map((final var productVariant) -> new ProductVariantBasicInfoResponseDto(
+                        productVariant.getId(),
+                        productVariant.getColor(),
+                        productVariant.getSize(),
+                        productVariant.getStockQuantity(),
+                        productVariant.getWeightGrams()))
+                .toList();
     }
 
     @Nullable
@@ -50,7 +66,28 @@ public class ProductVariantService {
     }
 
     @Nullable
-    private ProductVariant handleSaveProductVariant(final ProductVariant productVariant) {
+    public Long createProductVariant(
+            final long productId,
+            @NotNull final ProductVariantCreateRequestDto requestDto) {
+        final var product = this.productRepository.findById(productId).orElse(null);
+        if (product == null) {
+            return null;
+        }
+
+        final var productVariant = new ProductVariant(
+                product,
+                requestDto.getColor(),
+                requestDto.getSize(),
+                requestDto.getStockQuantity(),
+                requestDto.getPriceCents(),
+                requestDto.getWeightGrams());
+
+        final var savedProductVariant = productVariantRepository.save(productVariant);
+        return savedProductVariant.getId();
+    }
+
+    @Nullable
+    private ProductVariant handleSaveProductVariant(@NotNull final ProductVariant productVariant) {
         try {
             return this.productVariantRepository.save(productVariant);
         } catch (final Exception exception) {
@@ -58,15 +95,5 @@ public class ProductVariantService {
             return null;
         }
     }
-    public ProductVariant createProductVariant(ProductVariantCreateRequest request) {
-        Product product = productService.findProductById(request.getProductId());
-        if(product==null) {
-             System.out.println("NULLLLLL");
-            return null;
-        }
-        ProductVariant newVariant = new ProductVariant(product, request.getColor(), request.getSize(), request.getStockQuantity(), request.getPriceCents(), request.getWeightGrams());
-        newVariant=productVariantRepository.save(newVariant);
-        return newVariant;
-    }
-    
+
 }

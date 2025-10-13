@@ -9,46 +9,59 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import vn.uit.clothesshop.domain.Product;
-import vn.uit.clothesshop.domain.ProductVariant;
-import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
+import vn.uit.clothesshop.dto.request.ProductVariantCreateRequestDto;
 import vn.uit.clothesshop.service.ProductService;
 import vn.uit.clothesshop.service.ProductVariantService;
 
-
-
 @Controller
-@RequestMapping("/admin/product_variant")
+@RequestMapping("/admin/product/{productId}/variant")
 public class ProductVariantController {
     private final ProductService productService;
     private final ProductVariantService productVariantService;
+
     public ProductVariantController(ProductService productService, ProductVariantService productVariantService) {
-        this.productService= productService;
-        this.productVariantService=productVariantService;
+        this.productService = productService;
+        this.productVariantService = productVariantService;
     }
-    @GetMapping("/add_variant/{productId}")
-    public String getAddVariantPage(final Model model, @PathVariable long productId) {
-        ProductVariantCreateRequest requestDto = new ProductVariantCreateRequest();
-        Product p = productService.findProductById(productId);
-        requestDto.setProductId(productId);
-        model.addAttribute("product",p);
-        model.addAttribute("requestDto",requestDto);
+
+    @GetMapping("/create")
+    public String getAddVariantPage(
+            final Model model,
+            @PathVariable long productId) {
+        final var requestDto = this.buildCreateRequestDto(productId);
+
         model.addAttribute("productId", productId);
-       
-        return "admin/productvariant/create";
+        model.addAttribute("requestDto", requestDto);
+
+        // TODO: fix this view
+        return "admin/product/createVariant";
     }
+
     @PostMapping("/add_variant")
-    public String addVariant(final Model model,@Valid @ModelAttribute("requestDto") final ProductVariantCreateRequest requestDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
-            Product p = productService.findProductById(requestDto.getProductId());
-        model.addAttribute("product", p);
-        model.addAttribute("productId", requestDto.getProductId());
+    public String addVariant(final Model model,
+            @PathVariable long productId,
+            @Valid @ModelAttribute("requestDto") final ProductVariantCreateRequestDto requestDto,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Product p = productService.findProductById(productId);
+            model.addAttribute("product", p);
+            model.addAttribute("productId", productId);
             return "admin/productvariant/create";
         }
-        ProductVariant result = productVariantService.createProductVariant(requestDto);
-        return "redirect:/admin/product/"+requestDto.getProductId();
+        productVariantService.createProductVariant(productId, requestDto);
+        return "redirect:/admin/product/" + productId;
     }
-    
-    
+
+    @Nullable
+    private ProductVariantCreateRequestDto buildCreateRequestDto(final long productId) {
+        if (!this.productService.existsProductById(productId)) {
+            return null;
+        }
+
+        return new ProductVariantCreateRequestDto();
+    }
+
 }

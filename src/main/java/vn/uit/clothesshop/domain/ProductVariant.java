@@ -15,6 +15,9 @@ import lombok.experimental.FieldNameConstants;
 @Entity
 @FieldNameConstants
 public class ProductVariant {
+    public static final int MAX_LENGTH_COLOR = 10;
+    public static final int MAX_LENGTH_SIZE = 10;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
@@ -24,11 +27,11 @@ public class ProductVariant {
     private Product product = new Product();
 
     @NotBlank
-    @Size(max = 10)
+    @Size(max = MAX_LENGTH_COLOR)
     private String color = "";
 
     @NotBlank
-    @Size(max = 10)
+    @Size(max = MAX_LENGTH_SIZE)
     private String size = "";
 
     @PositiveOrZero

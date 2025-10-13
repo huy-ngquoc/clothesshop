@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <div class="mt-sm-5 mt-1">
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <div class="d-sm-flex justify-content-between">
+                    <h2>Product variants table</h2>
+                    <a class="btn btn-primary" href="/admin/product/${id}/variant/create">
+                        Create a new product variant
+                    </a>
+                </div>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-12 mx-auto">
+                <table class="table table-responsive table-bordered table-hover">
+                    <thead class="text-center align-middle">
+                        <tr>
+                            <th>ID</th>
+                            <th>Color</th>
+                            <th>Size</th>
+                            <th>Stock Quantity</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <c:forEach var="variant" items="${responseDto.variantList}">
+                            <tr>
+                                <td>${variant.id}</td>
+                                <td>${variant.color}</td>
+                                <td>${variant.size}</td>
+                                <td>${variant.stockQuantity}</td>
+                                <td>${variant.priceCents}</td>
+                                <td class="d-flex justify-content-center align-items-center gap-2">
+                                    <a class="btn btn-success" href="/admin/product/${variant.id}">View</a>
+                                    <a class="btn btn-warning" href="/admin/product/update/${variant.id}">Update</a>
+                                    <a class="btn btn-danger" href="/admin/product/delete/${variant.id}">Delete</a>
+                                </td>
+                            </tr>
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</jsp:root>
