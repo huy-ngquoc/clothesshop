@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
+import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 
@@ -24,6 +25,22 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    @NotNull
+    public List<@NotNull ProductBasicInfoResponseDto> handleFindAllProduct() {
+        return this.findAllProduct()
+                .stream()
+                .map((final var product) -> new ProductBasicInfoResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getShortDesc()))
+                .toList();
+    }
+
+    @NotNull
+    public List<@NotNull Product> findAllProduct() {
+        return this.productRepository.findAll();
+    }
+
     @Nullable
     public ProductDetailInfoResponseDto handleFindProductById(final long id) {
         final var product = this.findProductById(id);
@@ -31,12 +48,13 @@ public class ProductService {
             return null;
         }
 
-        return new ProductDetailInfoResponseDto(product.getId(),
+        return new ProductDetailInfoResponseDto(
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc());
     }
-    public List<Product> getAllProduct(){
+
+    public List<Product> getAllProduct() {
         return productRepository.findAll();
     }
 
@@ -61,19 +79,32 @@ public class ProductService {
         return savedProduct.getId();
     }
 
-    public Product handleUpdateProduct(
+    @Nullable
+    public ProductUpdateRequestDto handleCreateRequestDtoForUpdate(final long id) {
+        final var product = this.findProductById(id);
+        if (product == null) {
+            return null;
+        }
+
+        return new ProductUpdateRequestDto(
+                product.getName(),
+                product.getShortDesc(),
+                product.getDetailDesc());
+    }
+
+    public boolean handleUpdateProduct(
             final long id,
             @NotNull final ProductUpdateRequestDto requestDto) {
         final var product = this.findProductById(id);
         if (product == null) {
-            return null;
+            return false;
         }
 
         product.setName(requestDto.getName());
         product.setShortDesc(requestDto.getShortDesc());
         product.setDetailDesc(requestDto.getDetailDesc());
 
-        return this.handleSaveProduct(product);
+        return this.handleSaveProduct(product) != null;
     }
 
     public void deleteProductById(final long id) {
