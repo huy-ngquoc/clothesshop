@@ -119,5 +119,27 @@ public class ProductVariantController {
         return "admin/productvariant/detail";
     }
 
+    @GetMapping("/delete_variant/{variantId}")
+    public String getDeleteProductVariantPage(final Model model, @PathVariable long variantId) {
+        ProductVariant pv = productVariantService.findProductVariantById(variantId);
+        if(pv==null){
+            return "redirect:/admin/product";
+        }
+        model.addAttribute("id", pv.getId());
+        model.addAttribute("productId",pv.getProduct().getId());
+        return "admin/productvariant/delete";
+
+    }
+
+    @PostMapping("/delete_variant/{variantId}")
+    public String deleteProductVariant(final Model model, @PathVariable long variantId) {
+        long result = productVariantService.deleteProductVariant(variantId);
+        if(result==-1) {
+            return "redirect:/admin/product";
+        } 
+        return "redirect:/admin/product/"+result;
+    }
+    
+
     
 }

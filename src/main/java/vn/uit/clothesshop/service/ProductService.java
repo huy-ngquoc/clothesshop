@@ -114,6 +114,7 @@ public class ProductService {
     }
 
     public void deleteProductById(final long id) {
+        this.productVariantRepository.deleteByProduct_Id(id);
         this.productRepository.deleteById(id);
     }
 

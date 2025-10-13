@@ -33,8 +33,8 @@
                 </div>
                 <div class="card-footer d-flex gap-3">
                     <a href="/admin/product/${variant.product.id}" class="btn btn-secondary">Back to Product</a>
-                    <a href="/admin/product_variant/update/${variant.id}" class="btn btn-warning">Edit</a>
-                    <a href="/admin/product_variant/delete/${variant.id}" class="btn btn-danger">Delete</a>
+                    <a href="/admin/product_variant/update_variant/${variant.id}" class="btn btn-warning">Edit</a>
+                    <a href="/admin/product_variant/delete_variant/${variant.id}" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </c:if>

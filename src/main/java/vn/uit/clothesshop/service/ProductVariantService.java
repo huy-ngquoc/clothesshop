@@ -107,6 +107,16 @@ public class ProductVariantService {
         return pv;
     }
 
+    public long deleteProductVariant(long id) {
+        ProductVariant pv = findProductVariantById(id);
+        if(pv==null) {
+            return -1;
+        } 
+        
+        productVariantRepository.delete(pv);
+        return pv.getProduct().getId();
+    }
+
 
     
 }
