@@ -90,7 +90,7 @@
             <!-- IMAGE -->
             <div class="col-md-6 col-12">
                 <p class="form-label">Image:</p>
-                <a class="btn btn-primary w-100" href="/admin/product_variant/update/image/${requestDto.productVariantId}">
+                <a class="btn btn-primary w-100" href="/admin/product_variant/update_variant/image/${requestDto.productVariantId}">
                     Change image
                 </a>
             </div>

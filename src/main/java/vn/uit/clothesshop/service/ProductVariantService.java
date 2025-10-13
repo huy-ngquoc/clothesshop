@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
@@ -17,17 +19,22 @@ import vn.uit.clothesshop.repository.ProductVariantRepository;
 @Service
 @Slf4j
 public class ProductVariantService {
+    private static final String IMAGE_SUBFOLDER_NAME="productvariant";
     @NotNull
     private ProductVariantRepository productVariantRepository;
 
     @NotNull
     private ProductService productService;
+    @NotNull
+    private ImageFileService imageFileService;
 
     public ProductVariantService(
             @NotNull final ProductVariantRepository productVariantRepository,
-            @NotNull final ProductService productService) {
+            @NotNull final ProductService productService,
+            @NotNull final ImageFileService imageFileService) {
         this.productVariantRepository = productVariantRepository;
         this.productService = productService;
+        this.imageFileService= imageFileService;
     }
 
     @Nullable
@@ -83,7 +90,22 @@ public class ProductVariantService {
         return pv;
     }
 
-    
+    public ProductVariant updateProductVariantImage(MultipartFile image, long productVariantId) {
+        ProductVariant pv = findProductVariantById(productVariantId);
+        if(pv==null) {
+            return null;
+        }
+        String imageFileName = pv.getImage();
+        if(!StringUtils.hasText(imageFileName)) {
+            imageFileName=imageFileService.handleSaveUploadFile(image, IMAGE_SUBFOLDER_NAME);
+        } 
+        else {
+            imageFileName=imageFileService.handleUpdateUploadFile(imageFileName, image, IMAGE_SUBFOLDER_NAME);
+        }
+        pv.setImage(imageFileName);
+        pv=productVariantRepository.save(pv);
+        return pv;
+    }
 
 
     

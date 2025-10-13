@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:form="http://www.springframework.org/tags/form">
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <title>Update product variant - Clothes Shop</title>
+        <link href="/admin/css/styles.css" rel="stylesheet" />
+        <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    </head>
+
+    <body class="sb-nav-fixed">
+        <jsp:directive.include file="../layout/header.jspxf" />
+        <div id="layoutSidenav">
+            <jsp:directive.include file="../layout/sidebar.jspxf" />
+            <div id="layoutSidenav_content">
+                <main>
+                    <div class="container-fluid px-4">
+                        <h1 class="mt-4">Manage products</h1>
+                        <ol class="breadcrumb mb-4">
+                            <li class="breadcrumb-item">
+                                <a href="/admin">Dashboard</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="/admin/product">Product</a>
+                            </li>
+                            <li class="breadcrumb-item active">
+                                Update product variant image
+                            </li>
+                        </ol>
+
+                        
+                        <c:choose>
+                            <c:when test="${empty requestDto}">
+                                <div class="alert alert-danger mt-5 text-center fw-bold" role="alert">
+                                    Product variant does not exist.
+                                </div>
+                            </c:when>
+                            <c:otherwise>
+                                <div class="mt-5">
+                                    <div class="row">
+                                        <div class="col-xl-8 col-sm-10 col-12 mx-auto">
+                                            <h2>Update product variant info</h2>
+                                            <hr />
+                                            <jsp:directive.include file="layout/updateImageForm.jspxf" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </c:otherwise>
+                        </c:choose>
+
+                    </div>
+                </main>
+                <jsp:directive.include file="../layout/footer.jspxf" />
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
+                crossorigin="anonymous"></script>
+        <script src="/admin/js/scripts.js"></script>
+    </body>
+
+    </html>
+
+</jsp:root>
