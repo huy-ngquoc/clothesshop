@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
+import vn.uit.clothesshop.dto.request.ProductVariantUpdateRequest;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 @Service
@@ -64,9 +65,26 @@ public class ProductVariantService {
              System.out.println("NULLLLLL");
             return null;
         }
-        ProductVariant newVariant = new ProductVariant(product, request.getColor(), request.getSize(), request.getStockQuantity(), request.getPriceCents(), request.getWeightGrams());
+        ProductVariant newVariant = new ProductVariant(product, request.getColor(), request.getSize(), request.getStockQuantity(), request.getPriceCents(), request.getWeightGrams(),"");
         newVariant=productVariantRepository.save(newVariant);
         return newVariant;
     }
+    public ProductVariant updateInfo(ProductVariantUpdateRequest request) {
+        ProductVariant pv = findProductVariantById(request.getProductVariantId());
+        if(pv==null) {
+            return null;
+        }
+        pv.setColor(request.getColor());
+        pv.setSize(request.getSize());
+        pv.setPriceCents(request.getPriceCents());
+        pv.setStockQuantity(request.getStockQuantity());
+        pv.setWeightGrams(request.getWeightGrams());
+        pv=productVariantRepository.save(pv);
+        return pv;
+    }
+
+    
+
+
     
 }

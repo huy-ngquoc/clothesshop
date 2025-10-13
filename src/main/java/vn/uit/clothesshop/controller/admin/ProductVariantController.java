@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
+import vn.uit.clothesshop.dto.request.ProductVariantUpdateRequest;
 import vn.uit.clothesshop.service.ProductService;
 import vn.uit.clothesshop.service.ProductVariantService;
 
@@ -49,6 +50,39 @@ public class ProductVariantController {
         ProductVariant result = productVariantService.createProductVariant(requestDto);
         return "redirect:/admin/product/"+requestDto.getProductId();
     }
-    
+
+    @GetMapping("/update_variant/{variantId}") 
+    public String getUpdateVariantPage(final Model model, @PathVariable long variantId) {
+        ProductVariant pv = productVariantService.findProductVariantById(variantId);
+        ProductVariantUpdateRequest requestDto=null;
+        if(pv!=null) {
+            requestDto = new ProductVariantUpdateRequest(pv.getId(),pv.getColor(), pv.getSize(),pv.getPriceCents(),pv.getStockQuantity() , pv.getWeightGrams());
+            model.addAttribute("image",pv.getImage());
+        }
+        else {
+            model.addAttribute("image",null);
+        }
+        model.addAttribute("requestDto",requestDto);
+        
+        return "admin/productvariant/updateinfo";
+    }
+    @PostMapping("/update_variant")
+    public String updateVariantInfo(final Model model, @Valid @ModelAttribute("requestDto") ProductVariantUpdateRequest requestDto, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            ProductVariant pv = productVariantService.findProductVariantById(requestDto.getProductVariantId());
+            
+            if(pv!=null) {
+            requestDto = new ProductVariantUpdateRequest(pv.getId(),pv.getColor(), pv.getSize(),pv.getPriceCents(),pv.getStockQuantity() , pv.getWeightGrams());
+            model.addAttribute("image",pv.getImage());
+            }
+            else {
+                model.addAttribute("image",null);
+            }
+            model.addAttribute("requestDto",requestDto);
+            return "admin/productvariant/updateinfo";
+        }
+        ProductVariant pv = productVariantService.updateInfo(requestDto);
+        return "redirect:/admin/product/"+pv.getProductId();
+    }
     
 }

@@ -40,6 +40,8 @@ public class ProductVariant {
     @PositiveOrZero
     private int weightGrams = 0;
 
+    private String image;
+
     ProductVariant() {
     }
 
@@ -49,13 +51,30 @@ public class ProductVariant {
             final String size,
             final int stockQuantity,
             final int priceCents,
-            final int weightGrams) {
+            final int weightGrams, final String image) {
         this.product = product;
         this.color = color;
         this.size = size;
         this.stockQuantity = stockQuantity;
         this.priceCents = priceCents;
         this.weightGrams = weightGrams;
+        this.image = image;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public long getId() {
