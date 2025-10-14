@@ -14,6 +14,8 @@ import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductVariantCreateRequest;
 import vn.uit.clothesshop.dto.request.ProductVariantUpdateRequest;
+import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
+import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 @Service
@@ -119,7 +121,12 @@ public class ProductVariantService {
         productService.updateMinPriceAndMaxPrice(pv.getProduct());
         return pv.getProduct().getId();
     }
-
+    public List<ColorCount> countProductVariantByColor() {
+        return productVariantRepository.countByColor();
+    } 
+    public List<SizeCount> countProductVariantBySize() {
+        return productVariantRepository.countBySize();
+    }
 
     
 }
