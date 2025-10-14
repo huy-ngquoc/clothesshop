@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.Valid;
 import vn.uit.clothesshop.dto.request.ProductVariantCreateRequestDto;
+import vn.uit.clothesshop.dto.request.ProductVariantUpdateImageRequestDto;
 import vn.uit.clothesshop.dto.request.ProductVariantUpdateRequestDto;
 import vn.uit.clothesshop.service.ProductVariantService;
 
@@ -63,16 +64,17 @@ public class ProductVariantController {
 
         // TODO: what if null due to cannot save?
         final var productVariantId = productVariantService.createProductVariant(productId, requestDto);
-        return "redirect:/admin/product/" + productVariantId;
+        return "redirect:/admin/product-variant/" + productVariantId;
     }
 
     @GetMapping("/update/info/{id}")
     public String getUpdateVariantPage(
             final Model model,
             @PathVariable final long id) {
-        final var middleDto = this.productVariantService.handleCreateMiddleDtoForUpdate(id);
+        final var middleDto = this.productVariantService.handleCreateMiddleDtoForUpdateInfo(id);
 
         if (middleDto != null) {
+            model.addAttribute("productId", middleDto.getProductId());
             model.addAttribute("image", middleDto.getAvatarFilePath());
             model.addAttribute("requestDto", middleDto.getRequestDto());
         }
@@ -98,9 +100,13 @@ public class ProductVariantController {
     public String getUpdateProductVariantImagePage(
             final Model model,
             @PathVariable final long id) {
-        // TODO: check entity existed and fix view
-        final var imageFilePath = this.productVariantService.findImageFilePathOfProductVariantById(id);
-        model.addAttribute("image", imageFilePath);
+        final var middleDto = this.productVariantService.handleCreateMiddleDtoForUpdateImage(id);
+
+        if (middleDto != null) {
+            model.addAttribute("productId", middleDto.getProductId());
+            model.addAttribute("image", middleDto.getImageFilePath());
+            model.addAttribute("requestDto", middleDto.getRequestDto());
+        }
         return "admin/productvariant/updateimage";
     }
 
@@ -108,13 +114,13 @@ public class ProductVariantController {
     public String updateProductVariantImage(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("imageFile") final MultipartFile imageFile) {
-        final var succeed = productVariantService.updateProductVariantImage(imageFile, id);
+            @ModelAttribute("requestDto") final ProductVariantUpdateImageRequestDto requestDto) {
+        final var succeed = productVariantService.updateProductVariantImage(requestDto, id);
         if (!succeed) {
             return "redirect:/admin/product";
         }
 
-        return "redirect:/admin/product/" + id;
+        return "redirect:/admin/product-variant/" + id;
     }
 
     @GetMapping("/delete/{id}")

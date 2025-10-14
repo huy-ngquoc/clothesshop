@@ -106,7 +106,7 @@
         <!-- BUTTONS -->
         <div class="d-flex gap-3 mb-3">
             <button type="submit" class="btn btn-warning">Update</button>
-            <a class="btn btn-success" href="/admin/product-variant">Back</a>
+            <a class="btn btn-success" href="/admin/product/${productId}">Back</a>
         </div>
 
     </form:form>
