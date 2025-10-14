@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <div class="container mt-4" style="width: 60%;">
+        <c:if test="${not empty responseDto}">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4>Product Variant Detail</h4>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item"><strong>ID:</strong> ${id}</li>
+                        <li class="list-group-item"><strong>Color:</strong> ${responseDto.color}</li>
+                        <li class="list-group-item"><strong>Size:</strong> ${responseDto.size}</li>
+                        <li class="list-group-item"><strong>Stock Quantity:</strong> ${responseDto.stockQuantity}</li>
+                        <li class="list-group-item"><strong>Weight (grams):</strong> ${responseDto.weightGrams}</li>
+                        <li class="list-group-item"><strong>Price (cents):</strong> ${responseDto.priceCents}</li>
+                        <li class="list-group-item"><strong>Product ID:</strong> ${responseDto.productId}</li>
+                        <c:if test="${not empty responseDto.imageFilePath}">
+                            <li class="list-group-item">
+                                <strong>Image:</strong><br />
+                                <img src="/img/${responseDto.imageFilePath}" alt="Variant Image"
+                                    style="max-width: 250px; border-radius: 8px; border: 1px solid #ccc; margin-top: 10px;" />
+                            </li>
+                        </c:if>
+                    </ul>
+                </div>
+                <div class="card-footer d-flex gap-3">
+                    <a href="/admin/product/${responseDto.productId}" class="btn btn-secondary">Back to Product</a>
+                    <a href="/admin/product-variant/update/info/${id}" class="btn btn-warning">Edit</a>
+                    <a href="/admin/product-variant/delete/${id}" class="btn btn-danger">Delete</a>
+                </div>
+            </div>
+        </c:if>
+
+        <c:if test="${empty responseDto}">
+            <p class="alert alert-danger mt-3">Product variant not found!</p>
+            <a href="/admin/product" class="btn btn-primary">Back to Product List</a>
+        </c:if>
+    </div>
+
+</jsp:root>

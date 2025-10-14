@@ -19,10 +19,65 @@
             </ol>
         </div>
 
+        <!-- Bảng hiển thị danh sách variant -->
+        <c:if test="${not empty responseDto.variantList}">
+            <h3>Product Variants</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Color</th>
+                        <th>Size</th>
+                        <th>Stock Quantity</th>
+                        <th>Price (cents)</th>
+                        <th>Weight (grams)</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <c:forEach var="variant" items="${responseDto.variantList}">
+                        <tr>
+                            <td>${variant.id}</td>
+                            <td>
+                                <c:if test="${not empty variant.imageFilePath}">
+                                    <img src="/img/${variant.imageFilePath}" alt="Variant Image"
+                                        style="max-width:80px; max-height:80px;" />
+                                </c:if>
+                            </td>
+                            <td>${variant.color}</td>
+                            <td>${variant.size}</td>
+                            <td>${variant.stockQuantity}</td>
+                            <td>${variant.priceCents}</td>
+                            <td>${variant.weightGrams}</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" href="/admin/product-variant/${variant.id}">
+                                    View
+                                </a>
+                                <a class="btn btn-warning btn-sm"
+                                    href="/admin/product-variant/update/info/${variant.id}">
+                                    Edit
+                                </a>
+                                <a class="btn btn-danger btn-sm" href="/admin/product-variant/delete/${variant.id}">
+                                    Delete
+                                </a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                </tbody>
+            </table>
+        </c:if>
+
+        <!-- Nếu không có variant -->
+        <c:if test="${empty responseDto.variantList}">
+            <p class="alert alert-warning">This product has no variants yet.</p>
+        </c:if>
+
         <div class="d-flex gap-3 mb-3">
             <a class="btn btn-success" href="/admin/product">Back</a>
             <a class="btn btn-warning" href="/admin/product/update/${id}">Update</a>
             <a class="btn btn-danger" href="/admin/product/delete/${id}">Delete</a>
+            <a class="btn btn-primary" href="/admin/product-variant/create?productId=${id}">Add Variant</a>
         </div>
     </c:if>
 

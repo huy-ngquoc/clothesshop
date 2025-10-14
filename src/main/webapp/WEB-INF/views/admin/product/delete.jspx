@@ -38,7 +38,7 @@
                         <div class="mt-sm-5 mt-1">
                             <div class="row">
                                 <div class="col-xl-8 col-sm-10 col-12 mx-auto">
-                                    <h2>Delete user</h2>
+                                    <h2>Delete product</h2>
                                     <hr />
                                     <jsp:directive.include file="layout/deleteForm.jspxf" />
                                 </div>

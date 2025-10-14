@@ -11,4 +11,9 @@ import vn.uit.clothesshop.domain.ProductVariant;
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
     @NotNull
     List<@NotNull ProductVariant> findAllByProduct(final Product product);
+
+    @NotNull
+    public List<ProductVariant> findByProduct_Id(long productId);
+
+    public void deleteByProduct_Id(long productId);
 }

@@ -1,7 +1,7 @@
 package vn.uit.clothesshop.dto.response;
 
-public final class ProductVariantBasicInfoResponseDto {
-    private final long id;
+public class ProductVariantDetailInfoResponseDto {
+    private final long productId;
     private final String color;
     private final String size;
     private final int stockQuantity;
@@ -9,15 +9,15 @@ public final class ProductVariantBasicInfoResponseDto {
     private final int weightGrams;
     private final String imageFilePath;
 
-    public ProductVariantBasicInfoResponseDto(
-            final long id,
+    public ProductVariantDetailInfoResponseDto(
+            final long productId,
             final String color,
             final String size,
             final int stockQuantity,
             final int priceCents,
             final int weightGrams,
             final String imageFilePath) {
-        this.id = id;
+        this.productId = productId;
         this.color = color;
         this.size = size;
         this.stockQuantity = stockQuantity;
@@ -26,8 +26,8 @@ public final class ProductVariantBasicInfoResponseDto {
         this.imageFilePath = imageFilePath;
     }
 
-    public long getId() {
-        return this.id;
+    public long getProductId() {
+        return productId;
     }
 
     public String getColor() {

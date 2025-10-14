@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.service;
+﻿package vn.uit.clothesshop.service;
 
 import java.util.List;
 
@@ -114,6 +114,7 @@ public class ProductService {
     }
 
     public void deleteProductById(final long id) {
+        // TODO: cascade to delete variant as well with using varian repo.
         this.productRepository.deleteById(id);
     }
 
