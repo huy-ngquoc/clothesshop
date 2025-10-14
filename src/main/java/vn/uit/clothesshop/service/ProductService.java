@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.service;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.Product;
+import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.FullProductDataDto;
@@ -75,7 +77,7 @@ public class ProductService {
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc());
+                requestDto.getDetailDesc(),0,0,null,null);
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {
@@ -83,6 +85,19 @@ public class ProductService {
         }
 
         return savedProduct.getId();
+    }
+
+    public void updateMinPriceAndMaxPrice(Product p) {
+        if(p==null) {
+            return;
+        }
+        List<ProductVariant> listVariants = productVariantRepository.findAllByProduct(p);
+        ProductVariant mostExpensiveVariant= Collections.max(listVariants);
+        p.setMaxPrice(mostExpensiveVariant.getPriceCents());
+        ProductVariant cheapestVariant = Collections.min(listVariants);
+        p.setMinPrice(cheapestVariant.getPriceCents());
+        productRepository.save(p);
+
     }
 
     @Nullable

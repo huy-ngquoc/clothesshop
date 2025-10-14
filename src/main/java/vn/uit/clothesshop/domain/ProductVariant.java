@@ -14,7 +14,7 @@ import lombok.experimental.FieldNameConstants;
 
 @Entity
 @FieldNameConstants
-public class ProductVariant {
+public class ProductVariant implements Comparable<ProductVariant> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
@@ -127,5 +127,10 @@ public class ProductVariant {
 
     public void setWeightGrams(final int weightGrams) {
         this.weightGrams = weightGrams;
+    }
+
+    @Override
+    public int compareTo(ProductVariant o) {
+        return Integer.compare(this.priceCents, o.priceCents);
     }
 }

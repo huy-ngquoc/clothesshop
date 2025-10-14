@@ -74,6 +74,7 @@ public class ProductVariantService {
         }
         ProductVariant newVariant = new ProductVariant(product, request.getColor(), request.getSize(), request.getStockQuantity(), request.getPriceCents(), request.getWeightGrams(),"");
         newVariant=productVariantRepository.save(newVariant);
+        productService.updateMinPriceAndMaxPrice(product);
         return newVariant;
     }
     public ProductVariant updateInfo(ProductVariantUpdateRequest request) {
@@ -87,6 +88,7 @@ public class ProductVariantService {
         pv.setStockQuantity(request.getStockQuantity());
         pv.setWeightGrams(request.getWeightGrams());
         pv=productVariantRepository.save(pv);
+        productService.updateMinPriceAndMaxPrice(pv.getProduct());
         return pv;
     }
 
@@ -114,6 +116,7 @@ public class ProductVariantService {
         } 
         
         productVariantRepository.delete(pv);
+        productService.updateMinPriceAndMaxPrice(pv.getProduct());
         return pv.getProduct().getId();
     }
 

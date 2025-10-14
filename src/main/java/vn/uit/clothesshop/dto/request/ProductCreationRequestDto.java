@@ -1,6 +1,7 @@
 package vn.uit.clothesshop.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.domain.Product;
 
@@ -16,6 +17,16 @@ public final class ProductCreationRequestDto {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
+
+    @Positive
+    private int categoryId;
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
 
     public String getName() {
         return name;
