@@ -13,7 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
 
@@ -43,10 +43,10 @@ public class Product {
     @Size(min = MIN_LENGTH_DETAIL_DESC, max = MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    @Positive
+    @PositiveOrZero
     @ColumnDefault("0")
     private int minPrice;
-    @Positive
+    @PositiveOrZero
     @ColumnDefault("0")
     private int maxPrice;
 

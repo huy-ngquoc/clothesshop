@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import vn.uit.clothesshop.domain.Category;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
@@ -26,11 +27,14 @@ public class ProductService {
     private final ProductRepository productRepository;
     @NotNull
     private final ProductVariantRepository productVariantRepository;
+    @NotNull
+    private final CategoryService categoryService;
 
     public ProductService(
-            @NotNull final ProductRepository productRepository, ProductVariantRepository productVariantRepository) {
+            @NotNull final ProductRepository productRepository, ProductVariantRepository productVariantRepository, final CategoryService categoryService) {
         this.productRepository = productRepository;
         this.productVariantRepository= productVariantRepository;
+        this.categoryService= categoryService;
     }
 
     @NotNull
@@ -74,10 +78,12 @@ public class ProductService {
     @Nullable
     public Long handleCreateProduct(
             @NotNull final ProductCreationRequestDto requestDto) {
+        Category category = categoryService.findById(requestDto.getCategoryId());
+        category.setAmountOfProduct(category.getAmountOfProduct()+1);
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc(),0,0,null,null);
+                requestDto.getDetailDesc(),0,0,category,requestDto.getTargets());
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {

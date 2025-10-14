@@ -14,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.FullProductDataDto;
+import vn.uit.clothesshop.service.CategoryService;
 import vn.uit.clothesshop.service.ProductService;
 
 @Controller
@@ -21,10 +22,11 @@ import vn.uit.clothesshop.service.ProductService;
 public class ProductController {
     @NotNull
     private final ProductService productService;
-
+    private final CategoryService categoryService;
     public ProductController(
-            @NotNull final ProductService productService) {
+            @NotNull final ProductService productService, CategoryService categoryService) {
         this.productService = productService;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -42,7 +44,6 @@ public class ProductController {
 
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
-
         return "admin/product/detail";
     }
 
@@ -51,6 +52,7 @@ public class ProductController {
             final Model model) {
         final var requestDto = new ProductCreationRequestDto();
         model.addAttribute("requestDto", requestDto);
+        model.addAttribute("categories",categoryService.findAll());
         return "admin/product/create";
     }
 
