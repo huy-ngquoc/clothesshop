@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import vn.uit.clothesshop.customexception.NotFoundException;
+import vn.uit.clothesshop.customexception.UnexpectedException;
 import vn.uit.clothesshop.domain.Category;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
@@ -19,6 +21,7 @@ import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.dto.selectcolumninteface.ProductVariantInfo;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
+import vn.uit.clothesshop.utils.Message;
 
 @Service
 @Slf4j
@@ -72,7 +75,11 @@ public class ProductService {
 
     @Nullable
     public Product findProductById(final long id) {
-        return this.productRepository.findById(id).orElse(null);
+        Product p=this.productRepository.findById(id).orElse(null);
+        if(p==null) {
+            throw new NotFoundException(Message.productNotFound);
+        }
+        return p;
     }
 
     @Nullable
@@ -143,6 +150,12 @@ public class ProductService {
     }
 
     public void deleteProductById(final long id) {
+        Product p = findProductById(id);
+        Category cat = p.getCategory();
+        if(cat==null) {
+            throw new UnexpectedException(Message.unexpectedError);
+        }
+        cat.setAmountOfProduct(cat.getAmountOfProduct()-1);
         this.productVariantRepository.deleteByProduct_Id(id);
         this.productRepository.deleteById(id);
     }
