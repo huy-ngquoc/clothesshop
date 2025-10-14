@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<jsp:root version="2.0"
-          xmlns:jsp="http://java.sun.com/JSP/Page"
-          xmlns:c="http://java.sun.com/jsp/jstl/core"
-          xmlns:form="http://www.springframework.org/tags/form">
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/product_variant/update_variant" modelAttribute="requestDto">
+    <form:form method="post" action="/admin/product-variant/update/info/${id}" modelAttribute="requestDto">
 
         <!-- PRODUCT VARIANT ID -->
         <div class="row g-3 mb-3">
             <div class="col-md-3 col-12">
-                <form:label class="form-label" for="inputId" path="productVariantId">ID:</form:label>
-                <form:input id="inputId" class="form-control" type="text" path="productVariantId" readonly="true" />
+                <label class="form-label" for="inputId">ID:</label>
+                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
             </div>
         </div>
 
@@ -26,9 +24,8 @@
                 </c:set>
 
                 <form:label class="form-label" for="inputColor" path="color">Color:</form:label>
-                <form:input id="inputColor"
-                            cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
-                            type="text" path="color" />
+                <form:input id="inputColor" cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
+                    type="text" path="color" />
                 ${errorColor}
             </div>
 
@@ -39,9 +36,8 @@
                 </c:set>
 
                 <form:label class="form-label" for="inputSize" path="size">Size:</form:label>
-                <form:input id="inputSize"
-                            cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
-                            type="text" path="size" />
+                <form:input id="inputSize" cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
+                    type="text" path="size" />
                 ${errorSize}
             </div>
         </div>
@@ -55,8 +51,8 @@
 
                 <form:label class="form-label" for="inputPriceCents" path="priceCents">Price (cents):</form:label>
                 <form:input id="inputPriceCents"
-                            cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}"
-                            type="number" min="0" path="priceCents" />
+                    cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}" type="number" min="0"
+                    path="priceCents" />
                 ${errorPriceCents}
             </div>
 
@@ -65,10 +61,11 @@
                     <form:errors cssClass="invalid-feedback" path="stockQuantity" />
                 </c:set>
 
-                <form:label class="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:</form:label>
+                <form:label class="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:
+                </form:label>
                 <form:input id="inputStockQuantity"
-                            cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}"
-                            type="number" min="0" path="stockQuantity" />
+                    cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}" type="number" min="0"
+                    path="stockQuantity" />
                 ${errorStockQuantity}
             </div>
         </div>
@@ -82,15 +79,15 @@
 
                 <form:label class="form-label" for="inputWeightGrams" path="weightGrams">Weight (grams):</form:label>
                 <form:input id="inputWeightGrams"
-                            cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}"
-                            type="number" min="0" path="weightGrams" />
+                    cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}" type="number" min="0"
+                    path="weightGrams" />
                 ${errorWeightGrams}
             </div>
 
             <!-- IMAGE -->
             <div class="col-md-6 col-12">
                 <p class="form-label">Image:</p>
-                <a class="btn btn-primary w-100" href="/admin/product_variant/update_variant/image/${requestDto.productVariantId}">
+                <a class="btn btn-primary w-100" href="/admin/product-variant/update/image/${id}">
                     Change image
                 </a>
             </div>
@@ -101,7 +98,7 @@
             <div class="row g-3 mb-3">
                 <div class="col-12">
                     <img src="/img/${image}" alt="Product Variant Image"
-                         style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                        style="max-width:100%; max-height:300px; height:auto; width:auto;" />
                 </div>
             </div>
         </c:if>
@@ -109,7 +106,7 @@
         <!-- BUTTONS -->
         <div class="d-flex gap-3 mb-3">
             <button type="submit" class="btn btn-warning">Update</button>
-            <a class="btn btn-success" href="/admin/product_variant">Back</a>
+            <a class="btn btn-success" href="/admin/product/${productId}">Back</a>
         </div>
 
     </form:form>

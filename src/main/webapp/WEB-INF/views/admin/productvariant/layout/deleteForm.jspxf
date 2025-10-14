@@ -6,7 +6,7 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/product_variant/delete_variant/${id}">
+    <form:form method="post" action="/admin/product-variant/delete/${id}">
         <p class="alert alert-danger">Are you sure you want to delete this product variant?</p>
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
@@ -14,7 +14,7 @@
                 <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
             </div>
         </div>
-       
+
         <div class="d-flex gap-3 mb-3">
             <a class="btn btn-success" href="/admin/product/${productId}">Back</a>
             <button type="submit" class="btn btn-danger">Confirm</button>

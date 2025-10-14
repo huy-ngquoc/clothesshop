@@ -42,7 +42,7 @@
                                     <h2>Create a product variant</h2>
                                     <hr />
                                     <c:choose>
-                                        <c:when test="${not empty product}">
+                                        <c:when test="${not empty requestDto}">
                                             <jsp:directive.include file="layout/createForm.jspxf" />
                                         </c:when>
                                         <c:otherwise>
