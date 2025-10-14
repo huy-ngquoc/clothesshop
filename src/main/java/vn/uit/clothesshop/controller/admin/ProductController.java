@@ -77,6 +77,7 @@ public class ProductController {
 
         model.addAttribute("id", id);
         model.addAttribute("requestDto", requestDto);
+        model.addAttribute("categories",categoryService.findAll());
 
         return "admin/product/update";
     }
@@ -85,9 +86,14 @@ public class ProductController {
     public String updateProduct(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") @Valid final ProductUpdateRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid ProductUpdateRequestDto requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            requestDto = this.productService.handleCreateRequestDtoForUpdate(id);
+            model.addAttribute("id", id);
+            model.addAttribute("requestDto", requestDto);
+            model.addAttribute("categories",categoryService.findAll());
+            System.out.println(bindingResult.getFieldError().getObjectName());
             return "admin/product/update";
         }
 

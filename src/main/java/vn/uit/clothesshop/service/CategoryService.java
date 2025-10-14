@@ -25,4 +25,7 @@ public class CategoryService {
     public List<Category> findAll() {
         return categoryRepo.findAll();
     }
+    public void handleSaveCategory(Category category) {
+        categoryRepo.save(category);
+    }
 }

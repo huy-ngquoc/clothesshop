@@ -21,6 +21,47 @@
                 ${errorName}
             </div>
         </div>
+        <div class="mb-3">
+      <label for="categoryId" class="form-label">Category</label>
+      <form:select path="categoryId" cssClass="form-select" id="categoryId">
+       
+        <form:options items="${categories}" itemValue="id" itemLabel="name" />
+      </form:select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Targets</label>
+      <div class="d-flex flex-wrap gap-3">
+        <div class="form-check">
+          <form:checkbox path="targets" value="TALL" cssClass="form-check-input" id="targetTall" />
+          <label class="form-check-label" for="targetTall">TALL</label>
+        </div>
+
+        <div class="form-check">
+          <form:checkbox path="targets" value="SHORT" cssClass="form-check-input" id="targetShort" />
+          <label class="form-check-label" for="targetShort">SHORT</label>
+        </div>
+
+        <div class="form-check">
+          <form:checkbox path="targets" value="FAT" cssClass="form-check-input" id="targetFat" />
+          <label class="form-check-label" for="targetFat">FAT</label>
+        </div>
+
+        <div class="form-check">
+          <form:checkbox path="targets" value="THIN" cssClass="form-check-input" id="targetThin" />
+          <label class="form-check-label" for="targetThin">THIN</label>
+        </div>
+
+        <div class="form-check">
+          <form:checkbox path="targets" value="MALE" cssClass="form-check-input" id="targetMale" />
+          <label class="form-check-label" for="targetMale">MALE</label>
+        </div>
+
+        <div class="form-check">
+          <form:checkbox path="targets" value="FEMALE" cssClass="form-check-input" id="targetFemale" />
+          <label class="form-check-label" for="targetFemale">FEMALE</label>
+        </div>
+      </div>
+    </div>
 
         <div class="row g-3 mb-3">
             <div class="col-12">

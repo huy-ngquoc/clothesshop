@@ -116,7 +116,7 @@ public class ProductService {
         return new ProductUpdateRequestDto(
                 product.getName(),
                 product.getShortDesc(),
-                product.getDetailDesc());
+                product.getDetailDesc(), product.getCategory().getId(),product.getTarget());
     }
 
     public boolean handleUpdateProduct(
@@ -130,7 +130,15 @@ public class ProductService {
         product.setName(requestDto.getName());
         product.setShortDesc(requestDto.getShortDesc());
         product.setDetailDesc(requestDto.getDetailDesc());
-
+        Category oldCat = product.getCategory();
+        Category newCat = categoryService.findById(requestDto.getCategoryId());
+        if(oldCat.getId()!=newCat.getId()) {
+            oldCat.setAmountOfProduct(oldCat.getAmountOfProduct()-1);
+            newCat.setAmountOfProduct(newCat.getAmountOfProduct()+1);
+            categoryService.handleSaveCategory(oldCat);
+            product.setCategory(newCat);
+        }
+        product.setTarget(requestDto.getTargets());
         return this.handleSaveProduct(product) != null;
     }
 
