@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.domain;
 
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
@@ -55,6 +56,8 @@ public class Product {
     @ElementCollection(targetClass=ETarget.class)
     @Enumerated(EnumType.STRING)
     private List<ETarget> target;
+    private Date createAt;
+    private Date updateAt;
     
     Product() {
     }
@@ -62,7 +65,7 @@ public class Product {
     public Product(
             final String name,
             final String shortDesc,
-            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target) {
+            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target, Date createAt, Date updateAt) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
@@ -70,6 +73,20 @@ public class Product {
         this.maxPrice= maxPrice;
         this.category = category;
         this.target = target;
+        this.createAt=createAt;
+        this.updateAt=updateAt;
+    }
+    public Date getCreateAt(){
+        return this.createAt;
+    } 
+    public Date getUpdateAt() {
+        return this.updateAt;
+    } 
+    public void setCreateAt(Date createAt) {
+        this.createAt=createAt;
+    } 
+    public void setUpdateAt(Date updateAt){
+        this.updateAt=updateAt;
     }
 
     public Category getCategory() {

@@ -182,6 +182,7 @@
                     <nodeVersion>v24.9.0</nodeVersion>
                     <npmVersion>11.6.1</npmVersion>
                     <installDirectory>${project.build.directory}</installDirectory>
+                     
                 </configuration>
                 <executions>
                     <execution>
@@ -193,15 +194,14 @@
                     </execution>
 
                     <execution>
-                        <id>npm-ci</id>
-                        <goals>
-                            <goal>npm</goal>
-                        </goals>
-                        <phase>generate-resources</phase>
-                        <configuration>
-                            <arguments>ci</arguments>
-                        </configuration>
-                    </execution>
+  <id>npm-ci</id>
+  <goals>
+    <goal>npm</goal>
+  </goals>
+  <configuration>
+    <arguments>install</arguments>
+  </configuration>
+</execution>
 
                     <execution>
                         <id>npm-build</id>
