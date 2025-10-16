@@ -15,7 +15,6 @@ import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.service.CategoryService;
 import vn.uit.clothesshop.service.ProductService;
-
 @Controller
 @RequestMapping("/admin/product")
 public class ProductController {
@@ -41,7 +40,6 @@ public class ProductController {
             final Model model,
             @PathVariable final long id) {
         final var responseDto = this.productService.handleFindProductById(id);
-
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
         return "admin/product/detail";
