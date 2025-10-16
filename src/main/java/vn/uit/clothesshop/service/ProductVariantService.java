@@ -1,6 +1,7 @@
 package vn.uit.clothesshop.service;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,6 +20,7 @@ import vn.uit.clothesshop.dto.response.ProductVariantBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductVariantDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
+import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
@@ -241,5 +243,6 @@ public class ProductVariantService {
     public void deleteProductVariant(@NotNull final ProductVariant productVariant) {
         productVariantRepository.delete(productVariant);
     }
+    
 
 }

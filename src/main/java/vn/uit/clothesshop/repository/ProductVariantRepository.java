@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.domain.Product;
 import vn.uit.clothesshop.domain.ProductVariant;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
+import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
@@ -25,4 +26,7 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 
     @Query("SELECT pv.size AS size, COUNT(pv) as count from ProductVariant pv GROUP BY pv.size")
     public List<SizeCount> countBySize();
+
+    @Query("SELECT pv.image as image, pv.product.name as productName, pv.product.shortDesc as productDescription from ProductVariant pv")
+    public List<ProductInfoHomePage> getProductInfoForHomePage();
 }
