@@ -1,24 +1,33 @@
 package vn.uit.clothesshop.domain;
 
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
+import java.util.EnumSet;
+import java.util.Set;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
+import vn.uit.clothesshop.utils.EnumSetHelper;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @FieldNameConstants
 public class Product {
     public static final int MIN_LENGTH_NAME = 3;
@@ -45,64 +54,67 @@ public class Product {
     private String detailDesc = "";
 
     @PositiveOrZero
-    @ColumnDefault("0")
-    private int minPrice;
-    @PositiveOrZero
-    @ColumnDefault("0")
-    private int maxPrice;
+    private int minPrice = 0;
 
-    @ManyToOne
-    private Category category;
-    @ElementCollection(targetClass=ETarget.class)
+    @PositiveOrZero
+    private int maxPrice = 0;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Category category = new Category();
+
+    @ElementCollection(targetClass = ETarget.class)
     @Enumerated(EnumType.STRING)
-    private List<ETarget> target;
-    private Date createAt;
-    private Date updateAt;
-    
-    Product() {
-    }
+    private Set<ETarget> target = EnumSet.noneOf(ETarget.class);
+
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private final Instant createdAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private final Instant updatedAt = Instant.now();
 
     public Product(
             final String name,
             final String shortDesc,
-            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target, Date createAt, Date updateAt) {
+            final String detailDesc,
+            final Category category,
+            final Set<ETarget> target) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
-        this.minPrice= minPrice;
-        this.maxPrice= maxPrice;
         this.category = category;
-        this.target = target;
-        this.createAt=createAt;
-        this.updateAt=updateAt;
+        this.target = EnumSetHelper.copyOf(target, ETarget.class);
     }
-    public Date getCreateAt(){
-        return this.createAt;
-    } 
-    public Date getUpdateAt() {
-        return this.updateAt;
-    } 
-    public void setCreateAt(Date createAt) {
-        this.createAt=createAt;
-    } 
-    public void setUpdateAt(Date updateAt){
-        this.updateAt=updateAt;
+
+    Product() {
+    }
+
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(final Category category) {
         this.category = category;
     }
 
-    public List<ETarget> getTarget() {
-        return target;
+    public Set<ETarget> getTarget() {
+        return EnumSetHelper.copyOf(this.target, ETarget.class);
     }
 
-    public void setTarget(List<ETarget> target) {
-        this.target = target;
+    public void setTarget(final Set<ETarget> target) {
+        this.target = EnumSetHelper.copyOf(target, ETarget.class);
     }
 
     public long getId() {
@@ -113,7 +125,7 @@ public class Product {
         return minPrice;
     }
 
-    public void setMinPrice(int minPrice) {
+    public void setMinPrice(final int minPrice) {
         this.minPrice = minPrice;
     }
 
@@ -121,7 +133,7 @@ public class Product {
         return maxPrice;
     }
 
-    public void setMaxPrice(int maxPrice) {
+    public void setMaxPrice(final int maxPrice) {
         this.maxPrice = maxPrice;
     }
 

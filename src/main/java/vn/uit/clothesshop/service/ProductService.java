@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import jakarta.annotation.Nullable;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.customexception.NotFoundException;
@@ -19,10 +20,6 @@ import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.utils.Message;
-
-import java.util.Date;
-
-
 
 @Service
 @Slf4j
@@ -95,7 +92,9 @@ public class ProductService {
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc(), 0, 0, category, requestDto.getTargets(), new Date(),null);
+                requestDto.getDetailDesc(),
+                category,
+                requestDto.getTargets());
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {
@@ -128,9 +127,12 @@ public class ProductService {
         return new ProductUpdateRequestDto(
                 product.getName(),
                 product.getShortDesc(),
-                product.getDetailDesc(), product.getCategory().getId(), product.getTarget());
+                product.getDetailDesc(),
+                product.getCategory().getId(),
+                product.getTarget());
     }
 
+    @Transactional
     public boolean handleUpdateProduct(
             final long id,
             @NotNull final ProductUpdateRequestDto requestDto) {
@@ -142,8 +144,8 @@ public class ProductService {
         product.setName(requestDto.getName());
         product.setShortDesc(requestDto.getShortDesc());
         product.setDetailDesc(requestDto.getDetailDesc());
-        Category oldCat = product.getCategory();
-        Category newCat = categoryService.findById(requestDto.getCategoryId());
+        final var oldCat = product.getCategory();
+        final var newCat = categoryService.findById(requestDto.getCategoryId());
         if (oldCat.getId() != newCat.getId()) {
             oldCat.setAmountOfProduct(oldCat.getAmountOfProduct() - 1);
             newCat.setAmountOfProduct(newCat.getAmountOfProduct() + 1);
