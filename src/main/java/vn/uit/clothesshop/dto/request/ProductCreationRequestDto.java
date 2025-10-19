@@ -1,18 +1,16 @@
 package vn.uit.clothesshop.dto.request;
 
-import java.util.List;
+import java.util.EnumSet;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.domain.ETarget;
 import vn.uit.clothesshop.domain.Product;
+import vn.uit.clothesshop.utils.EnumSetHelper;
 
 public final class ProductCreationRequestDto {
-    public ProductCreationRequestDto() {
-        this.categoryId=1;
-    }
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
     private String name = "";
@@ -25,24 +23,10 @@ public final class ProductCreationRequestDto {
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    @Positive
-    private int categoryId;
+    private int categoryId = 0;
 
     @NotNull
-    private List<ETarget> targets;
-    public List<ETarget> getTargets() {
-        return this.targets;
-    } 
-    public void setTargets(List<ETarget> targets) {
-        this.targets= targets;
-    }
-    public int getCategoryId() {
-        return categoryId;
-    }
-
-    public void setCategoryId(int categoryId) {
-        this.categoryId = categoryId;
-    }
+    private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
 
     public String getName() {
         return name;
@@ -66,6 +50,22 @@ public final class ProductCreationRequestDto {
 
     public void setDetailDesc(final String detailDesc) {
         this.detailDesc = detailDesc;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(final int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Set<ETarget> getTargets() {
+        return EnumSet.copyOf(this.targets);
+    }
+
+    public void setTargets(final Set<ETarget> targets) {
+        this.targets = EnumSetHelper.copyOf(targets, ETarget.class);
     }
 
 }
