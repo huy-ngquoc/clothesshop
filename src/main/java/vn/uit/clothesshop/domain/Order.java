@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -29,10 +30,12 @@ public class Order {
     @ManyToOne
     @JoinColumn(name="UserId")
     private User user;
+    @OneToOne(mappedBy="order")
+    private Payment payment;
     public Order() {
 
     } 
-    public Order(long id, EOrderStatus status, Instant createAt, Instant updateAt, long productPrice, long shippingFee, long total, User user) {
+    public Order(long id, EOrderStatus status, Instant createAt, Instant updateAt, long productPrice, long shippingFee, long total, User user, Payment payment) {
         this.id = id;
         this.status = status;
         this.createAt = createAt;
@@ -41,10 +44,17 @@ public class Order {
         this.shippingFee = shippingFee;
         this.total = total;
         this.user = user;
+        this.payment = payment;
     }
     public long getId() {
         return this.id;
     } 
+    public Payment getPayment() {
+        return this.payment;
+    } 
+    public void setPayment(Payment payment) {
+        this.payment = payment;
+    }
     public EOrderStatus getStatus() {
         return this.status;
     } 
