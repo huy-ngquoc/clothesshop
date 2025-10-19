@@ -7,6 +7,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -71,6 +72,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
+    @OneToOne(mappedBy="user")
+    private Cart cart;
     User() {
     }
 
@@ -90,7 +93,12 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
-
+    public Cart getCart() {
+        return this.cart;
+    } 
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
     public long getId() {
         return this.id;
     }
