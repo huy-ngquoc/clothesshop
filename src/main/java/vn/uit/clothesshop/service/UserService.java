@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.domain.User;
+import vn.uit.clothesshop.domain.entity.User;
 import vn.uit.clothesshop.dto.middle.UserUpdateInfoMiddleDto;
 import vn.uit.clothesshop.dto.request.UserCreationRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdateInfoRequestDto;

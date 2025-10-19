@@ -19,4 +19,9 @@ public class HomepageController {
         model.addAttribute("colorCounts", homePageService.getColorCounts());
         return "client/homepage/show";
     }
+
+    @GetMapping("/shop")
+    public String getShopPage(final Model model) {
+        return "client/homepage/shop";
+    }
 }

@@ -9,8 +9,8 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.domain.Product;
-import vn.uit.clothesshop.domain.ProductVariant;
+import vn.uit.clothesshop.domain.entity.Product;
+import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.dto.middle.ProductVariantUpdateImageMiddleDto;
 import vn.uit.clothesshop.dto.middle.ProductVariantUpdateInfoMiddleDto;
 import vn.uit.clothesshop.dto.request.ProductVariantCreateRequestDto;
@@ -136,7 +136,7 @@ public class ProductVariantService {
                 requestDto.getSize(),
                 requestDto.getStockQuantity(),
                 requestDto.getPriceCents(),
-                requestDto.getWeightGrams());
+                requestDto.getWeightGrams(),0);
 
         final var savedProductVariant = productVariantRepository.save(productVariant);
         return savedProductVariant.getId();

@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import vn.uit.clothesshop.customexception.NotFoundException;
-import vn.uit.clothesshop.domain.Category;
+import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.repository.CategoryRepository;
 import vn.uit.clothesshop.utils.Message;
 
