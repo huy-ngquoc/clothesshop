@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.service;
 
+
 import java.util.Collections;
 import java.util.List;
 
@@ -21,6 +22,9 @@ import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.utils.Message;
 
 import java.util.Date;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 
 
 
@@ -173,5 +177,10 @@ public class ProductService {
             log.error("Error saving product", exception);
             return null;
         }
+    }
+
+    public Page<Product> getProductByPage(int page, int number) {
+        PageRequest pageable = PageRequest.of(number, page);
+        return this.productRepository.findAll(pageable);
     }
 }

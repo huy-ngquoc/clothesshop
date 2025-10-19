@@ -20,7 +20,7 @@ public class ProductDataRefactor {
 
         List<Product> listProduct = this.productRepo.findAll();
         List<Long> listProductId = listProduct.stream().map(Product::getId).toList();
-        listProduct = new ArrayList<>();
+        List<Product> listProductToSave = new ArrayList<>();
         for(int i=0;i<listProductId.size();i++) {
             
             List<ProductVariant> listVariants = this.productVariantRepo.findByProduct_Id(listProductId.get(i));
@@ -42,10 +42,10 @@ public class ProductDataRefactor {
                 p.setQuantity(quantity);
                 p.setMaxPrice(maxPrice);
                 p.setMinPrice(minPrice);
-                listProduct.add(p);
+                listProductToSave.add(p);
             }
 
         }
-        productRepo.saveAll(listProduct);
+        productRepo.saveAll(listProductToSave);
     }
 }

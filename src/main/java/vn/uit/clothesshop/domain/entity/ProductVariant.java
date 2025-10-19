@@ -26,7 +26,7 @@ public class ProductVariant implements Comparable<ProductVariant>  {
     private long id = 0;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private Product product = new Product();
 
     @NotBlank
