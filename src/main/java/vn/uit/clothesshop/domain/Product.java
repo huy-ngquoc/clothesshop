@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,7 +51,9 @@ public class Product {
     @PositiveOrZero
     @ColumnDefault("0")
     private int maxPrice;
-
+    @PositiveOrZero
+    @ColumnDefault("0")
+    private int sold;
     @ManyToOne
     private Category category;
     @ElementCollection(targetClass=ETarget.class)
@@ -58,6 +61,9 @@ public class Product {
     private List<ETarget> target;
     private Date createAt;
     private Date updateAt;
+    private String image;
+    @ColumnDefault("0")
+    private int quantity;
     
     Product() {
     }
@@ -65,7 +71,7 @@ public class Product {
     public Product(
             final String name,
             final String shortDesc,
-            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target, Date createAt, Date updateAt) {
+            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target, Date createAt, Date updateAt, int sold, String image, int quantity) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
@@ -75,6 +81,25 @@ public class Product {
         this.target = target;
         this.createAt=createAt;
         this.updateAt=updateAt;
+        this.sold= sold;
+    } 
+    public String getImage() {
+        return this.image;
+    } 
+    public int getQuantity() {
+        return this.quantity;
+    } 
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+    public void setImage(String image) {
+        this.image=image;
+    }
+    public int getSold() {
+        return this.sold;
+    } 
+    public void setSold(int sold) {
+        this.sold= sold;
     }
     public Date getCreateAt(){
         return this.createAt;

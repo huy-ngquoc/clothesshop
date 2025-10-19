@@ -1,0 +1,55 @@
+.card-img-top {
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .filter-card {
+            position: sticky;
+            top: 80px;
+        }
+
+        .color-dot {
+            display: inline-block;
+            width: 0.9rem;
+            height: 0.9rem;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, .15);
+            margin-right: .5rem;
+            vertical-align: middle;
+        }
+
+        .color-Black {
+            background: #000000;
+        }
+
+        .color-White {
+            background: #ffffff;
+        }
+
+        .color-Red {
+            background: #e03131;
+        }
+
+        .color-Blue {
+            background: #1971c2;
+        }
+
+        .color-Navy {
+            background: #0b2b50;
+        }
+
+        .color-Green {
+            background: #2f9e44;
+        }
+
+        .color-Beige {
+            background: #e7d3b4;
+        }
+
+        .color-Grey {
+            background: #adb5bd;
+        }
+
+        .color-Brown {
+            background: #8d6e63;
+        }

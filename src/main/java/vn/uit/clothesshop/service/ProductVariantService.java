@@ -136,7 +136,7 @@ public class ProductVariantService {
                 requestDto.getSize(),
                 requestDto.getStockQuantity(),
                 requestDto.getPriceCents(),
-                requestDto.getWeightGrams());
+                requestDto.getWeightGrams(),0);
 
         final var savedProductVariant = productVariantRepository.save(productVariant);
         return savedProductVariant.getId();

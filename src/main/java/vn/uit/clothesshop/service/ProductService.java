@@ -95,7 +95,7 @@ public class ProductService {
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc(), 0, 0, category, requestDto.getTargets(), new Date(),null);
+                requestDto.getDetailDesc(), 0, 0, category, requestDto.getTargets(), new Date(),null,0,"",0);
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {

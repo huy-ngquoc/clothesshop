@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.domain;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -47,6 +49,10 @@ public class ProductVariant implements Comparable<ProductVariant>  {
     @Nullable
     private String image = "";
 
+    @PositiveOrZero
+    @ColumnDefault("0")
+    private int sold;
+
     ProductVariant() {
     }
 
@@ -56,15 +62,21 @@ public class ProductVariant implements Comparable<ProductVariant>  {
             final String size,
             final int stockQuantity,
             final int priceCents,
-            final int weightGrams) {
+            final int weightGrams, final int sold) {
         this.product = product;
         this.color = color;
         this.size = size;
         this.stockQuantity = stockQuantity;
         this.priceCents = priceCents;
         this.weightGrams = weightGrams;
+        this.sold= sold;
     }
-
+    public int getSold() {
+        return this.sold;
+    } 
+    public void setSold(int sold) {
+        this.sold = sold;
+    }
     public void setId(long id) {
         this.id = id;
     }

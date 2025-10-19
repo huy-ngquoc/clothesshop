@@ -29,4 +29,6 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 
     @Query("SELECT pv.image as image, pv.product.name as productName, pv.product.shortDesc as productDescription from ProductVariant pv")
     public List<ProductInfoHomePage> getProductInfoForHomePage();
+
+    public List<ProductVariant> findByProduct_IdIn(List<Long> listProductId);
 }
