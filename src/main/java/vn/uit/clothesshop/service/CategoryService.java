@@ -12,19 +12,23 @@ import vn.uit.clothesshop.utils.Message;
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepo;
+
     public CategoryService(CategoryRepository categoryRepo) {
         this.categoryRepo = categoryRepo;
-    } 
+    }
+
     public Category findById(int categoryId) {
         Category category = categoryRepo.findById(categoryId).orElse(null);
-        if(category==null) {
+        if (category == null) {
             throw new NotFoundException(Message.categoryNotFound);
         }
         return category;
     }
+
     public List<Category> findAll() {
         return categoryRepo.findAll();
     }
+
     public void handleSaveCategory(Category category) {
         categoryRepo.save(category);
     }
