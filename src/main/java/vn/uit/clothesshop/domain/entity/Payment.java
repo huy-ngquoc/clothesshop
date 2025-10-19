@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.domain;
+package vn.uit.clothesshop.domain.entity;
 
 import java.time.Instant;
 
@@ -14,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import vn.uit.clothesshop.domain.enums.EPaymentStatus;
+import vn.uit.clothesshop.domain.enums.EPaymentType;
 
 @Entity
 @Table(name="Payment")

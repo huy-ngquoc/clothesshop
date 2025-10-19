@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.domain;
+package vn.uit.clothesshop.domain.entity;
 
 import org.hibernate.annotations.ColumnDefault;
 

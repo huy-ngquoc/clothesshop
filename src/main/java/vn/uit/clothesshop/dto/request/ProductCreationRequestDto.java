@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import vn.uit.clothesshop.domain.ETarget;
-import vn.uit.clothesshop.domain.Product;
+import vn.uit.clothesshop.domain.entity.Product;
+import vn.uit.clothesshop.domain.enums.ETarget;
 
 public final class ProductCreationRequestDto {
     public ProductCreationRequestDto() {

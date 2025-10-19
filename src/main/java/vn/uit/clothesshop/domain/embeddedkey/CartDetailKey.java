@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.embeddedkey;
+package vn.uit.clothesshop.domain.embeddedkey;
 
 import java.io.Serializable;
 import java.util.Objects;

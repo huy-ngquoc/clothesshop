@@ -3,7 +3,7 @@ package vn.uit.clothesshop.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
-import vn.uit.clothesshop.domain.ProductVariant;
+import vn.uit.clothesshop.domain.entity.ProductVariant;
 
 public class ProductVariantUpdateRequestDto {
     @NotBlank

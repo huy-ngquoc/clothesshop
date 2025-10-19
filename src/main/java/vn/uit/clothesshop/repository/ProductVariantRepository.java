@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import jakarta.validation.constraints.NotNull;
-import vn.uit.clothesshop.domain.Product;
-import vn.uit.clothesshop.domain.ProductVariant;
+import vn.uit.clothesshop.domain.entity.Product;
+import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
 import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;

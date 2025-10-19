@@ -1,11 +1,11 @@
-package vn.uit.clothesshop.domain;
+package vn.uit.clothesshop.domain.entity;
 
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
-import vn.uit.clothesshop.embeddedkey.OrderDetailKey;
+import vn.uit.clothesshop.domain.embeddedkey.OrderDetailKey;
 
 @Entity
 @Table(name="OrderDetail")

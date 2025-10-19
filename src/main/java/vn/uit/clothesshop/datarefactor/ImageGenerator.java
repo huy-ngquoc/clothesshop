@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import vn.uit.clothesshop.domain.ProductVariant;
+import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
 //@Component

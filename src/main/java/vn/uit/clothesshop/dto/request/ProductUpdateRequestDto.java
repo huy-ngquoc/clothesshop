@@ -7,8 +7,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import vn.uit.clothesshop.domain.ETarget;
-import vn.uit.clothesshop.domain.Product;
+import vn.uit.clothesshop.domain.entity.Product;
+import vn.uit.clothesshop.domain.enums.ETarget;
 
 @NoArgsConstructor
 @AllArgsConstructor

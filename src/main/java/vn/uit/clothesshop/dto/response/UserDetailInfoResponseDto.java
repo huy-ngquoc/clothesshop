@@ -1,6 +1,6 @@
 package vn.uit.clothesshop.dto.response;
 
-import vn.uit.clothesshop.domain.User.Role;
+import vn.uit.clothesshop.domain.entity.User.Role;
 
 public final class UserDetailInfoResponseDto {
     private final String username;

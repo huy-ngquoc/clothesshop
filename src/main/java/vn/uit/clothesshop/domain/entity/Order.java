@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.domain;
+package vn.uit.clothesshop.domain.entity;
 
 import java.time.Instant;
 
@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import vn.uit.clothesshop.domain.enums.EOrderStatus;
 
 @Entity
 @Table(name="Orders")
