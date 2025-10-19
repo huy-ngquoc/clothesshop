@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aurora Apparel — Order Detail</title>
+    <meta name="description"
+        content="Order detail page with items, totals, addresses, payment and shipment timeline." />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: .375rem;
+        }
+
+        .badge-pill {
+            border-radius: 999px;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: .5rem;
+            top: .5rem;
+            bottom: .5rem;
+            width: 2px;
+            background: rgba(0, 0, 0, .1);
+        }
+
+        .t-item {
+            position: relative;
+            margin-bottom: .75rem;
+        }
+
+        .t-item .dot {
+            position: absolute;
+            left: -.05rem;
+            top: .2rem;
+            width: .75rem;
+            height: .75rem;
+            border-radius: 50%;
+            background: #6c757d;
+        }
+
+        .t-item.active .dot {
+            background: #0d6efd;
+        }
+
+        .t-item .content {
+            margin-left: 1rem;
+        }
+
+        .order-meta small {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+
+        .minh-240 {
+            min-height: 240px;
+        }
+
+        .table td,
+        .table th {
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html" title="Aurora Apparel">Aurora Apparel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navMain" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+                    <li class="nav-item"><a class="nav-link" href="checkout.html">Checkout</a></li>
+                    <li class="nav-item"><a class="nav-link" href="orders.html">Orders</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="py-3 border-bottom bg-light">
+        <div class="container d-flex flex-wrap gap-2 justify-content-between align-items-center">
+            <div>
+                <h1 class="h4 mb-1">Order Detail</h1>
+                <div class="order-meta text-secondary">
+                    <small>Order <span id="orderNo">—</span></small>
+                    <small>Date <span id="orderDate">—</span></small>
+                    <small>Status <span id="orderStatus" class="badge text-bg-secondary align-middle">—</span></small>
+                </div>
+            </div>
+            <div class="d-flex gap-2">
+                <a id="btnInvoice" class="btn btn-outline-secondary" href="#invoice" role="button">Invoice</a>
+                <button id="btnReorder" class="btn btn-dark" type="button">Reorder Items</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="py-4">
+        <div class="container">
+            <div id="notFound" class="d-none">
+                <div class="border rounded p-5 text-center">
+                    <p class="lead mb-3">We couldn’t find that order.</p>
+                    <a class="btn btn-dark" href="orders.html" role="button">Back to Orders</a>
+                </div>
+            </div>
+
+            <div id="orderWrap" class="row g-4">
+                <!-- Left: items -->
+                <section class="col-12 col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-body">
+                            <h2 class="h5 mb-3">Items</h2>
+                            <div class="table-responsive">
+                                <table class="table align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">SKU</th>
+                                            <th scope="col" style="width: 100px;">Qty</th>
+                                            <th scope="col" style="width: 120px;">Price</th>
+                                            <th scope="col" style="width: 120px;">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemBody">
+                                        <!-- rows injected -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h2 class="h6 mb-3">Shipment &amp; Tracking</h2>
+                            <div id="shipments">
+                                <!-- shipments injected -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Right: summary & addresses -->
+                <aside class="col-12 col-lg-4">
+                    <div class="card shadow-sm minh-240">
+                        <div class="card-body">
+                            <h2 class="h5">Summary</h2>
+                            <div class="d-flex justify-content-between"><span>Subtotal</span><span
+                                    id="sumSubtotal">$0.00</span></div>
+                            <div class="d-flex justify-content-between"><span>Discount</span><span id="sumDiscount"
+                                    class="text-success">−$0.00</span></div>
+                            <div class="d-flex justify-content-between"><span>Shipping</span><span
+                                    id="sumShipping">$0.00</span></div>
+                            <div class="d-flex justify-content-between"><span>Tax</span><span id="sumTax">$0.00</span>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between"><span class="fw-semibold">Total</span><span
+                                    id="sumTotal" class="fw-semibold">$0.00</span></div>
+                            <div class="small text-secondary mt-2" id="promoNote"></div>
+                        </div>
+                    </div>
+
+                    <div class="card shadow-sm mt-3">
+                        <div class="card-body">
+                            <h2 class="h6 mb-2">Shipping address</h2>
+                            <address id="shipAddr" class="mb-0 text-secondary"></address>
+                            <hr />
+                            <h2 class="h6 mb-2">Payment</h2>
+                            <div id="payInfo" class="text-secondary"></div>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-5 border-top">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div>
+                <h3 class="h6">Aurora Apparel</h3>
+                <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+            </div>
+            <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="toast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Done.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ===== Demo dataset (thay bằng API / server-render) =====
+        var ORDERS = [
+            {
+                no: "AA-9QK3D2",
+                createdAt: "2025-10-12T09:24:00Z",
+                status: "Delivered",               // Delivered | Shipped | Processing | Cancelled
+                paymentStatus: "Paid",             // Paid | Unpaid | Refunded
+                paymentMethod: { type: "Card", last4: "4242" },
+                promo: { code: "LEARN10", type: "percent", value: 10 },
+                charges: { shipping: 0.00, tax: 0.00 },
+                address: {
+                    firstName: "Minh",
+                    lastName: "Nguyen",
+                    line1: "123 Le Loi",
+                    line2: "Ward 7",
+                    city: "Da Nang",
+                    state: "",
+                    zip: "550000",
+                    country: "Vietnam",
+                    phone: "+84 912 345 678"
+                },
+                items: [
+                    { sku: "DEN-JKT-BLU-M", name: "Denim Jacket", color: "Blue", size: "M", price: 79.00, qty: 1, img: "https://picsum.photos/seed/p11/200/200" },
+                    { sku: "HD-GLY-L", name: "Fleece Hoodie", color: "Grey", size: "L", price: 49.00, qty: 2, img: "https://picsum.photos/seed/p5/200/200" }
+                ],
+                shipments: [
+                    {
+                        carrier: "DHL",
+                        trackingNo: "DHL123456789VN",
+                        trackingUrl: "#",
+                        eta: "2025-10-15",
+                        timeline: [
+                            { label: "Order placed", at: "2025-10-12T09:24:00Z", active: true },
+                            { label: "Payment confirmed", at: "2025-10-12T09:25:00Z", active: true },
+                            { label: "Packed", at: "2025-10-13T08:10:00Z", active: true },
+                            { label: "Shipped", at: "2025-10-13T16:40:00Z", active: true },
+                            { label: "Out for delivery", at: "2025-10-15T07:30:00Z", active: true },
+                            { label: "Delivered", at: "2025-10-15T12:05:00Z", active: true }
+                        ]
+                    }
+                ]
+            },
+            {
+                no: "AA-5RT8V4",
+                createdAt: "2025-10-05T18:12:00Z",
+                status: "Processing",
+                paymentStatus: "Paid",
+                paymentMethod: { type: "COD" },
+                promo: null,
+                charges: { shipping: 5.00, tax: 0.00 },
+                address: {
+                    firstName: "An",
+                    lastName: "Pham",
+                    line1: "45 Dien Bien Phu",
+                    line2: "",
+                    city: "Ho Chi Minh City",
+                    state: "HCM",
+                    zip: "700000",
+                    country: "Vietnam",
+                    phone: "+84 933 111 222"
+                },
+                items: [
+                    { sku: "JEAN-NVY-32", name: "Slim Jeans", color: "Navy", size: "L", price: 59.00, qty: 1, img: "https://picsum.photos/seed/p3/200/200" },
+                    { sku: "TEE-BLK-M", name: "Classic Tee", color: "Black", size: "M", price: 19.00, qty: 3, img: "https://picsum.photos/seed/p1/200/200" }
+                ],
+                shipments: [
+                    {
+                        carrier: "VNPost",
+                        trackingNo: "VN123456789",
+                        trackingUrl: "#",
+                        eta: "2025-10-09",
+                        timeline: [
+                            { label: "Order placed", at: "2025-10-05T18:12:00Z", active: true },
+                            { label: "Payment confirmed", at: "2025-10-05T18:13:00Z", active: true },
+                            { label: "Packed", at: null, active: false },
+                            { label: "Shipped", at: null, active: false },
+                            { label: "Delivered", at: null, active: false }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        var STORAGE_KEY = "aurora_cart"; // for Reorder demo
+
+        // ===== Utils =====
+        function fmt(n) { return "$" + n.toFixed(2); }
+        function fmtDate(iso) {
+            if (!iso) { return ""; }
+            var d = new Date(iso);
+            return d.toLocaleString("en-US", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+        }
+        function badgeForStatus(s) {
+            if (s === "Delivered") { return '<span class="badge text-bg-success">Delivered</span>'; }
+            if (s === "Shipped") { return '<span class="badge text-bg-primary">Shipped</span>'; }
+            if (s === "Processing") { return '<span class="badge text-bg-info">Processing</span>'; }
+            if (s === "Cancelled") { return '<span class="badge text-bg-danger">Cancelled</span>'; }
+            return '<span class="badge text-bg-secondary">' + s + '</span>';
+        }
+
+        function qs(name) {
+            var m = location.search.match(new RegExp("[?&]" + name + "=([^&]+)"));
+            return m ? decodeURIComponent(m[1]) : null;
+        }
+
+        // ===== Render =====
+        function render(order) {
+            // Header
+            document.getElementById("orderNo").textContent = order.no;
+            document.getElementById("orderDate").textContent = new Date(order.createdAt).toLocaleString("en-US", { year: "numeric", month: "short", day: "2-digit", hour: "2-digit", minute: "2-digit" });
+            document.getElementById("orderStatus").outerHTML = badgeForStatus(order.status);
+
+            // Items
+            var tbody = document.getElementById("itemBody");
+            tbody.innerHTML = "";
+            order.items.forEach(function (it) {
+                var tr = document.createElement("tr");
+                tr.innerHTML =
+                    '<td>' +
+                    '<div class="d-flex align-items-center gap-3">' +
+                    '<img class="thumb" src="' + it.img + '" alt="' + it.name + '" />' +
+                    '<div>' +
+                    '<div class="fw-semibold">' + it.name + '</div>' +
+                    '<div class="small text-secondary">Color: ' + it.color + ' · Size: ' + it.size + '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</td>' +
+                    '<td><span class="small text-secondary">' + it.sku + '</span></td>' +
+                    '<td>' + it.qty + '</td>' +
+                    '<td>' + fmt(it.price) + '</td>' +
+                    '<td>' + fmt(it.price * it.qty) + '</td>';
+                tbody.appendChild(tr);
+            });
+
+            // Totals
+            var subtotal = order.items.reduce(function (s, it) { return s + it.price * it.qty; }, 0);
+            var discount = 0.00;
+            var promoNote = "";
+            if (order.promo && order.promo.type === "percent") {
+                discount = subtotal * (order.promo.value / 100.0);
+                promoNote = 'Promo <code>' + order.promo.code + '</code> applied (' + order.promo.value + '% off).';
+            }
+            var shipping = order.charges.shipping || 0;
+            var tax = order.charges.tax || 0;
+            var total = Math.max(0, subtotal - discount) + shipping + tax;
+
+            document.getElementById("sumSubtotal").textContent = fmt(subtotal);
+            document.getElementById("sumDiscount").textContent = (discount > 0 ? "−" : "") + fmt(discount);
+            document.getElementById("sumShipping").textContent = fmt(shipping);
+            document.getElementById("sumTax").textContent = fmt(tax);
+            document.getElementById("sumTotal").textContent = fmt(total);
+            document.getElementById("promoNote").innerHTML = promoNote;
+
+            // Address
+            var a = order.address;
+            var addr = (a.firstName + " " + a.lastName) + "<br/>" +
+                a.line1 + (a.line2 ? (", " + a.line2) : "") + "<br/>" +
+                a.city + (a.state ? (", " + a.state) : "") + (a.zip ? (" " + a.zip) : "") + "<br/>" +
+                a.country + "<br/>" +
+                (a.phone ? ("Phone: " + a.phone) : "");
+            document.getElementById("shipAddr").innerHTML = addr;
+
+            // Payment
+            var pay = order.paymentMethod;
+            var payHtml = "";
+            if (order.paymentStatus === "Paid") {
+                payHtml += '<span class="badge text-bg-success me-2">Paid</span>';
+            } else if (order.paymentStatus === "Refunded") {
+                payHtml += '<span class="badge text-bg-danger me-2">Refunded</span>';
+            } else {
+                payHtml += '<span class="badge text-bg-warning me-2">Unpaid</span>';
+            }
+            payHtml += (pay.type === "Card" ? ("Card •••• " + (pay.last4 || "0000")) : pay.type);
+            document.getElementById("payInfo").innerHTML = payHtml;
+
+            // Shipments + timeline
+            var wrap = document.getElementById("shipments");
+            wrap.innerHTML = "";
+            if (!order.shipments || order.shipments.length === 0) {
+                wrap.innerHTML = '<div class="text-secondary">No shipment created yet.</div>';
+            } else {
+                order.shipments.forEach(function (s, idx) {
+                    var card = document.createElement("div");
+                    card.className = "border rounded p-3 mb-3";
+                    card.innerHTML =
+                        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">' +
+                        '<div class="fw-semibold">Shipment #' + (idx + 1) + ' — ' + s.carrier + '</div>' +
+                        '<div class="small text-secondary">ETA: ' + (s.eta || "—") + '</div>' +
+                        '</div>' +
+                        '<div class="d-flex flex-wrap justify-content-between align-items-center mb-2">' +
+                        '<div class="small text-secondary">Tracking: <span class="text-dark">' + s.trackingNo + '</span></div>' +
+                        '<div><a class="btn btn-sm btn-outline-dark" href="' + (s.trackingUrl || "#") + '" role="button">Track package</a></div>' +
+                        '</div>' +
+                        '<div class="timeline" id="tl_' + idx + '"></div>';
+                    wrap.appendChild(card);
+
+                    var tl = card.querySelector(".timeline");
+                    s.timeline.forEach(function (t) {
+                        var item = document.createElement("div");
+                        item.className = "t-item" + (t.active ? " active" : "");
+                        item.innerHTML =
+                            '<div class="dot"></div>' +
+                            '<div class="content">' +
+                            '<div class="small">' + t.label + '</div>' +
+                            '<div class="small text-secondary">' + (t.at ? fmtDate(t.at) : "—") + '</div>' +
+                            '</div>';
+                        tl.appendChild(item);
+                    });
+                });
+            }
+
+            // Invoice link
+            document.getElementById("btnInvoice").href = "#invoice?no=" + encodeURIComponent(order.no);
+        }
+
+        // ===== Reorder demo =====
+        function reorder(order) {
+            var items = order.items.map(function (it) {
+                return {
+                    id: it.sku, // placeholder
+                    name: it.name,
+                    sku: it.sku,
+                    color: it.color,
+                    size: it.size,
+                    price: it.price,
+                    qty: it.qty,
+                    img: it.img
+                };
+            });
+            // Append to localStorage cart
+            var existing = [];
+            try {
+                existing = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            } catch (e) { }
+            items.forEach(function (it) {
+                var idx = existing.findIndex(function (x) { return x.sku === it.sku; });
+                if (idx >= 0) { existing[idx].qty += it.qty; } else { existing.push(it); }
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(existing));
+
+            var t = document.getElementById("toast");
+            t.querySelector(".toast-body").textContent = "Added previous items to cart.";
+            new bootstrap.Toast(t).show();
+        }
+
+        // ===== Init =====
+        (function init() {
+            // Footer year
+            var yEl = document.getElementById("year");
+            if (yEl) { yEl.textContent = new Date().getFullYear().toString(); }
+
+            var no = qs("no") || "AA-9QK3D2"; // default for demo
+            var order = ORDERS.find(function (o) { return o.no === no; });
+
+            if (!order) {
+                document.getElementById("orderWrap").classList.add("d-none");
+                document.getElementById("notFound").classList.remove("d-none");
+                return;
+            }
+
+            render(order);
+
+            document.getElementById("btnReorder").addEventListener("click", function () {
+                reorder(order);
+            });
+        })();
+    </script>
+</body>
+
+</html>

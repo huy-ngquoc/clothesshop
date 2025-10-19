@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aurora Apparel — Checkout</title>
+    <meta name="description"
+        content="Secure checkout with shipping address, shipping methods, payment options, and real-time totals." />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .cart-thumb {
+            width: 56px;
+            height: 56px;
+            object-fit: cover;
+            border-radius: .375rem;
+        }
+
+        .step {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+        }
+
+        .step .dot {
+            width: .75rem;
+            height: .75rem;
+            border-radius: 50%;
+            background: #0d6efd;
+        }
+
+        .minh-240 {
+            min-height: 240px;
+        }
+
+        .cc-grid {
+            display: grid;
+            grid-template-columns: 1fr 110px 90px;
+            gap: .75rem;
+        }
+
+        @media (max-width: 576px) {
+            .cc-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html" title="Aurora Apparel">Aurora Apparel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navMain" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BREADCRUMB / STEPS -->
+    <header class="py-3 border-bottom bg-light">
+        <div class="container d-flex flex-wrap gap-3 align-items-center justify-content-between">
+            <nav aria-label="Breadcrumb">
+                <ol class="breadcrumb mb-0">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item"><a href="cart.html">Cart</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+            </nav>
+            <div class="step">
+                <span class="dot"></span><span>Secure checkout</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                <!-- LEFT: Forms -->
+                <section class="col-12 col-lg-8">
+                    <div id="emptyState" class="d-none">
+                        <div class="border rounded p-5 text-center">
+                            <p class="lead mb-3">Your cart is empty.</p>
+                            <a class="btn btn-dark" href="shop.html" role="button">Continue Shopping</a>
+                        </div>
+                    </div>
+
+                    <form id="checkoutForm" novalidate="novalidate">
+                        <!-- Contact -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h2 class="h5 mb-3">Contact</h2>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input id="email" name="email" class="form-control" type="email"
+                                            placeholder="you@example.com" autocomplete="email" required="required" />
+                                        <div class="invalid-feedback">Please enter a valid email.</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="phone" class="form-label">Phone (optional)</label>
+                                        <input id="phone" name="phone" class="form-control" type="tel"
+                                            placeholder="+84 91 234 5678" autocomplete="tel" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping address -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h2 class="h5 mb-3">Shipping address</h2>
+                                <div class="row g-3">
+                                    <div class="col-sm-6">
+                                        <label for="firstName" class="form-label">First name</label>
+                                        <input id="firstName" name="firstName" class="form-control" type="text"
+                                            autocomplete="given-name" required="required" />
+                                        <div class="invalid-feedback">First name is required.</div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="lastName" class="form-label">Last name</label>
+                                        <input id="lastName" name="lastName" class="form-control" type="text"
+                                            autocomplete="family-name" required="required" />
+                                        <div class="invalid-feedback">Last name is required.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address1" class="form-label">Address</label>
+                                        <input id="address1" name="address1" class="form-control" type="text"
+                                            placeholder="Street and number" autocomplete="address-line1"
+                                            required="required" />
+                                        <div class="invalid-feedback">Address is required.</div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address2" class="form-label">Apartment, suite, etc.
+                                            (optional)</label>
+                                        <input id="address2" name="address2" class="form-control" type="text"
+                                            autocomplete="address-line2" />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="city" class="form-label">City</label>
+                                        <input id="city" name="city" class="form-control" type="text"
+                                            autocomplete="address-level2" required="required" />
+                                        <div class="invalid-feedback">City is required.</div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="state" class="form-label">State/Province</label>
+                                        <input id="state" name="state" class="form-control" type="text"
+                                            autocomplete="address-level1" />
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label for="zip" class="form-label">Postal code</label>
+                                        <input id="zip" name="zip" class="form-control" type="text"
+                                            autocomplete="postal-code" />
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label for="country" class="form-label">Country/Region</label>
+                                        <select id="country" name="country" class="form-select"
+                                            autocomplete="country-name" required="required">
+                                            <option value="">Select…</option>
+                                            <option value="Vietnam" selected="selected">Vietnam</option>
+                                            <option value="United States">United States</option>
+                                            <option value="Singapore">Singapore</option>
+                                            <option value="Japan">Japan</option>
+                                            <option value="Australia">Australia</option>
+                                            <option value="United Kingdom">United Kingdom</option>
+                                        </select>
+                                        <div class="invalid-feedback">Please choose a country.</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shipping method -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h2 class="h5 mb-3">Shipping method</h2>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="shipping" id="shipStandard"
+                                        value="standard" checked="checked" />
+                                    <label class="form-check-label" for="shipStandard">Standard (3–5 business days) —
+                                        $5.00</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="shipping" id="shipExpress"
+                                        value="express" />
+                                    <label class="form-check-label" for="shipExpress">Express (1–2 business days) —
+                                        $12.00</label>
+                                </div>
+                                <div class="form-text">Standard shipping is free over $75 subtotal or with code
+                                    <code>SHIPFREE</code>.</div>
+                            </div>
+                        </div>
+
+                        <!-- Payment -->
+                        <div class="card mb-3 shadow-sm">
+                            <div class="card-body">
+                                <h2 class="h5 mb-3">Payment</h2>
+
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payCard"
+                                        value="card" checked="checked" />
+                                    <label class="form-check-label" for="payCard">Credit / Debit Card</label>
+                                </div>
+                                <div id="cardBox" class="mb-3">
+                                    <div class="cc-grid">
+                                        <div>
+                                            <label for="ccNumber" class="form-label">Card number</label>
+                                            <input id="ccNumber" class="form-control" type="text" inputmode="numeric"
+                                                autocomplete="cc-number" placeholder="4242 4242 4242 4242"
+                                                required="required" />
+                                            <div class="form-text">Use 4242 4242 4242 4242 for testing.</div>
+                                            <div class="invalid-feedback">Enter a valid card number.</div>
+                                        </div>
+                                        <div>
+                                            <label for="ccExp" class="form-label">Expiry (MM/YY)</label>
+                                            <input id="ccExp" class="form-control" type="text" inputmode="numeric"
+                                                autocomplete="cc-exp" placeholder="12/27" required="required" />
+                                            <div class="invalid-feedback">Enter a valid expiry.</div>
+                                        </div>
+                                        <div>
+                                            <label for="ccCvc" class="form-label">CVC</label>
+                                            <input id="ccCvc" class="form-control" type="text" inputmode="numeric"
+                                                autocomplete="cc-csc" placeholder="123" required="required" />
+                                            <div class="invalid-feedback">Enter a valid CVC.</div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3">
+                                        <label for="ccName" class="form-label">Name on card</label>
+                                        <input id="ccName" class="form-control" type="text" autocomplete="cc-name"
+                                            placeholder="Full name" required="required" />
+                                        <div class="invalid-feedback">Cardholder name is required.</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="payMethod" id="payCod"
+                                        value="cod" />
+                                    <label class="form-check-label" for="payCod">Cash on Delivery (COD)</label>
+                                </div>
+
+                                <hr />
+
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agree" required="required" />
+                                    <label class="form-check-label" for="agree">I agree to the <a
+                                            href="#terms">Terms</a> and <a href="#privacy">Privacy Policy</a>.</label>
+                                    <div class="invalid-feedback">You must agree before placing the order.</div>
+                                </div>
+
+                                <div class="d-grid d-sm-flex gap-2 mt-3">
+                                    <a class="btn btn-outline-secondary" href="cart.html" role="button">Back to Cart</a>
+                                    <button id="placeOrderBtn" class="btn btn-dark btn-lg" type="submit">Place
+                                        Order</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- RIGHT: Summary -->
+                <aside class="col-12 col-lg-4">
+                    <div class="card shadow-sm minh-240">
+                        <div class="card-body">
+                            <h2 class="h5">Order Summary</h2>
+
+                            <div id="itemList" class="vstack gap-2 mb-3">
+                                <!-- items injected -->
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span id="sumSubtotal">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Discount</span>
+                                <span id="sumDiscount" class="text-success">−$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Shipping</span>
+                                <span id="sumShipping">$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Tax</span>
+                                <span id="sumTax">$0.00</span>
+                            </div>
+                            <hr />
+                            <div class="d-flex justify-content-between">
+                                <span class="fw-semibold">Total</span>
+                                <span id="sumTotal" class="fw-semibold">$0.00</span>
+                            </div>
+
+                            <div class="small text-secondary mt-2">
+                                Have a promo code? You can apply it in Cart. Codes: <code>LEARN10</code> (10% off),
+                                <code>SHIPFREE</code> (free standard shipping).
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-secondary mt-2">
+                        Need help? <a href="#support">Contact support</a>. Prices in USD.
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-5 border-top">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div>
+                <h3 class="h6">Aurora Apparel</h3>
+                <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+            </div>
+            <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal fade" id="orderSuccessModal" tabindex="-1" aria-labelledby="orderSuccessLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <h1 class="modal-title fs-5" id="orderSuccessLabel">Order placed 🎉</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="mb-1">Thank you! Your order number is <span id="orderNumber" class="fw-semibold"></span>.
+                    </p>
+                    <p class="mb-0">We’ve sent a confirmation to <span id="confEmail" class="fw-semibold"></span>.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <a class="btn btn-dark" href="shop.html" role="button">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ===== Shared with Cart (keep consistent) =====
+        var STORAGE_KEY = "aurora_cart";
+        var PROMO_KEY = "aurora_promo";
+        var TAX_RATE = 0.00; // set >0 if you want tax
+        var SHIPPING_RATES = { standard: 5.00, express: 12.00 };
+        var FREE_SHIP_THRESHOLD = 75.00;
+
+        // ===== State =====
+        var state = {
+            items: [],
+            promo: null, // { code, type: 'percent'|'shipping', value }
+            shipping: "standard"
+        };
+
+        function fmt(n) { return "$" + n.toFixed(2); }
+
+        function loadCart() {
+            try {
+                var stored = localStorage.getItem(STORAGE_KEY);
+                state.items = stored ? JSON.parse(stored) : [];
+            } catch (e) {
+                state.items = [];
+            }
+            try {
+                var p = localStorage.getItem(PROMO_KEY);
+                state.promo = p ? JSON.parse(p) : null;
+            } catch (e) {
+                state.promo = null;
+            }
+        }
+
+        function renderItems() {
+            var wrap = document.getElementById("itemList");
+            wrap.innerHTML = "";
+
+            if (state.items.length === 0) {
+                document.getElementById("emptyState").classList.remove("d-none");
+            } else {
+                document.getElementById("emptyState").classList.add("d-none");
+            }
+
+            state.items.forEach(function (it) {
+                var row = document.createElement("div");
+                row.className = "d-flex align-items-center justify-content-between";
+                row.innerHTML =
+                    '<div class="d-flex align-items-center gap-2">' +
+                    '<img class="cart-thumb" src="' + it.img + '" alt="' + it.name + '" />' +
+                    '<div>' +
+                    '<div class="small">' + it.name + '</div>' +
+                    '<div class="small text-secondary">SKU: ' + it.sku + ' · ' + it.color + ' / ' + it.size + '</div>' +
+                    '<div class="small text-secondary">Qty: ' + it.qty + '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="small fw-semibold">' + fmt(it.price * it.qty) + '</div>';
+                wrap.appendChild(row);
+            });
+        }
+
+        function calcTotals() {
+            var subtotal = state.items.reduce(function (sum, it) { return sum + it.price * it.qty; }, 0);
+            var discount = 0.00;
+            var freeShip = false;
+
+            if (state.promo) {
+                if (state.promo.type === "percent") {
+                    discount = subtotal * (state.promo.value / 100.0);
+                }
+                if (state.promo.type === "shipping") {
+                    freeShip = true;
+                }
+            }
+
+            // Shipping cost based on selection + rules
+            var afterDiscount = Math.max(0, subtotal - discount);
+            var selectedShip = state.shipping;
+            var shippingCost = 0.00;
+
+            if (selectedShip === "standard") {
+                if (afterDiscount >= FREE_SHIP_THRESHOLD || freeShip) {
+                    shippingCost = 0.00;
+                } else {
+                    shippingCost = SHIPPING_RATES.standard;
+                }
+            } else {
+                // Express never free unless you decide otherwise
+                shippingCost = SHIPPING_RATES.express;
+            }
+
+            var tax = (afterDiscount + shippingCost) * TAX_RATE;
+            var total = Math.max(0, afterDiscount) + shippingCost + tax;
+
+            // Update UI
+            document.getElementById("sumSubtotal").textContent = fmt(subtotal);
+            document.getElementById("sumDiscount").textContent = (discount > 0 ? "−" : "") + fmt(discount);
+            document.getElementById("sumShipping").textContent = fmt(shippingCost);
+            document.getElementById("sumTax").textContent = fmt(tax);
+            document.getElementById("sumTotal").textContent = fmt(total);
+
+            return { subtotal: subtotal, discount: discount, shipping: shippingCost, tax: tax, total: total };
+        }
+
+        function attachSummaryEvents() {
+            document.querySelectorAll('input[name="shipping"]').forEach(function (r) {
+                r.addEventListener("change", function (e) {
+                    state.shipping = e.target.value;
+                    calcTotals();
+                });
+            });
+        }
+
+        // ===== Form Validation & Payment toggling =====
+        function enableValidation() {
+            var form = document.getElementById("checkoutForm");
+            form.addEventListener("submit", function (event) {
+                // toggle card requireds depending on method
+                var pay = document.querySelector('input[name="payMethod"]:checked');
+                var cardRequired = pay && pay.value === "card";
+                setCardRequired(cardRequired);
+
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                } else {
+                    event.preventDefault();
+                    submitOrder();
+                }
+                form.classList.add("was-validated");
+            });
+
+            document.querySelectorAll('input[name="payMethod"]').forEach(function (r) {
+                r.addEventListener("change", function () {
+                    var cardBox = document.getElementById("cardBox");
+                    if (r.value === "card" && r.checked) {
+                        cardBox.classList.remove("d-none");
+                        setCardRequired(true);
+                    } else if (r.value === "cod" && r.checked) {
+                        cardBox.classList.add("d-none");
+                        setCardRequired(false);
+                    }
+                });
+            });
+        }
+
+        function setCardRequired(on) {
+            ["ccNumber", "ccExp", "ccCvc", "ccName"].forEach(function (id) {
+                var el = document.getElementById(id);
+                el.required = on;
+                if (!on) { el.setCustomValidity(""); }
+            });
+        }
+
+        // Basic card validations (lightweight)
+        function validateCardFields() {
+            var number = document.getElementById("ccNumber");
+            var exp = document.getElementById("ccExp");
+            var cvc = document.getElementById("ccCvc");
+            var ok = true;
+
+            // number: digits and spaces, length 13-19
+            var digits = (number.value || "").replace(/\s+/g, "");
+            if (!/^\d{13,19}$/.test(digits)) { number.setCustomValidity("Invalid"); ok = false; } else { number.setCustomValidity(""); }
+
+            // expiry: MM/YY, month 01-12, simple freshness check
+            var m = exp.value.match(/^(\d{2})\/(\d{2})$/);
+            if (!m) { exp.setCustomValidity("Invalid"); ok = false; }
+            else {
+                var mm = Number(m[1]), yy = Number(m[2]);
+                if (mm < 1 || mm > 12) { exp.setCustomValidity("Invalid"); ok = false; }
+                else {
+                    var now = new Date();
+                    var year = 2000 + yy;
+                    var expDate = new Date(year, mm, 0);
+                    if (expDate < new Date(now.getFullYear(), now.getMonth(), 1)) { exp.setCustomValidity("Expired"); ok = false; }
+                    else { exp.setCustomValidity(""); }
+                }
+            }
+
+            // cvc: 3-4 digits
+            if (!/^\d{3,4}$/.test(cvc.value || "")) { cvc.setCustomValidity("Invalid"); ok = false; } else { cvc.setCustomValidity(""); }
+
+            return ok;
+        }
+
+        // ===== Submit (demo) =====
+        function submitOrder() {
+            if (state.items.length === 0) {
+                alert("Your cart is empty.");
+                return;
+            }
+
+            var pay = document.querySelector('input[name="payMethod"]:checked').value;
+            if (pay === "card" && !validateCardFields()) {
+                document.getElementById("checkoutForm").classList.add("was-validated");
+                return;
+            }
+
+            var totals = calcTotals();
+
+            // Build payload (send to your backend)
+            var payload = {
+                contact: {
+                    email: document.getElementById("email").value,
+                    phone: document.getElementById("phone").value
+                },
+                shippingAddress: {
+                    firstName: document.getElementById("firstName").value,
+                    lastName: document.getElementById("lastName").value,
+                    address1: document.getElementById("address1").value,
+                    address2: document.getElementById("address2").value,
+                    city: document.getElementById("city").value,
+                    state: document.getElementById("state").value,
+                    zip: document.getElementById("zip").value,
+                    country: document.getElementById("country").value
+                },
+                shippingMethod: state.shipping,
+                payment: {
+                    method: pay,
+                    last4: pay === "card" ? (document.getElementById("ccNumber").value.replace(/\s+/g, "").slice(-4)) : null
+                },
+                items: state.items,
+                promo: state.promo,
+                totals: totals
+            };
+
+            // Demo: pretend success and clear cart
+            var orderNo = "AA-" + (Math.random().toString(36).slice(2, 8)).toUpperCase();
+            try { localStorage.removeItem(STORAGE_KEY); } catch (e) { }
+            // Show modal
+            var modalEl = document.getElementById("orderSuccessModal");
+            document.getElementById("orderNumber").textContent = orderNo;
+            document.getElementById("confEmail").textContent = payload.contact.email || "your email";
+            new bootstrap.Modal(modalEl).show();
+
+            // In production: POST to /checkout
+            // fetch('/checkout', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) })
+            //   .then(res => res.json())
+            //   .then(data => { /* redirect to thank-you */ })
+            //   .catch(() => alert('Something went wrong. Please try again.'));
+        }
+
+        // ===== Init =====
+        (function init() {
+            // Footer year
+            var yEl = document.getElementById("year");
+            if (yEl) { yEl.textContent = new Date().getFullYear().toString(); }
+
+            loadCart();
+            renderItems();
+
+            // default shipping radio -> state
+            var r = document.querySelector('input[name="shipping"]:checked');
+            state.shipping = r ? r.value : "standard";
+
+            calcTotals();
+            attachSummaryEvents();
+            enableValidation();
+
+            // Tiny UX: prefill email if you stored it previously (optional)
+            var email = sessionStorage.getItem("aurora_email");
+            if (email) { document.getElementById("email").value = email; }
+        })();
+    </script>
+</body>
+
+</html>

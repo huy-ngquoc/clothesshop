@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aurora Apparel — Cart</title>
+    <meta name="description"
+        content="Shopping cart with quantity updates, promo codes, shipping methods, and live totals." />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .cart-img {
+            width: 72px;
+            height: 72px;
+            object-fit: cover;
+            border-radius: .375rem;
+        }
+
+        .qty-input {
+            max-width: 120px;
+        }
+
+        .strike {
+            text-decoration: line-through;
+            opacity: .75;
+        }
+
+        .minh-240 {
+            min-height: 240px;
+        }
+
+        /* keep summary box tall enough */
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html" title="Aurora Apparel">Aurora Apparel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navMain" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                </ul>
+                <a class="btn btn-outline-dark" href="#cart" role="button" aria-label="View cart">Cart</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="py-4 border-bottom bg-light">
+        <div class="container">
+            <h1 class="h3 mb-1">Your Cart</h1>
+            <p class="text-secondary mb-0">Review items, update quantities, and proceed to checkout.</p>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="py-4">
+        <div class="container">
+            <div class="row g-4">
+                <!-- CART TABLE -->
+                <section class="col-12 col-lg-8">
+                    <div id="emptyState" class="d-none">
+                        <div class="border rounded p-5 text-center">
+                            <p class="lead mb-3">Your cart is empty.</p>
+                            <a class="btn btn-dark" href="shop.html" role="button">Continue Shopping</a>
+                        </div>
+                    </div>
+
+                    <div id="cartTableWrap" class="table-responsive">
+                        <table class="table align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col" style="width: 140px;">Price</th>
+                                    <th scope="col" style="width: 160px;">Quantity</th>
+                                    <th scope="col" style="width: 140px;">Subtotal</th>
+                                    <th scope="col" class="text-end" style="width: 56px;">Remove</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cartBody">
+                                <!-- rows injected -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex flex-column flex-md-row gap-2 justify-content-between mt-3">
+                        <div>
+                            <button id="clearCartBtn" class="btn btn-outline-secondary" type="button">Clear
+                                Cart</button>
+                            <a class="btn btn-link" href="shop.html" role="button">Continue Shopping</a>
+                        </div>
+                        <small class="text-secondary">Prices in USD. Taxes calculated at checkout (if
+                            applicable).</small>
+                    </div>
+                </section>
+
+                <!-- SUMMARY -->
+                <aside class="col-12 col-lg-4">
+                    <div class="card shadow-sm minh-240">
+                        <div class="card-body">
+                            <h2 class="h5">Order Summary</h2>
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span id="sumSubtotal">$0.00</span>
+                            </div>
+
+                            <div class="mt-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="promoInput" class="form-label mb-0">Promo code</label>
+                                    <button id="removePromoBtn" class="btn btn-link btn-sm d-none"
+                                        type="button">Remove</button>
+                                </div>
+                                <div class="input-group">
+                                    <input id="promoInput" class="form-control" type="text" placeholder="e.g., LEARN10"
+                                        aria-label="Promo code" />
+                                    <button id="applyPromoBtn" class="btn btn-outline-secondary"
+                                        type="button">Apply</button>
+                                </div>
+                                <div class="form-text">Try <code>LEARN10</code> (10% off) or <code>SHIPFREE</code> (free
+                                    standard shipping).</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span>Discount</span>
+                                <span id="sumDiscount" class="text-success">−$0.00</span>
+                            </div>
+
+                            <hr />
+
+                            <div class="mb-2">
+                                <label class="form-label">Shipping</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="shipping" id="shipStandard"
+                                        value="standard" checked="checked" />
+                                    <label class="form-check-label" for="shipStandard">Standard (3–5 days) —
+                                        $5.00</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="shipping" id="shipExpress"
+                                        value="express" />
+                                    <label class="form-check-label" for="shipExpress">Express (1–2 days) —
+                                        $12.00</label>
+                                </div>
+                                <div class="form-text">Free standard shipping over $75 subtotal or with code
+                                    <code>SHIPFREE</code>.</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Shipping cost</span>
+                                <span id="sumShipping">$0.00</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <span>Tax</span>
+                                <span id="sumTax">$0.00</span>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-2">
+                                <span class="fw-semibold">Total</span>
+                                <span id="sumTotal" class="fw-semibold">$0.00</span>
+                            </div>
+
+                            <div class="d-grid mt-3">
+                                <a id="checkoutBtn" class="btn btn-dark btn-lg" href="#checkout" role="button">Proceed
+                                    to Checkout</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="small text-secondary mt-2">
+                        By placing your order, you agree to our <a href="#terms">Terms</a> and <a
+                            href="#privacy">Privacy Policy</a>.
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-5 border-top">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div>
+                <h3 class="h6">Aurora Apparel</h3>
+                <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+            </div>
+            <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Toast -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="cartToast" class="toast align-items-center text-bg-dark border-0" role="status" aria-live="polite"
+            aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">Cart updated.</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ===== Demo data / persistence =====
+        var STORAGE_KEY = "aurora_cart";
+        var PROMO_KEY = "aurora_promo";
+        // If you already push items from Product Detail, they can land here via localStorage or server session.
+        // Fallback sample items for demo:
+        var DEFAULT_CART = [
+            { id: 11, name: "Denim Jacket", sku: "DEN-JKT-BLU-M", color: "Blue", size: "M", price: 79, qty: 1, img: "https://picsum.photos/seed/p11/300/300" },
+            { id: 5, name: "Fleece Hoodie", sku: "HD-GLY-L", color: "Grey", size: "L", price: 49, qty: 2, img: "https://picsum.photos/seed/p5/300/300" },
+            { id: 3, name: "Slim Jeans", sku: "JEAN-NVY-32", color: "Navy", size: "L", price: 59, qty: 1, img: "https://picsum.photos/seed/p3/300/300" }
+        ];
+
+        var TAX_RATE = 0.00; // set to 0.08 to simulate 8% sales tax if you need
+        var SHIPPING_RATES = { standard: 5.00, express: 12.00 };
+        var FREE_SHIP_THRESHOLD = 75.00;
+
+        var state = {
+            items: [],
+            promo: null, // { code, type: 'percent'|'shipping', value }
+            shipping: "standard"
+        };
+
+        function loadState() {
+            try {
+                var stored = localStorage.getItem(STORAGE_KEY);
+                state.items = stored ? JSON.parse(stored) : DEFAULT_CART.slice();
+            } catch (e) {
+                state.items = DEFAULT_CART.slice();
+            }
+            try {
+                var p = localStorage.getItem(PROMO_KEY);
+                state.promo = p ? JSON.parse(p) : null;
+            } catch (e) {
+                state.promo = null;
+            }
+        }
+
+        function saveState() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(state.items));
+            if (state.promo) { localStorage.setItem(PROMO_KEY, JSON.stringify(state.promo)); }
+            else { localStorage.removeItem(PROMO_KEY); }
+        }
+
+        // ===== Helpers =====
+        function fmt(n) { return "$" + n.toFixed(2); }
+
+        function rowId(item) { return "row-" + item.sku.replace(/[^a-zA-Z0-9]/g, "_"); }
+
+        function showToast(msg) {
+            var t = document.getElementById("cartToast");
+            t.querySelector(".toast-body").textContent = msg;
+            new bootstrap.Toast(t).show();
+        }
+
+        // ===== Rendering =====
+        function renderCart() {
+            var tbody = document.getElementById("cartBody");
+            tbody.innerHTML = "";
+
+            if (state.items.length === 0) {
+                document.getElementById("cartTableWrap").classList.add("d-none");
+                document.getElementById("emptyState").classList.remove("d-none");
+            } else {
+                document.getElementById("cartTableWrap").classList.remove("d-none");
+                document.getElementById("emptyState").classList.add("d-none");
+            }
+
+            state.items.forEach(function (item) {
+                var tr = document.createElement("tr");
+                tr.id = rowId(item);
+
+                var prodTd = document.createElement("td");
+                prodTd.innerHTML =
+                    '<div class="d-flex align-items-center gap-3">' +
+                    '<img class="cart-img" src="' + item.img + '" alt="' + item.name + '"/>' +
+                    '<div>' +
+                    '<div class="fw-semibold">' + item.name + '</div>' +
+                    '<div class="small text-secondary">SKU: ' + item.sku + '</div>' +
+                    '<div class="small text-secondary">Color: ' + item.color + ' · Size: ' + item.size + '</div>' +
+                    '</div>' +
+                    '</div>';
+                tr.appendChild(prodTd);
+
+                var priceTd = document.createElement("td");
+                priceTd.textContent = fmt(item.price);
+                tr.appendChild(priceTd);
+
+                var qtyTd = document.createElement("td");
+                qtyTd.innerHTML =
+                    '<div class="input-group qty-input">' +
+                    '<button class="btn btn-outline-secondary btn-sm btn-qty-minus" type="button" aria-label="Decrease quantity">−</button>' +
+                    '<input class="form-control form-control-sm text-center input-qty" type="number" min="1" step="1" value="' + item.qty + '"/>' +
+                    '<button class="btn btn-outline-secondary btn-sm btn-qty-plus" type="button" aria-label="Increase quantity">+</button>' +
+                    '</div>';
+                tr.appendChild(qtyTd);
+
+                var subTd = document.createElement("td");
+                subTd.className = "line-subtotal";
+                subTd.textContent = fmt(item.price * item.qty);
+                tr.appendChild(subTd);
+
+                var removeTd = document.createElement("td");
+                removeTd.className = "text-end";
+                removeTd.innerHTML =
+                    '<button class="btn btn-outline-danger btn-sm btn-remove" type="button" aria-label="Remove item">×</button>';
+                tr.appendChild(removeTd);
+
+                tbody.appendChild(tr);
+            });
+
+            bindRowEvents();
+            renderSummary();
+        }
+
+        function renderSummary() {
+            var subtotal = state.items.reduce(function (sum, it) { return sum + it.price * it.qty; }, 0);
+
+            // Discount via promo
+            var discount = 0.00;
+            var freeShip = false;
+            if (state.promo) {
+                if (state.promo.type === "percent") {
+                    discount = subtotal * (state.promo.value / 100.0);
+                }
+                if (state.promo.type === "shipping") {
+                    freeShip = true;
+                }
+            }
+
+            // Shipping
+            var baseShip = SHIPPING_RATES[state.shipping] || 0;
+            var shippingCost = 0.00;
+            var afterDiscount = Math.max(0, subtotal - discount);
+            if (state.shipping === "standard") {
+                if (afterDiscount >= FREE_SHIP_THRESHOLD || freeShip) {
+                    shippingCost = 0.00;
+                } else {
+                    shippingCost = baseShip;
+                }
+            } else {
+                // Express never free unless you want to allow; keep paid
+                shippingCost = baseShip;
+            }
+
+            // Tax
+            var tax = (afterDiscount + shippingCost) * TAX_RATE;
+
+            var total = Math.max(0, afterDiscount) + shippingCost + tax;
+
+            // Update UI
+            document.getElementById("sumSubtotal").textContent = fmt(subtotal);
+            document.getElementById("sumDiscount").textContent = (discount > 0 ? "−" : "") + fmt(discount);
+            document.getElementById("sumShipping").textContent = fmt(shippingCost);
+            document.getElementById("sumTax").textContent = fmt(tax);
+            document.getElementById("sumTotal").textContent = fmt(total);
+
+            // Reflect promo UI
+            var promoInput = document.getElementById("promoInput");
+            var removeBtn = document.getElementById("removePromoBtn");
+            if (state.promo) {
+                promoInput.value = state.promo.code;
+                promoInput.readOnly = true;
+                removeBtn.classList.remove("d-none");
+            } else {
+                promoInput.readOnly = false;
+                removeBtn.classList.add("d-none");
+            }
+        }
+
+        // ===== Events =====
+        function bindRowEvents() {
+            document.querySelectorAll(".btn-qty-minus").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    var tr = btn.closest("tr");
+                    var idx = indexFromRow(tr);
+                    var input = tr.querySelector(".input-qty");
+                    var val = Math.max(1, Number(input.value) - 1);
+                    input.value = String(val);
+                    state.items[idx].qty = val;
+                    tr.querySelector(".line-subtotal").textContent = fmt(state.items[idx].price * val);
+                    saveState();
+                    renderSummary();
+                });
+            });
+
+            document.querySelectorAll(".btn-qty-plus").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    var tr = btn.closest("tr");
+                    var idx = indexFromRow(tr);
+                    var input = tr.querySelector(".input-qty");
+                    var val = Math.max(1, Number(input.value) + 1);
+                    input.value = String(val);
+                    state.items[idx].qty = val;
+                    tr.querySelector(".line-subtotal").textContent = fmt(state.items[idx].price * val);
+                    saveState();
+                    renderSummary();
+                });
+            });
+
+            document.querySelectorAll(".input-qty").forEach(function (inp) {
+                inp.addEventListener("change", function () {
+                    var tr = inp.closest("tr");
+                    var idx = indexFromRow(tr);
+                    var val = Number(inp.value);
+                    if (isNaN(val) || val < 1) { val = 1; }
+                    inp.value = String(val);
+                    state.items[idx].qty = val;
+                    tr.querySelector(".line-subtotal").textContent = fmt(state.items[idx].price * val);
+                    saveState();
+                    renderSummary();
+                });
+            });
+
+            document.querySelectorAll(".btn-remove").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    var tr = btn.closest("tr");
+                    var idx = indexFromRow(tr);
+                    var removed = state.items.splice(idx, 1);
+                    tr.remove();
+                    saveState();
+                    renderCart();
+                    showToast("Removed “" + removed[0].name + "” from cart.");
+                });
+            });
+        }
+
+        function indexFromRow(tr) {
+            var sku = tr.id.replace(/^row_?-/, "").replace(/_/g, "-");
+            return state.items.findIndex(function (it) { return ("row-" + it.sku.replace(/[^a-zA-Z0-9]/g, "_")) === tr.id; });
+        }
+
+        function attachSummaryEvents() {
+            document.getElementById("applyPromoBtn").addEventListener("click", function () {
+                var code = (document.getElementById("promoInput").value || "").trim().toUpperCase();
+                if (!code) { return; }
+                // Supported demo codes
+                if (code === "LEARN10") {
+                    state.promo = { code: code, type: "percent", value: 10 };
+                    saveState();
+                    renderSummary();
+                    showToast("Promo applied: 10% off.");
+                } else if (code === "SHIPFREE") {
+                    state.promo = { code: code, type: "shipping", value: 0 };
+                    saveState();
+                    renderSummary();
+                    showToast("Promo applied: free standard shipping.");
+                } else {
+                    showToast("Promo code not recognized.");
+                }
+            });
+
+            document.getElementById("removePromoBtn").addEventListener("click", function () {
+                state.promo = null;
+                saveState();
+                renderSummary();
+                showToast("Promo removed.");
+            });
+
+            document.querySelectorAll('input[name="shipping"]').forEach(function (r) {
+                r.addEventListener("change", function (e) {
+                    state.shipping = e.target.value;
+                    renderSummary();
+                });
+            });
+
+            document.getElementById("clearCartBtn").addEventListener("click", function () {
+                if (!confirm("Clear all items from your cart?")) { return; }
+                state.items = [];
+                saveState();
+                renderCart();
+                showToast("Cart cleared.");
+            });
+        }
+
+        // ===== Init =====
+        (function init() {
+            // Footer year
+            var yEl = document.getElementById("year");
+            if (yEl) { yEl.textContent = new Date().getFullYear().toString(); }
+
+            loadState();
+            renderCart();
+            attachSummaryEvents();
+        })();
+    </script>
+</body>
+
+</html>
