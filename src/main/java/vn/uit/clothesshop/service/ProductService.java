@@ -1,6 +1,7 @@
 package vn.uit.clothesshop.service;
 
 
+import static java.lang.Math.log;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,17 +15,20 @@ import vn.uit.clothesshop.customexception.UnexpectedException;
 import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
+import vn.uit.clothesshop.domain.entity.Product_;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.utils.Message;
+
 import java.time.Instant;
 import java.util.Date;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.domain.Specification;
 
 
 
@@ -174,13 +178,23 @@ public class ProductService {
         try {
             return this.productRepository.save(product);
         } catch (final Exception exception) {
-            log.error("Error saving product", exception);
+           
             return null;
         }
     }
 
-    public Page<Product> getProductByPage(int page, int number) {
+    public Page<Product> getProductByPage(int page, int number, String name) {
         PageRequest pageable = PageRequest.of(number-1, page);
-        return this.productRepository.findAll(pageable);
+        if(name==null) {
+            return this.productRepository.findAll(pageable);
+        }
+        return this.productRepository.findAll(nameLike(name),pageable);
     }
+    private Specification<Product> nameLike(String name){
+        
+        return (root, query, criteriaBuilder) 
+            -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
+    }
+    
+
 }

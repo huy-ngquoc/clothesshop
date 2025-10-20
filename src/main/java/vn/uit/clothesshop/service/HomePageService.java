@@ -29,7 +29,7 @@ public class HomePageService {
     public List<ColorCount> getColorCounts() {
         return productVariantService.countProductVariantByColor();
     }
-    public Page<Product> getProductsPage(int page, int number) {
-        return productService.getProductByPage(page, number);
+    public Page<Product> getProductsPage(int page, int number, String name) {
+        return productService.getProductByPage(page, number, name);
     }
 }

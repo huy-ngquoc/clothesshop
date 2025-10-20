@@ -1,12 +1,14 @@
 package vn.uit.clothesshop.controller.client;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.data.domain.Page;
+
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.service.HomePageService;
 
@@ -25,8 +27,17 @@ public class HomepageController {
     }
 
     @GetMapping("/shop")
-    public String getShopPage(final Model model, @RequestParam(defaultValue="1") int page) {
-        Page<Product> pageProducts= homePageService.getProductsPage(12, page);
+    public String getShopPage(final Model model, @RequestParam("page") Optional<String> pageOptional, @RequestParam("name") Optional<String> nameOptional) {
+        String pageString = pageOptional.orElse("1");
+        int pageNumber=1;
+        String name = nameOptional.orElse(null);
+        try {
+            pageNumber = Integer.parseInt(pageString);
+        }
+        catch(Exception e) {
+            return "client/homepage/show";
+        }
+        Page<Product> pageProducts= homePageService.getProductsPage(12, pageNumber,name);
         List<Product> listProducts = pageProducts.getContent();
         model.addAttribute("products",listProducts);
         model.addAttribute("currentPage",pageProducts.getNumber());

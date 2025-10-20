@@ -83,6 +83,8 @@
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>
         </dependency>
+        
+
 
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -99,6 +101,13 @@
             <artifactId>lombok</artifactId>
             <optional>true</optional>
         </dependency>
+        <dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-jpamodelgen</artifactId>
+    <version>6.4.1.Final</version>
+    
+    <scope>provided</scope>
+</dependency>
 
     </dependencies>
 
@@ -118,6 +127,8 @@
                     </excludes>
                 </configuration>
             </plugin>
+
+            
             
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -128,6 +139,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </path>
+                        <path>
+                        <groupId>org.hibernate.orm</groupId>
+                        <artifactId>hibernate-jpamodelgen</artifactId>
+                        <version>6.4.1.Final</version>
+                    </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
