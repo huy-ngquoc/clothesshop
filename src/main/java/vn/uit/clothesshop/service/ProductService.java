@@ -20,7 +20,7 @@ import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.utils.Message;
-
+import java.time.Instant;
 import java.util.Date;
 
 import org.springframework.data.domain.Page;
@@ -99,7 +99,7 @@ public class ProductService {
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc(), 0, 0, category, requestDto.getTargets(), new Date(),null,0,"",0);
+                requestDto.getDetailDesc(),"",   category, requestDto.getTargets(), Instant.now(),null,0,0);
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {

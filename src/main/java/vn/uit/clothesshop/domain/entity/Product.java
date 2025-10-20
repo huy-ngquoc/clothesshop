@@ -1,26 +1,34 @@
 package vn.uit.clothesshop.domain.entity;
 
-import java.util.Date;
-import java.util.List;
+import java.time.Instant;
+import java.util.EnumSet;
+import java.util.Set;
 
-import org.hibernate.annotations.ColumnDefault;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
 import vn.uit.clothesshop.domain.enums.ETarget;
+import vn.uit.clothesshop.utils.EnumSetHelper;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @FieldNameConstants
 public class Product {
     public static final int MIN_LENGTH_NAME = 3;
@@ -46,89 +54,97 @@ public class Product {
     @Size(min = MIN_LENGTH_DETAIL_DESC, max = MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    @PositiveOrZero
-    @ColumnDefault("0")
-    private int minPrice;
-    @PositiveOrZero
-    @ColumnDefault("0")
-    private int maxPrice;
-    @PositiveOrZero
-    @ColumnDefault("0")
-    private int sold;
-    @ManyToOne
-    private Category category;
-    @ElementCollection(targetClass=ETarget.class)
-    @Enumerated(EnumType.STRING)
-    private List<ETarget> target;
-    private Date createAt;
-    private Date updateAt;
     private String image;
-    @ColumnDefault("0")
+
+    @PositiveOrZero
+    private int minPrice = 0;
+
+    @PositiveOrZero
+    private int maxPrice = 0;
+
+    @PositiveOrZero
     private int quantity;
-    
-    Product() {
-    }
+
+    @PositiveOrZero
+    private int sold = 0;
+
+    @NotNull
+    @ManyToOne(fetch = FetchType.EAGER)
+    private Category category = new Category();
+
+    @ElementCollection(targetClass = ETarget.class)
+    @Enumerated(EnumType.STRING)
+    private Set<ETarget> target = EnumSet.noneOf(ETarget.class);
+
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private final Instant createdAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private final Instant updatedAt = Instant.now();
 
     public Product(
             final String name,
             final String shortDesc,
-            final String detailDesc, final int minPrice, final int maxPrice,Category category, List<ETarget> target, Date createAt, Date updateAt, int sold, String image, int quantity) {
+            final String detailDesc,
+            final String image,
+            final Category category,
+            final Set<ETarget> target, final Instant createAt, final Instant updateAt, final int quantity, final int sold) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
-        this.minPrice= minPrice;
-        this.maxPrice= maxPrice;
+        this.image = image;
         this.category = category;
-        this.target = target;
-        this.createAt=createAt;
-        this.updateAt=updateAt;
-        this.sold= sold;
-    } 
+        this.target = EnumSetHelper.copyOf(target, ETarget.class);
+        this.quantity=quantity;
+        
+        this.sold=sold;
+    }
+
+    Product() {
+    }
+
     public String getImage() {
         return this.image;
-    } 
+    }
+
     public int getQuantity() {
         return this.quantity;
-    } 
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
     public void setImage(String image) {
-        this.image=image;
+        this.image = image;
     }
+
     public int getSold() {
         return this.sold;
-    } 
-    public void setSold(int sold) {
-        this.sold= sold;
     }
-    public Date getCreateAt(){
-        return this.createAt;
-    } 
-    public Date getUpdateAt() {
-        return this.updateAt;
-    } 
-    public void setCreateAt(Date createAt) {
-        this.createAt=createAt;
-    } 
-    public void setUpdateAt(Date updateAt){
-        this.updateAt=updateAt;
+
+    public void setSold(int sold) {
+        this.sold = sold;
     }
 
     public Category getCategory() {
-        return category;
+        return this.category;
     }
 
-    public void setCategory(Category category) {
+    public void setCategory(final Category category) {
         this.category = category;
     }
 
-    public List<ETarget> getTarget() {
-        return target;
+    public Set<ETarget> getTarget() {
+        return EnumSetHelper.copyOf(this.target, ETarget.class);
     }
 
-    public void setTarget(List<ETarget> target) {
-        this.target = target;
+    public void setTarget(final Set<ETarget> target) {
+        this.target = EnumSetHelper.copyOf(target, ETarget.class);
     }
 
     public long getId() {
@@ -139,7 +155,7 @@ public class Product {
         return minPrice;
     }
 
-    public void setMinPrice(int minPrice) {
+    public void setMinPrice(final int minPrice) {
         this.minPrice = minPrice;
     }
 
@@ -147,7 +163,7 @@ public class Product {
         return maxPrice;
     }
 
-    public void setMaxPrice(int maxPrice) {
+    public void setMaxPrice(final int maxPrice) {
         this.maxPrice = maxPrice;
     }
 
@@ -175,7 +191,16 @@ public class Product {
         this.detailDesc = detailDesc;
     }
 
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
+    }
+
     void setId(final long id) {
         this.id = id;
     }
+
 }

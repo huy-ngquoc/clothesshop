@@ -1,17 +1,15 @@
 package vn.uit.clothesshop.dto.request;
 
-import java.util.List;
+import java.util.EnumSet;
+import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.enums.ETarget;
+import vn.uit.clothesshop.utils.EnumSetHelper;
 
-@NoArgsConstructor
-@AllArgsConstructor
 public class ProductUpdateRequestDto {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
@@ -26,21 +24,24 @@ public class ProductUpdateRequestDto {
     private String detailDesc = "";
 
     @Positive
-    private int categoryId;
+    private int categoryId = 0;
 
-    //@NotNull
-    private List<ETarget> targets;
-    public int getCategoryId() {
-        return this.categoryId;
+    private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
+
+    public ProductUpdateRequestDto() {
     }
-    public List<ETarget> getTargets() {
-        return this.targets;
-    }
-    public void setCategoryId(int categoryId) {
-        this.categoryId= categoryId;
-    } 
-    public void setTargets(List<ETarget> targets) {
-        this.targets= targets;
+
+    public ProductUpdateRequestDto(
+            final String name,
+            final String shortDesc,
+            final String detailDesc,
+            final int categoryId,
+            final Set<ETarget> targets) {
+        this.name = name;
+        this.shortDesc = shortDesc;
+        this.detailDesc = detailDesc;
+        this.categoryId = categoryId;
+        this.targets = EnumSetHelper.copyOf(targets, ETarget.class);
     }
 
     public String getName() {
@@ -65,6 +66,22 @@ public class ProductUpdateRequestDto {
 
     public void setDetailDesc(final String detailDesc) {
         this.detailDesc = detailDesc;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(final int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Set<ETarget> getTargets() {
+        return EnumSet.copyOf(this.targets);
+    }
+
+    public void setTargets(final Set<ETarget> targets) {
+        this.targets = EnumSetHelper.copyOf(targets, ETarget.class);
     }
 
 }
