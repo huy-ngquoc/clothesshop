@@ -183,11 +183,13 @@ public class ProductService {
         }
     }
 
-    public Page<Product> getProductByPage(int page, int number, String name) {
+    public Page<Product> getProductByPage(int page, int number) {
         PageRequest pageable = PageRequest.of(number-1, page);
-        if(name==null) {
-            return this.productRepository.findAll(pageable);
-        }
+        return this.productRepository.findAll(pageable);
+        
+    }
+    public Page<Product> getProductByPageAndName(int page, int number, String name) {
+        PageRequest pageable = PageRequest.of(number-1, page);
         return this.productRepository.findAll(nameLike(name),pageable);
     }
     private Specification<Product> nameLike(String name){

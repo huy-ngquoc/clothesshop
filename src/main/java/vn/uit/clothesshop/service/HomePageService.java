@@ -30,6 +30,9 @@ public class HomePageService {
         return productVariantService.countProductVariantByColor();
     }
     public Page<Product> getProductsPage(int page, int number, String name) {
-        return productService.getProductByPage(page, number, name);
+        if(name==null) {
+            return productService.getProductByPage(page, number);
+        }
+        return productService.getProductByPageAndName(page, number, name);
     }
 }
