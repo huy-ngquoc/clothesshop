@@ -21,6 +21,7 @@ import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
+import vn.uit.clothesshop.specification.ProductSpecification;
 import vn.uit.clothesshop.utils.Message;
 
 import java.time.Instant;
@@ -190,13 +191,9 @@ public class ProductService {
     }
     public Page<Product> getProductByPageAndName(int page, int number, String name) {
         PageRequest pageable = PageRequest.of(number-1, page);
-        return this.productRepository.findAll(nameLike(name),pageable);
+        return this.productRepository.findAll(ProductSpecification.nameLike(name),pageable);
     }
-    private Specification<Product> nameLike(String name){
-        
-        return (root, query, criteriaBuilder) 
-            -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
-    }
+   
     
 
 }
