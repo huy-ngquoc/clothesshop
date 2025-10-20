@@ -1,7 +1,9 @@
 package vn.uit.clothesshop.domain.entity;
 
+import java.io.Serializable;
 import java.time.Instant;
 import java.util.EnumSet;
+import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -201,6 +203,21 @@ public class Product {
 
     void setId(final long id) {
         this.id = id;
+    }
+    @Override
+    public boolean equals(Object other) {
+        if(other instanceof Product p) {
+            if(p!=null) {
+                return p.id==this.id;
+            }
+        }
+        return false;
+    }
+    @Override
+    public int hashCode() {
+        Long idObject =  id;
+        return Objects.hash(idObject);
+        
     }
 
 }

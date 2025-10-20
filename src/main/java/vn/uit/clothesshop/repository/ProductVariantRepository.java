@@ -2,17 +2,20 @@ package vn.uit.clothesshop.repository;
 
 import java.util.List;
 
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
+import vn.uit.clothesshop.dto.selectcolumninteface.GetProductId;
 import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 
-public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
+public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long>, JpaSpecificationExecutor<ProductVariant>{
     @NotNull
     List<@NotNull ProductVariant> findAllByProduct(final Product product);
 
@@ -31,4 +34,9 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
     public List<ProductInfoHomePage> getProductInfoForHomePage();
 
     public List<ProductVariant> findByProduct_IdIn(List<Long> listProductId);
+    @Override
+    public List<ProductVariant> findAll(Specification<ProductVariant> spec);
+
+    public List<GetProductId> findByColorIn(List<String> listColor);
+    public List<GetProductId> findBySizeIn(List<String> listSize); 
 }

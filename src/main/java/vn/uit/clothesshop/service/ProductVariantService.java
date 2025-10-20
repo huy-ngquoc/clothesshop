@@ -20,6 +20,7 @@ import vn.uit.clothesshop.dto.response.ProductVariantBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductVariantDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
+import vn.uit.clothesshop.dto.selectcolumninteface.GetProductId;
 import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
@@ -243,6 +244,15 @@ public class ProductVariantService {
     public void deleteProductVariant(@NotNull final ProductVariant productVariant) {
         productVariantRepository.delete(productVariant);
     }
+
+    public List<Long> getProductIdByColor(List<String> listColor) {
+        return productVariantRepository.findByColorIn(listColor).stream().map(GetProductId::getProduct_Id).toList();
+    }
+    public List<Long> getProductIdBySize(List<String> listSize) {
+        return productVariantRepository.findBySizeIn(listSize).stream().map(GetProductId::getProduct_Id).toList();
+    }
+    
+
     
 
 }

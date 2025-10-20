@@ -76,76 +76,25 @@
                                 <!-- Size -->
                                 <fieldset class="mb-3">
                                     <legend class="h6">Size</legend>
+                                    <c:forEach var="size" items="${sizeCounts}">
+
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sizeXS" value="XS" />
-                                        <label class="form-check-label" for="sizeXS">XS</label>
+                                        <input class="form-check-input" type="checkbox" id="${size.size}" value="${size.size}" />
+                                        <label class="form-check-label" for="${size.size}">${size.size}</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sizeS" value="S" />
-                                        <label class="form-check-label" for="sizeS">S</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sizeM" value="M" />
-                                        <label class="form-check-label" for="sizeM">M</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sizeL" value="L" />
-                                        <label class="form-check-label" for="sizeL">L</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="sizeXL" value="XL" />
-                                        <label class="form-check-label" for="sizeXL">XL</label>
-                                    </div>
+                                    </c:forEach>
                                 </fieldset>
 
                                 <!-- Color -->
                                 <fieldset class="mb-3">
                                     <legend class="h6">Color</legend>
+                                    <c:forEach var="color" items="${colorCounts}"> 
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorBlack" value="Black" />
-                                        <label class="form-check-label" for="colorBlack"><span
-                                                class="color-dot color-Black"></span>Black</label>
+                                        <input class="form-check-input" type="checkbox" id="${color.color}" value="${color.color}" />
+                                        <label class="form-check-label" for="${color.color}"><span
+                                                class="color-dot color-${color.color}"></span>${color.color}</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorWhite" value="White" />
-                                        <label class="form-check-label" for="colorWhite"><span
-                                                class="color-dot color-White"></span>White</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorRed" value="Red" />
-                                        <label class="form-check-label" for="colorRed"><span
-                                                class="color-dot color-Red"></span>Red</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorBlue" value="Blue" />
-                                        <label class="form-check-label" for="colorBlue"><span
-                                                class="color-dot color-Blue"></span>Blue</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorNavy" value="Navy" />
-                                        <label class="form-check-label" for="colorNavy"><span
-                                                class="color-dot color-Navy"></span>Navy</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorGreen" value="Green" />
-                                        <label class="form-check-label" for="colorGreen"><span
-                                                class="color-dot color-Green"></span>Green</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorBeige" value="Beige" />
-                                        <label class="form-check-label" for="colorBeige"><span
-                                                class="color-dot color-Beige"></span>Beige</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorGrey" value="Grey" />
-                                        <label class="form-check-label" for="colorGrey"><span
-                                                class="color-dot color-Grey"></span>Grey</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="colorBrown" value="Brown" />
-                                        <label class="form-check-label" for="colorBrown"><span
-                                                class="color-dot color-Brown"></span>Brown</label>
-                                    </div>
+                                    </c:forEach>
                                 </fieldset>
 
                                 <div class="d-grid gap-2">

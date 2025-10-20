@@ -25,7 +25,36 @@
         .color-White {
             background: #ffffff;
         }
-
+        .color-Yellow {
+            background: yellow;
+        }
+        .color-Orange {
+            background: orange;
+        } 
+        .color-Gold {
+            background: gold;
+        } 
+        .color-Pink {
+            background: pink;
+        }
+        .color-Teal {
+            background: teal;
+        }
+        .color-Gray {
+            background: gray;
+        } 
+        .color-Silver {
+            background: silver;
+        } 
+        .color-Purple {
+            background: purple;
+        } 
+        .color-White {
+            background: white;
+        } 
+        .color-Cyan {
+            background: cyan;
+        }
         .color-Red {
             background: #e03131;
         }

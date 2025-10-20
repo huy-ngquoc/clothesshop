@@ -2,6 +2,8 @@ package vn.uit.clothesshop.service;
 
 
 import static java.lang.Math.log;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,10 +28,14 @@ import vn.uit.clothesshop.utils.Message;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
+
+import vn.uit.clothesshop.utils.ParamValidator;
 
 
 
@@ -192,6 +198,45 @@ public class ProductService {
     public Page<Product> getProductByPageAndName(int page, int number, String name) {
         PageRequest pageable = PageRequest.of(number-1, page);
         return this.productRepository.findAll(ProductSpecification.nameLike(name),pageable);
+    }
+    public Set<Long> getProductIdSetFromProductIdList(List<Long> listProductId) {
+        if(!ParamValidator.validateList(listProductId)) {
+            return null;
+        }
+        return new HashSet<>(listProductId);
+    }
+    public Page<Product> getProductByFilter(int page, int number, String name, Integer fromPrice, Integer toPrice, List<String> listSize, List<String> listColor) {
+        Specification<Product> finalSpec = null;
+        PageRequest pageable = PageRequest.of(number-1, page);
+        if(name!=null&&!name.equals("")) {
+            finalSpec= ProductSpecification.nameLike(name);
+        } 
+        if(ParamValidator.validateFromPriceAndToPrice(fromPrice, toPrice)) {
+            Specification<Product> priceRangeSpec = ProductSpecification.priceBetween(fromPrice, toPrice);
+            finalSpec = ProductSpecification.andTwoSpec(finalSpec, priceRangeSpec);
+        }
+        List<Long> listProductIds = new ArrayList<>();
+        if(ParamValidator.validateList(listColor)) {
+            listProductIds=new ArrayList<>(productVariantService.getProductIdByColor(listColor));
+            
+        } 
+        if(ParamValidator.validateList(listSize)) {
+            List<Long> listIdBySize = productVariantService.getProductIdBySize(listSize);
+            if(listIdBySize!=null) {
+                listProductIds.retainAll(listIdBySize);
+            }
+        }
+        Set<Long> productIdSet = getProductIdSetFromProductIdList(listProductIds);
+        if(ParamValidator.validateSet(productIdSet)) {
+            System.out.println("Valid set");
+            Specification idInSpec = ProductSpecification.idIn(productIdSet);
+            finalSpec=ProductSpecification.andTwoSpec(finalSpec, idInSpec);
+        }
+        if(finalSpec==null) {
+            return this.productRepository.findAll(pageable);
+        }
+        return this.productRepository.findAll(finalSpec,pageable);
+
     }
    
     

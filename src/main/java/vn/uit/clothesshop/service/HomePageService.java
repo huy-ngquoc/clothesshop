@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.domain.entity.Product;
+import vn.uit.clothesshop.dto.request.FilterRequest;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 
@@ -34,5 +35,9 @@ public class HomePageService {
             return productService.getProductByPage(page, number);
         }
         return productService.getProductByPageAndName(page, number, name);
+    }
+    public Page<Product> filterProduct(FilterRequest request) {
+        return productService.getProductByFilter(12, request.getPageNumber(), request.getName(), 
+        request.getFromPrice(), request.getToPrice(), request.getListSize(), request.getListColors());
     }
 }
