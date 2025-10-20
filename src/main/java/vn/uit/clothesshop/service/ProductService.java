@@ -180,7 +180,7 @@ public class ProductService {
     }
 
     public Page<Product> getProductByPage(int page, int number) {
-        PageRequest pageable = PageRequest.of(number, page);
+        PageRequest pageable = PageRequest.of(number-1, page);
         return this.productRepository.findAll(pageable);
     }
 }

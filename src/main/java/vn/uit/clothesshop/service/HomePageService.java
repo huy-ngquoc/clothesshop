@@ -2,6 +2,7 @@ package vn.uit.clothesshop.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import vn.uit.clothesshop.domain.entity.Category;
@@ -28,7 +29,7 @@ public class HomePageService {
     public List<ColorCount> getColorCounts() {
         return productVariantService.countProductVariantByColor();
     }
-    public List<Product> getProducts(int page, int number) {
-        return productService.getProductByPage(page, number).getContent();
+    public Page<Product> getProductsPage(int page, int number) {
+        return productService.getProductByPage(page, number);
     }
 }

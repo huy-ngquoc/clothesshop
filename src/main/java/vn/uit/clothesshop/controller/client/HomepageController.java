@@ -6,7 +6,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.data.domain.Page;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.service.HomePageService;
 
@@ -26,8 +26,11 @@ public class HomepageController {
 
     @GetMapping("/shop")
     public String getShopPage(final Model model, @RequestParam(defaultValue="1") int page) {
-        List<Product> listProducts = homePageService.getProducts(12, page);
+        Page<Product> pageProducts= homePageService.getProductsPage(12, page);
+        List<Product> listProducts = pageProducts.getContent();
         model.addAttribute("products",listProducts);
+        model.addAttribute("currentPage",pageProducts.getNumber());
+        model.addAttribute("totalPages",pageProducts.getTotalPages());
         return "client/homepage/shop";
     }
 }
