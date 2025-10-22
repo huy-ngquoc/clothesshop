@@ -7,4 +7,5 @@ import vn.uit.clothesshop.domain.entity.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    public User findByEmail(String email);
 }
