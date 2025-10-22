@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+    
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Aurora Apparel — Register</title>
+    <meta name="description" content="Create your account to track orders and checkout faster." />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+        .auth-wrap {
+            max-width: 620px;
+        }
+
+        .pw-meter {
+            height: .25rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html" title="Aurora Apparel">Aurora Apparel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="navMain" class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="shop.html">Shop</a></li>
+                    <li class="nav-item"><a class="nav-link" href="cart.html">Cart</a></li>
+                </ul>
+                <a class="btn btn-outline-dark" href="login.html" role="button">Sign in</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <header class="py-4 bg-light border-bottom">
+        <div class="container">
+            <h1 class="h3 mb-1">Create account</h1>
+            <p class="text-secondary mb-0">Join us for faster checkout and order tracking.</p>
+        </div>
+    </header>
+
+    <!-- MAIN -->
+    <main class="py-5">
+        <div class="container d-flex justify-content-center">
+            <div class="auth-wrap w-100">
+                <!-- Optional server error -->
+                <div id="errorAlert" class="alert alert-danger d-none" role="alert">Registration failed. Please check
+                    your details.</div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                       <form:form id="registerForm" class="needs-validation" 
+           action="/auth/register" method="post"
+           modelAttribute="registerDto" enctype="multipart/form-data" novalidate="novalidate">
+
+    <div class="row g-3">
+
+        <!-- First Name -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorFirstName">
+                <form:errors cssClass="invalid-feedback" path="firstName" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputFirstName" path="firstName">First name:</form:label>
+            <form:input id="inputFirstName"
+                        cssClass="form-control ${not empty errorFirstName ? 'is-invalid' : ''}"
+                        path="firstName" />
+            ${errorFirstName}
+        </div>
+
+        <!-- Last Name -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorLastName">
+                <form:errors cssClass="invalid-feedback" path="lastName" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputLastName" path="lastName">Last name:</form:label>
+            <form:input id="inputLastName"
+                        cssClass="form-control ${not empty errorLastName ? 'is-invalid' : ''}"
+                        path="lastName" />
+            ${errorLastName}
+        </div>
+
+        <!-- Email -->
+        <div class="col-12">
+            <c:set var="errorEmail">
+                <form:errors cssClass="invalid-feedback" path="email" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputEmail" path="email">Email address:</form:label>
+            <form:input id="inputEmail" type="email"
+                        cssClass="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
+                        path="email" placeholder="you@example.com" />
+            ${errorEmail}
+        </div>
+
+        
+        <div class="col-12">
+            <c:set var="errorPhone">
+                <form:errors cssClass="invalid-feedback" path="phone" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputPhone" path="phone">Phone number:</form:label>
+            <form:input id="inputPhone" type="tel"
+                        cssClass="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                        path="phone" placeholder="e.g. 0901234567" />
+            ${errorPhone}
+        </div>
+
+        <!-- Password -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorPassword">
+                <form:errors cssClass="invalid-feedback" path="password" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputPassword" path="password">Password:</form:label>
+            <div class="input-group">
+                <form:password id="inputPassword"
+                               cssClass="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                               path="password" placeholder="At least 8 characters" />
+                <button id="togglePwd" class="btn btn-outline-secondary" type="button">Show</button>
+            </div>
+            ${errorPassword}
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorConfirm">
+                <form:errors cssClass="invalid-feedback" path="confirmPassword" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputConfirm" path="confirmPassword">Confirm password:</form:label>
+            <div class="input-group">
+                <form:password id="inputConfirm"
+                               cssClass="form-control ${not empty errorConfirm ? 'is-invalid' : ''}"
+                               path="confirmPassword" placeholder="Repeat password" />
+                <button id="toggleConfirm" class="btn btn-outline-secondary" type="button">Show</button>
+            </div>
+            ${errorConfirm}
+        </div>
+
+        <!-- Submit -->
+        <div class="col-12 d-grid gap-2 mt-3">
+            <button class="btn btn-dark btn-lg" type="submit">Create account</button>
+        </div>
+
+    </div>
+</form:form>
+
+
+                    </div>
+                </div>
+
+                <p class="text-center text-secondary mt-3 mb-0">
+                    Already have an account? <a href="login.html">Sign in</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="py-5 border-top">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-start">
+            <div>
+                <h3 class="h6">Aurora Apparel</h3>
+                <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+            </div>
+            <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        
+    </script>
+</body>
+
+</html>
+</jsp:root>

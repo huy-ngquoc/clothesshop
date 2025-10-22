@@ -74,7 +74,7 @@ public class User {
 
     @OneToOne(mappedBy="user")
     private Cart cart;
-    User() {
+    public User() {
     }
 
     public User(
@@ -177,4 +177,5 @@ public class User {
     void setId(final long id) {
         this.id = id;
     }
+    
 }

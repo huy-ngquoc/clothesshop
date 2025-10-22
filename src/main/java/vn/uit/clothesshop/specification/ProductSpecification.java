@@ -11,6 +11,7 @@ import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
@@ -21,7 +22,9 @@ public final class ProductSpecification {
 
     @NotNull
     public static Specification<Product> nameLike(@Nullable final String keyword) {
-        return (final Root<Product> root, final CriteriaQuery<?> _, final CriteriaBuilder criteriaBuilder) -> {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
             if (!StringUtils.hasText(keyword)) {
                 criteriaBuilder.conjunction();
             }
@@ -57,7 +60,7 @@ public final class ProductSpecification {
         };
     }
 
-    public static Specification<Product> anyColors(@Nullable final Set<String> listColors) {
+    public static Specification<Product> anyColors(@Nullable final Set<@NotBlank String> listColors) {
         return (final Root<Product> root,
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {

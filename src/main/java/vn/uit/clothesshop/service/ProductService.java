@@ -1,6 +1,5 @@
 package vn.uit.clothesshop.service;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -19,18 +18,11 @@ import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
-import vn.uit.clothesshop.specification.ProductSpecification;
 import vn.uit.clothesshop.utils.Message;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-
-import vn.uit.clothesshop.utils.ParamValidator;
 
 @Service
 @Slf4j
@@ -98,7 +90,9 @@ public class ProductService {
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc(),
-                productVariantService.handleFindAllProductVariantsByProduct(product));
+                productVariantService.handleFindAllProductVariantsByProduct(product), product.getMinPrice(),
+                product.getMaxPrice(),
+                product.getSold(), product.getQuantity(), product.getImage());
     }
 
     @Nullable
