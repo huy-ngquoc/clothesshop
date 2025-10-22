@@ -1,23 +1,19 @@
 package vn.uit.clothesshop.service;
 
-
-import static java.lang.Math.log;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.customexception.NotFoundException;
-import vn.uit.clothesshop.customexception.UnexpectedException;
 import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
-import vn.uit.clothesshop.domain.entity.Product_;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
@@ -26,18 +22,15 @@ import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.specification.ProductSpecification;
 import vn.uit.clothesshop.utils.Message;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
 import vn.uit.clothesshop.utils.ParamValidator;
-
-
 
 @Service
 @Slf4j
@@ -47,6 +40,7 @@ public class ProductService {
 
     @NotNull
     private final ProductVariantService productVariantService;
+
     @NotNull
     private final CategoryService categoryService;
 
@@ -73,6 +67,24 @@ public class ProductService {
     @NotNull
     public List<@NotNull Product> findAllProduct() {
         return this.productRepository.findAll();
+    }
+
+    @NotNull
+    public Page<@NotNull ProductBasicInfoResponseDto> handleFindAllProduct(
+            @NotNull final Specification<Product> spec,
+            @NotNull final Pageable pageable) {
+        return this.findAllProduct(spec, pageable)
+                .map((final var product) -> new ProductBasicInfoResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getShortDesc()));
+    }
+
+    @NotNull
+    public Page<@NotNull Product> findAllProduct(
+            @Nullable final Specification<Product> spec,
+            @NotNull final Pageable pageable) {
+        return this.productRepository.findAll(spec, pageable);
     }
 
     @Nullable
@@ -110,7 +122,9 @@ public class ProductService {
         final var product = new Product(
                 requestDto.getName(),
                 requestDto.getShortDesc(),
-                requestDto.getDetailDesc(),"",   category, requestDto.getTargets(), Instant.now(),null,0,0);
+                requestDto.getDetailDesc(),
+                category,
+                requestDto.getTargets());
 
         final var savedProduct = this.handleSaveProduct(product);
         if (savedProduct == null) {
@@ -143,9 +157,11 @@ public class ProductService {
         return new ProductUpdateRequestDto(
                 product.getName(),
                 product.getShortDesc(),
-                product.getDetailDesc(), product.getCategory().getId(), product.getTarget());
+                product.getDetailDesc(),
+                product.getCategoryId(), product.getTarget());
     }
 
+    @Transactional
     public boolean handleUpdateProduct(
             final long id,
             @NotNull final ProductUpdateRequestDto requestDto) {
@@ -154,28 +170,39 @@ public class ProductService {
             return false;
         }
 
+        final var oldCategoryId = product.getCategoryId();
+        final var newCategoryId = requestDto.getCategoryId();
+        if (oldCategoryId != newCategoryId) {
+            if (!this.categoryService.increaseAmountOfProduct(newCategoryId, 1)) {
+                return false;
+            }
+
+            if (!this.categoryService.decreaseAmountOfProduct(oldCategoryId, 1)) {
+                return false;
+            }
+
+            final var newCategory = this.categoryService.getReferenceById(newCategoryId);
+            product.setCategory(newCategory);
+        }
+
         product.setName(requestDto.getName());
         product.setShortDesc(requestDto.getShortDesc());
         product.setDetailDesc(requestDto.getDetailDesc());
-        Category oldCat = product.getCategory();
-        Category newCat = categoryService.findById(requestDto.getCategoryId());
-        if (oldCat.getId() != newCat.getId()) {
-            oldCat.setAmountOfProduct(oldCat.getAmountOfProduct() - 1);
-            newCat.setAmountOfProduct(newCat.getAmountOfProduct() + 1);
-            categoryService.handleSaveCategory(oldCat);
-            product.setCategory(newCat);
-        }
         product.setTarget(requestDto.getTargets());
+
         return this.handleSaveProduct(product) != null;
     }
 
+    @Transactional
     public void deleteProductById(final long id) {
-        Product p = findProductById(id);
-        Category cat = p.getCategory();
-        if (cat == null) {
-            throw new UnexpectedException(Message.unexpectedError);
+        final var product = findProductById(id);
+        if (product == null) {
+            return;
         }
-        cat.setAmountOfProduct(cat.getAmountOfProduct() - 1);
+
+        final var categoryId = product.getCategoryId();
+        this.categoryService.decreaseAmountOfProduct(categoryId, 1);
+
         // TODO: cascade to delete variant as well without using varian repo.
         this.productRepository.deleteById(id);
     }
@@ -185,60 +212,8 @@ public class ProductService {
         try {
             return this.productRepository.save(product);
         } catch (final Exception exception) {
-           
+            log.error("Error saving Product", exception);
             return null;
         }
     }
-
-    public Page<Product> getProductByPage(int page, int number) {
-        PageRequest pageable = PageRequest.of(number-1, page);
-        return this.productRepository.findAll(pageable);
-        
-    }
-    public Page<Product> getProductByPageAndName(int page, int number, String name) {
-        PageRequest pageable = PageRequest.of(number-1, page);
-        return this.productRepository.findAll(ProductSpecification.nameLike(name),pageable);
-    }
-    public Set<Long> getProductIdSetFromProductIdList(List<Long> listProductId) {
-        if(!ParamValidator.validateList(listProductId)) {
-            return null;
-        }
-        return new HashSet<>(listProductId);
-    }
-    public Page<Product> getProductByFilter(int page, int number, String name, Integer fromPrice, Integer toPrice, List<String> listSize, List<String> listColor) {
-        Specification<Product> finalSpec = null;
-        PageRequest pageable = PageRequest.of(number-1, page);
-        if(name!=null&&!name.equals("")) {
-            finalSpec= ProductSpecification.nameLike(name);
-        } 
-        if(ParamValidator.validateFromPriceAndToPrice(fromPrice, toPrice)) {
-            Specification<Product> priceRangeSpec = ProductSpecification.priceBetween(fromPrice, toPrice);
-            finalSpec = ProductSpecification.andTwoSpec(finalSpec, priceRangeSpec);
-        }
-        List<Long> listProductIds = new ArrayList<>();
-        if(ParamValidator.validateList(listColor)) {
-            listProductIds=new ArrayList<>(productVariantService.getProductIdByColor(listColor));
-            
-        } 
-        if(ParamValidator.validateList(listSize)) {
-            List<Long> listIdBySize = productVariantService.getProductIdBySize(listSize);
-            if(listIdBySize!=null) {
-                listProductIds.retainAll(listIdBySize);
-            }
-        }
-        Set<Long> productIdSet = getProductIdSetFromProductIdList(listProductIds);
-        if(ParamValidator.validateSet(productIdSet)) {
-            System.out.println("Valid set");
-            Specification idInSpec = ProductSpecification.idIn(productIdSet);
-            finalSpec=ProductSpecification.andTwoSpec(finalSpec, idInSpec);
-        }
-        if(finalSpec==null) {
-            return this.productRepository.findAll(pageable);
-        }
-        return this.productRepository.findAll(finalSpec,pageable);
-
-    }
-   
-    
-
 }

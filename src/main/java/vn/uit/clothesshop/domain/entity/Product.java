@@ -2,6 +2,7 @@ package vn.uit.clothesshop.domain.entity;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -21,6 +23,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -56,7 +59,11 @@ public class Product {
     @Size(min = MIN_LENGTH_DETAIL_DESC, max = MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    private String image;
+    @Nullable
+    private String image = null;
+
+    @OneToMany(mappedBy = ProductVariant.Fields.product)
+    private Set<ProductVariant> variants = Collections.emptySet();
 
     @PositiveOrZero
     private int minPrice = 0;
@@ -65,13 +72,13 @@ public class Product {
     private int maxPrice = 0;
 
     @PositiveOrZero
-    private int quantity;
+    private int quantity = 0;
 
     @PositiveOrZero
     private int sold = 0;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Category category = new Category();
 
     @ElementCollection(targetClass = ETarget.class)
@@ -92,18 +99,13 @@ public class Product {
             final String name,
             final String shortDesc,
             final String detailDesc,
-            final String image,
             final Category category,
-            final Set<ETarget> target, final Instant createAt, final Instant updateAt, final int quantity, final int sold) {
+            final Set<ETarget> target) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
-        this.image = image;
         this.category = category;
         this.target = EnumSetHelper.copyOf(target, ETarget.class);
-        this.quantity=quantity;
-        
-        this.sold=sold;
     }
 
     Product() {
@@ -133,8 +135,8 @@ public class Product {
         this.sold = sold;
     }
 
-    public Category getCategory() {
-        return this.category;
+    public long getCategoryId() {
+        return this.category.getId();
     }
 
     public void setCategory(final Category category) {
@@ -204,20 +206,22 @@ public class Product {
     void setId(final long id) {
         this.id = id;
     }
+
     @Override
     public boolean equals(Object other) {
-        if(other instanceof Product p) {
-            if(p!=null) {
-                return p.id==this.id;
+        if (other instanceof Product p) {
+            if (p != null) {
+                return p.id == this.id;
             }
         }
         return false;
     }
+
     @Override
     public int hashCode() {
-        Long idObject =  id;
+        Long idObject = id;
         return Objects.hash(idObject);
-        
+
     }
 
 }
