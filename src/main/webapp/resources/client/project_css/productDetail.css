@@ -1,0 +1,138 @@
+.gallery-main {
+            height: 480px;
+            object-fit: cover;
+        }
+
+        .thumb {
+            height: 90px;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid rgba(0, 0, 0, .1);
+        }
+
+        .color-dot {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, .15);
+            margin-right: .5rem;
+            vertical-align: middle;
+        }
+
+        .color-Black {
+            background: #000000;
+        }
+
+        .color-White {
+            background: #ffffff;
+        }
+        .color-Yellow {
+            background: yellow;
+        }
+        .color-Orange {
+            background: orange;
+        } 
+        .color-Gold {
+            background: gold;
+        } 
+        .color-Pink {
+            background: pink;
+        }
+        .color-Teal {
+            background: teal;
+        }
+        .color-Gray {
+            background: gray;
+        } 
+        .color-Silver {
+            background: silver;
+        } 
+        .color-Purple {
+            background: purple;
+        } 
+        .color-White {
+            background: white;
+        } 
+        .color-Cyan {
+            background: cyan;
+        }
+        .color-Red {
+            background: #e03131;
+        }
+
+        .color-Blue {
+            background: #1971c2;
+        }
+
+        .color-Navy {
+            background: #0b2b50;
+        }
+
+        .color-Green {
+            background: #2f9e44;
+        }
+
+        .color-Beige {
+            background: #e7d3b4;
+        }
+
+        .color-Grey {
+            background: #adb5bd;
+        }
+
+        .color-Brown {
+            background: #8d6e63;
+        }
+        .variant-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.variant-item {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 6px 10px;
+  cursor: pointer;
+  background-color: #fff;
+  transition: 0.2s;
+}
+
+.variant-item:hover {
+  background-color: #f5f5f5;
+}
+
+.variant-checkbox {
+  margin-right: 6px;
+  accent-color: #007bff;
+}
+
+.variant-label {
+  font-weight: 500;
+}
+        .size-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 3rem;
+            padding: .4rem .75rem;
+            border: 1px solid rgba(0, 0, 0, .2);
+            border-radius: 999px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .size-pill.active {
+            background: #000000;
+            color: #ffffff;
+            border-color: #000000;
+        }
+
+        .size-pill.disabled {
+            opacity: .4;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }

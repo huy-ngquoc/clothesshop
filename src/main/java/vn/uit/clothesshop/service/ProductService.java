@@ -86,7 +86,8 @@ public class ProductService {
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc(),
-                productVariantService.handleFindAllProductVariantsByProduct(product));
+                productVariantService.handleFindAllProductVariantsByProduct(product), product.getMinPrice(), product.getMaxPrice(), 
+                product.getSold(), product.getQuantity(), product.getImage());
     }
 
     @Nullable
@@ -238,6 +239,8 @@ public class ProductService {
         return this.productRepository.findAll(finalSpec,pageable);
 
     }
+
+    
    
     
 
