@@ -1,11 +1,9 @@
 package vn.uit.clothesshop.service;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
-
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,6 @@ import vn.uit.clothesshop.dto.response.ProductVariantDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
 import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
 import vn.uit.clothesshop.dto.selectcolumninteface.GetProductId;
-import vn.uit.clothesshop.dto.selectcolumninteface.ProductInfoHomePage;
 import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
 
@@ -137,7 +134,7 @@ public class ProductVariantService {
                 requestDto.getSize(),
                 requestDto.getStockQuantity(),
                 requestDto.getPriceCents(),
-                requestDto.getWeightGrams(),0);
+                requestDto.getWeightGrams(), 0);
 
         final var savedProductVariant = productVariantRepository.save(productVariant);
         return savedProductVariant.getId();
@@ -224,6 +221,11 @@ public class ProductVariantService {
         } else {
             imageFileName = imageFileService.handleUpdateUploadFile(imageFileName, imageFile, IMAGE_SUBFOLDER_NAME);
         }
+
+        if (!StringUtils.hasText(imageFileName)) {
+            return false;
+        }
+
         productVariant.setImage(imageFileName);
 
         return productVariantRepository.save(productVariant) != null;
@@ -248,11 +250,9 @@ public class ProductVariantService {
     public List<Long> getProductIdByColor(List<String> listColor) {
         return productVariantRepository.findByColorIn(listColor).stream().map(GetProductId::getProduct_Id).toList();
     }
+
     public List<Long> getProductIdBySize(List<String> listSize) {
         return productVariantRepository.findBySizeIn(listSize).stream().map(GetProductId::getProduct_Id).toList();
     }
-    
-
-    
 
 }
