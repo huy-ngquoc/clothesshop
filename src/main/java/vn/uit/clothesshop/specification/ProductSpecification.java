@@ -1,39 +1,98 @@
 package vn.uit.clothesshop.specification;
 
-import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.util.StringUtils;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Root;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.domain.entity.Product;
-import vn.uit.clothesshop.domain.entity.Product_;
+import vn.uit.clothesshop.domain.entity.ProductVariant;
 
-public class ProductSpecification {
-    public static Specification<Product> nameLike(String name){
-        
-        return (root, query, criteriaBuilder) 
-            -> criteriaBuilder.like(root.get(Product_.NAME), "%"+name+"%");
-    }
-    public static Specification<Product> priceBetween(int from, int to) {
-        Specification<Product> biggerThanFrom = (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get(Product_.MIN_PRICE),from);
-        Specification<Product> smallerThanTo = (root,query, criteriaBuilder)->criteriaBuilder.lessThanOrEqualTo(root.get(Product_.MIN_PRICE),to);
-        return biggerThanFrom.and(smallerThanTo);
+public final class ProductSpecification {
+    private ProductSpecification() {
     }
 
-    public static Specification<Product> idIn(Set<Long> listIds) {
-    
-        Specification<Product> idInSpec = (root, query,criteriaBuilder)->{
-            CriteriaBuilder.In<Long> inClause = criteriaBuilder.in(root.get(Product_.id));
-                for (Long id : listIds) {
-                    inClause.value(id);
-                }
-                return inClause;
+    @NotNull
+    public static Specification<Product> nameLike(@Nullable final String keyword) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if (!StringUtils.hasText(keyword)) {
+                criteriaBuilder.conjunction();
+            }
+
+            return criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get(Product.Fields.name)),
+                    "%" + keyword.toLowerCase(Locale.ROOT) + "%");
         };
-        return idInSpec;
     }
-    public static Specification<Product> andTwoSpec(Specification<Product> spec1, Specification<Product> spec2) {
-        if(spec1==null) return spec2;
-        return spec1.and(spec2);
+
+    @NotNull
+    public static Specification<Product> priceBetween(
+            @Nullable final Integer from,
+            @Nullable final Integer to) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            final var minPricePath = root.<Integer>get(Product.Fields.minPrice);
+
+            if (from == null) {
+                if (to == null) {
+                    return criteriaBuilder.conjunction();
+                }
+
+                return criteriaBuilder.lessThanOrEqualTo(minPricePath, to);
+            }
+
+            if (to == null) {
+                return criteriaBuilder.greaterThanOrEqualTo(minPricePath, from);
+            }
+
+            return criteriaBuilder.between(minPricePath, from, to);
+        };
+    }
+
+    public static Specification<Product> anyColors(@Nullable final Set<@NotBlank String> listColors) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if ((listColors == null) || (listColors.isEmpty())) {
+                return criteriaBuilder.conjunction();
+            }
+
+            final var colorVariantPath = root
+                    .<Product, ProductVariant>join(Product.Fields.variants, JoinType.INNER)
+                    .<String>get(ProductVariant.Fields.color);
+            final var colorVariantIn = criteriaBuilder.in(colorVariantPath);
+            listColors.forEach(colorVariantIn::value);
+
+            return colorVariantIn;
+        };
+    }
+
+    public static Specification<Product> anySizes(@Nullable final Set<String> listSizes) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if ((listSizes == null) || (listSizes.isEmpty())) {
+                return criteriaBuilder.conjunction();
+            }
+
+            final var sizeVariantPath = root
+                    .<Product, ProductVariant>join(Product.Fields.variants, JoinType.INNER)
+                    .<String>get(ProductVariant.Fields.size);
+            final var sizeVariantIn = criteriaBuilder.in(sizeVariantPath);
+            listSizes.forEach(sizeVariantIn::value);
+
+            return sizeVariantIn;
+        };
     }
 }

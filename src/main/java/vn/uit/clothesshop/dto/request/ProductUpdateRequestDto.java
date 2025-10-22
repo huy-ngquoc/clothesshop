@@ -24,7 +24,7 @@ public class ProductUpdateRequestDto {
     private String detailDesc = "";
 
     @Positive
-    private int categoryId = 0;
+    private long categoryId = 0;
 
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
 
@@ -35,7 +35,7 @@ public class ProductUpdateRequestDto {
             final String name,
             final String shortDesc,
             final String detailDesc,
-            final int categoryId,
+            final long categoryId,
             final Set<ETarget> targets) {
         this.name = name;
         this.shortDesc = shortDesc;
@@ -68,7 +68,7 @@ public class ProductUpdateRequestDto {
         this.detailDesc = detailDesc;
     }
 
-    public int getCategoryId() {
+    public long getCategoryId() {
         return categoryId;
     }
 

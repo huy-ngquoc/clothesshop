@@ -3,33 +3,53 @@ package vn.uit.clothesshop.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 
-import vn.uit.clothesshop.customexception.NotFoundException;
+import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.repository.CategoryRepository;
-import vn.uit.clothesshop.utils.Message;
 
 @Service
+@Validated
 public class CategoryService {
-    private final CategoryRepository categoryRepo;
+    @NotNull
+    private final CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepo) {
-        this.categoryRepo = categoryRepo;
+    public CategoryService(@NotNull final CategoryRepository categoryRepo) {
+        this.categoryRepository = categoryRepo;
     }
 
-    public Category findById(int categoryId) {
-        Category category = categoryRepo.findById(categoryId).orElse(null);
-        if (category == null) {
-            throw new NotFoundException(Message.categoryNotFound);
-        }
-        return category;
+    @Nullable
+    public Category findById(final long id) {
+        return categoryRepository.findById(id).orElse(null);
     }
 
     public List<Category> findAll() {
-        return categoryRepo.findAll();
+        return categoryRepository.findAll();
     }
 
-    public void handleSaveCategory(Category category) {
-        categoryRepo.save(category);
+    private void handleSaveCategory(@NotNull final Category category) {
+        categoryRepository.save(category);
+    }
+
+    Category getReferenceById(final long id) {
+        return this.categoryRepository.getReferenceById(id);
+    }
+
+    @Transactional
+    boolean increaseAmountOfProduct(
+            @Nullable final Long id,
+            @PositiveOrZero final int amount) {
+        return this.categoryRepository.increaseAmountOfProduct(id, amount) > 0;
+    }
+
+    @Transactional
+    boolean decreaseAmountOfProduct(
+            @Nullable final Long id,
+            @PositiveOrZero final int amount) {
+        return this.categoryRepository.decreaseAmountOfProduct(id, amount) > 0;
     }
 }
