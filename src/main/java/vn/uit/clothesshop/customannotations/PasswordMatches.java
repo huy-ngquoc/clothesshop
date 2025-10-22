@@ -9,12 +9,14 @@ import java.lang.annotation.Target;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
-@Constraint(validatedBy=EmailExistValidator.class)
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Constraint(validatedBy=PasswordMatchValidator.class)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface EmailExist {
-    String message() default "This email is already be used!";
+public @interface PasswordMatches {
+    public String passwordField();
+    public String confirmPasswordField();
+    String message() default "Password and confirm password does not match";
     Class<?>[] groups() default {};
-    Class<? extends Payload>[] payload() default {}; 
+    Class<? extends Payload>[] payload() default {};
 }

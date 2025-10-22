@@ -16,6 +16,6 @@ public class EmailExistValidator implements ConstraintValidator<EmailExist, Stri
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
         User user = userRepo.findByEmail(value);
-        return user!=null;
+        return user==null;
     }
 }

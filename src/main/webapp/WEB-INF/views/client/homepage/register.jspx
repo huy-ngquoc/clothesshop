@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+    
     <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -60,78 +62,105 @@
 
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <form id="registerForm" class="needs-validation" action="/register" method="post"
-                            novalidate="novalidate">
-                            <!-- CSRF hidden if needed -->
-                            <!-- <input type="hidden" name="_csrf" value="..." /> -->
+                       <form:form id="registerForm" class="needs-validation" 
+           action="/auth/register" method="post"
+           modelAttribute="registerDto" enctype="multipart/form-data" novalidate="novalidate">
 
-                            <div class="row g-3">
-                                <div class="col-sm-6">
-                                    <label for="firstName" class="form-label">First name</label>
-                                    <input id="firstName" name="firstName" class="form-control" type="text"
-                                        autocomplete="given-name" required="required" />
-                                    <div class="invalid-feedback">First name is required.</div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <label for="lastName" class="form-label">Last name</label>
-                                    <input id="lastName" name="lastName" class="form-control" type="text"
-                                        autocomplete="family-name" required="required" />
-                                    <div class="invalid-feedback">Last name is required.</div>
-                                </div>
+    <div class="row g-3">
 
-                                <div class="col-12">
-                                    <label for="email" class="form-label">Email address</label>
-                                    <input id="email" name="email" class="form-control" type="email"
-                                        placeholder="you@example.com" autocomplete="email" required="required" />
-                                    <div class="invalid-feedback">Please enter a valid email.</div>
-                                </div>
+        <!-- First Name -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorFirstName">
+                <form:errors cssClass="invalid-feedback" path="firstName" />
+            </c:set>
 
-                                <div class="col-sm-6">
-                                    <label for="password" class="form-label">Password</label>
-                                    <div class="input-group">
-                                        <input id="password" name="password" class="form-control" type="password"
-                                            placeholder="At least 8 characters" autocomplete="new-password"
-                                            minlength="8" required="required" />
-                                        <button id="togglePwd" class="btn btn-outline-secondary" type="button"
-                                            aria-label="Show or hide password">Show</button>
-                                    </div>
-                                    <div class="progress pw-meter mt-2" role="progressbar"
-                                        aria-label="Password strength">
-                                        <div id="pwBar" class="progress-bar" style="width: 0%;"></div>
-                                    </div>
-                                    <div class="form-text">Use 8+ characters with a mix of letters and numbers.</div>
-                                    <div class="invalid-feedback">Password must be at least 8 characters.</div>
-                                </div>
+            <form:label cssClass="form-label" for="inputFirstName" path="firstName">First name:</form:label>
+            <form:input id="inputFirstName"
+                        cssClass="form-control ${not empty errorFirstName ? 'is-invalid' : ''}"
+                        path="firstName" />
+            ${errorFirstName}
+        </div>
 
-                                <div class="col-sm-6">
-                                    <label for="confirm" class="form-label">Confirm password</label>
-                                    <div class="input-group">
-                                        <input id="confirm" name="confirm" class="form-control" type="password"
-                                            placeholder="Repeat password" autocomplete="new-password" minlength="8"
-                                            required="required" />
-                                        <button id="toggleConfirm" class="btn btn-outline-secondary" type="button"
-                                            aria-label="Show or hide confirm password">Show</button>
-                                    </div>
-                                    <div class="invalid-feedback" id="confirmMsg">Passwords must match.</div>
-                                </div>
+        <!-- Last Name -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorLastName">
+                <form:errors cssClass="invalid-feedback" path="lastName" />
+            </c:set>
 
-                                <div class="col-12">
-                                    <div class="form-check">
-                                        <input id="agree" class="form-check-input" type="checkbox"
-                                            required="required" />
-                                        <label class="form-check-label" for="agree">I agree to the <a
-                                                href="#terms">Terms</a> and <a href="#privacy">Privacy
-                                                Policy</a>.</label>
-                                        <div class="invalid-feedback">You must agree before creating an account.</div>
-                                    </div>
-                                </div>
+            <form:label cssClass="form-label" for="inputLastName" path="lastName">Last name:</form:label>
+            <form:input id="inputLastName"
+                        cssClass="form-control ${not empty errorLastName ? 'is-invalid' : ''}"
+                        path="lastName" />
+            ${errorLastName}
+        </div>
 
-                                <div class="col-12 d-grid gap-2">
-                                    <button class="btn btn-dark btn-lg" type="submit">Create account</button>
-                                    
-                                </div>
-                            </div>
-                        </form>
+        <!-- Email -->
+        <div class="col-12">
+            <c:set var="errorEmail">
+                <form:errors cssClass="invalid-feedback" path="email" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputEmail" path="email">Email address:</form:label>
+            <form:input id="inputEmail" type="email"
+                        cssClass="form-control ${not empty errorEmail ? 'is-invalid' : ''}"
+                        path="email" placeholder="you@example.com" />
+            ${errorEmail}
+        </div>
+
+        
+        <div class="col-12">
+            <c:set var="errorPhone">
+                <form:errors cssClass="invalid-feedback" path="phone" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputPhone" path="phone">Phone number:</form:label>
+            <form:input id="inputPhone" type="tel"
+                        cssClass="form-control ${not empty errorPhone ? 'is-invalid' : ''}"
+                        path="phone" placeholder="e.g. 0901234567" />
+            ${errorPhone}
+        </div>
+
+        <!-- Password -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorPassword">
+                <form:errors cssClass="invalid-feedback" path="password" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputPassword" path="password">Password:</form:label>
+            <div class="input-group">
+                <form:password id="inputPassword"
+                               cssClass="form-control ${not empty errorPassword ? 'is-invalid' : ''}"
+                               path="password" placeholder="At least 8 characters" />
+                <button id="togglePwd" class="btn btn-outline-secondary" type="button">Show</button>
+            </div>
+            ${errorPassword}
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="col-md-6 col-12">
+            <c:set var="errorConfirm">
+                <form:errors cssClass="invalid-feedback" path="confirmPassword" />
+            </c:set>
+
+            <form:label cssClass="form-label" for="inputConfirm" path="confirmPassword">Confirm password:</form:label>
+            <div class="input-group">
+                <form:password id="inputConfirm"
+                               cssClass="form-control ${not empty errorConfirm ? 'is-invalid' : ''}"
+                               path="confirmPassword" placeholder="Repeat password" />
+                <button id="toggleConfirm" class="btn btn-outline-secondary" type="button">Show</button>
+            </div>
+            ${errorConfirm}
+        </div>
+
+        <!-- Submit -->
+        <div class="col-12 d-grid gap-2 mt-3">
+            <button class="btn btn-dark btn-lg" type="submit">Create account</button>
+        </div>
+
+    </div>
+</form:form>
+
+
                     </div>
                 </div>
 
