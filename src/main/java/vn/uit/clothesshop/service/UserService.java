@@ -12,11 +12,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.domain.entity.User;
 import vn.uit.clothesshop.dto.middle.UserUpdateInfoMiddleDto;
+import vn.uit.clothesshop.dto.request.RegisterDto;
 import vn.uit.clothesshop.dto.request.UserCreationRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdateInfoRequestDto;
 import vn.uit.clothesshop.dto.request.UserUpdatePasswordRequestDto;
 import vn.uit.clothesshop.dto.response.UserBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.UserDetailInfoResponseDto;
+import vn.uit.clothesshop.mapper.UserMapper;
 import vn.uit.clothesshop.repository.UserRepository;
 
 @Service
@@ -26,7 +28,8 @@ public class UserService {
 
     @NotNull
     private final UserRepository userRepository;
-
+    @NotNull
+    private final UserMapper userMapper;
     @NotNull
     private final ImageFileService imageFileService;
 
@@ -36,10 +39,11 @@ public class UserService {
     public UserService(
             final UserRepository userRepository,
             final ImageFileService imageFileService,
-            final PasswordEncoder passwordEncoder) {
+            final PasswordEncoder passwordEncoder, final UserMapper userMapper) {
         this.userRepository = userRepository;
         this.imageFileService = imageFileService;
         this.passwordEncoder = passwordEncoder;
+        this.userMapper= userMapper;
     }
 
     @NotNull
@@ -239,5 +243,12 @@ public class UserService {
             log.error("Error saving user", exception);
             return null;
         }
+    }
+
+    public void userRegister(RegisterDto registerDto) {
+        User user = userMapper.getUserFromRegisterDto(registerDto);
+        userRepository.save(user);
+        
+
     }
 }
