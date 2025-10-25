@@ -158,7 +158,6 @@ public class ProductService {
                 product.getCategoryId(), product.getTarget());
     }
 
-    @Transactional
     @Nullable
     public UpdateError handleUpdateProduct(
             final long id,

@@ -65,6 +65,7 @@
                         <div class="card-body">
                             <form:form id="registerForm" class="needs-validation" action="/auth/register" method="post"
                                 modelAttribute="registerDto" enctype="multipart/form-data" novalidate="novalidate">
+                                
 
                                 <div class="row g-3">
 
@@ -173,7 +174,7 @@
                     </div>
 
                     <p class="text-center text-secondary mt-3 mb-0">
-                        Already have an account? <a href="login.html">Sign in</a>
+                        Already have an account? <a href="/auth/login">Sign in</a>
                     </p>
                 </div>
             </div>
