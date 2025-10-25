@@ -1,6 +1,5 @@
 package vn.uit.clothesshop.domain.entity;
 
-import java.io.Serializable;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.EnumSet;
@@ -210,9 +209,7 @@ public class Product {
     @Override
     public boolean equals(Object other) {
         if (other instanceof Product p) {
-            if (p != null) {
-                return p.id == this.id;
-            }
+            return p.id == this.id;
         }
         return false;
     }
@@ -223,5 +220,4 @@ public class Product {
         return Objects.hash(idObject);
 
     }
-
 }

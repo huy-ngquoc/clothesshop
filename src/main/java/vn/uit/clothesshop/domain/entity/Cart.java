@@ -2,6 +2,7 @@ package vn.uit.clothesshop.domain.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -13,18 +14,17 @@ import jakarta.persistence.Table;
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-    @OneToOne(cascade = CascadeType.ALL)
-    private User user;
+    private long id = 0;
 
-    public Cart() {
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private User user = new User();
 
+    public Cart(
+            final User user) {
+        this.user = user;
     }
 
-    public Cart(long id, User user) {
-        this.id = id;
-        this.user = user;
-
+    Cart() {
     }
 
     public long getId() {
@@ -35,11 +35,11 @@ public class Cart {
         return this.user;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setUser(final User user) {
+        this.user = user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    void setId(final long id) {
+        this.id = id;
     }
 }

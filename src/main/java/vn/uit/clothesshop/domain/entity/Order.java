@@ -2,100 +2,140 @@ package vn.uit.clothesshop.domain.entity;
 
 import java.time.Instant;
 
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import lombok.experimental.FieldNameConstants;
+
 import vn.uit.clothesshop.domain.enums.EOrderStatus;
 
 @Entity
-@Table(name="Orders")
+@Table(name = "Orders")
+@EntityListeners(AuditingEntityListener.class)
+@FieldNameConstants
 public class Order {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id = 0;
 
     @Enumerated(EnumType.STRING)
-    private EOrderStatus status;
-    private Instant createAt;
-    private Instant updateAt;
-    private long productPrice;
-    private long shippingFee;
-    private long total;
-    @ManyToOne
-    @JoinColumn(name="UserId")
-    private User user;
-    @OneToOne(mappedBy="order")
-    private Payment payment;
-    public Order() {
+    private EOrderStatus status = EOrderStatus.PROGRESSING;
 
-    } 
-    public Order(long id, EOrderStatus status, Instant createAt, Instant updateAt, long productPrice, long shippingFee, long total, User user, Payment payment) {
-        this.id = id;
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private final Instant createAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private final Instant updateAt = Instant.now();
+
+    private long productPrice = 0;
+
+    private long shippingFee = 0;
+
+    private long total = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user = new User();
+
+    @OneToOne(mappedBy = "Order", fetch = FetchType.LAZY)
+    private Payment payment = new Payment();
+
+    public Order(
+            final EOrderStatus status,
+            final long productPrice,
+            final long shippingFee,
+            final long total,
+            final User user,
+            final Payment payment) {
         this.status = status;
-        this.createAt = createAt;
-        this.updateAt = updateAt;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
         this.total = total;
         this.user = user;
         this.payment = payment;
     }
-    public long getId() {
-        return this.id;
-    } 
-    public Payment getPayment() {
-        return this.payment;
-    } 
-    public void setPayment(Payment payment) {
-        this.payment = payment;
+
+    Order() {
     }
+
+    public long getId() {
+        return id;
+    }
+
     public EOrderStatus getStatus() {
-        return this.status;
-    } 
-    public Instant getCreateAt() {
-        return this.createAt;
-    } 
-    public Instant getUpdateAt() {
-        return this.updateAt;
-    } 
-    public long getProductPrice() {
-        return this.productPrice;
-    } 
-    public long getShippingFee() {
-        return this.shippingFee;
-    } 
-    public long getTotal() {
-        return this.total;
-    } 
-    public User getUser() {
-        return this.user;
-    } 
-    public void setId(long id) {
-        this.id = id;
-    } 
-    public void setStatus(EOrderStatus status) {
+        return status;
+    }
+
+    public void setStatus(final EOrderStatus status) {
         this.status = status;
     }
-    public void setCreateAt(Instant createAt) {
-        this.createAt = createAt;
-    } 
-    public void setUpdateAt(Instant updateAt) {
-        this.updateAt = updateAt;
+
+    public Instant getCreateAt() {
+        return createAt;
     }
-    public void setProductPrice(long productPrice) {
+
+    public Instant getUpdateAt() {
+        return updateAt;
+    }
+
+    public long getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(final long productPrice) {
         this.productPrice = productPrice;
-    } 
-    public void setShippingFee(long shippingFee) {
+    }
+
+    public long getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(final long shippingFee) {
         this.shippingFee = shippingFee;
-    } 
-    public void setTotal(long total) {
+    }
+
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(final long total) {
         this.total = total;
+    }
+
+    public long getUserId() {
+        return user.getId();
+    }
+
+    public void setUser(final User user) {
+        this.user = user;
+    }
+
+    public long getPayment() {
+        return payment.getId();
+    }
+
+    public void setPayment(final Payment payment) {
+        this.payment = payment;
+    }
+
+    void setId(final long id) {
+        this.id = id;
     }
 }
