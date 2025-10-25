@@ -54,22 +54,17 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY)
     private User user = new User();
 
-    @OneToOne(mappedBy = "Order", fetch = FetchType.LAZY)
-    private Payment payment = new Payment();
-
     public Order(
             final EOrderStatus status,
             final long productPrice,
             final long shippingFee,
             final long total,
-            final User user,
-            final Payment payment) {
+            final User user) {
         this.status = status;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
         this.total = total;
         this.user = user;
-        this.payment = payment;
     }
 
     Order() {
@@ -125,14 +120,6 @@ public class Order {
 
     public void setUser(final User user) {
         this.user = user;
-    }
-
-    public long getPayment() {
-        return payment.getId();
-    }
-
-    public void setPayment(final Payment payment) {
-        this.payment = payment;
     }
 
     void setId(final long id) {

@@ -54,7 +54,7 @@ public interface ProductVariantRepository
     @Query("""
             SELECT pv
             FROM ProductVariant pv
-            WHERE pv.productId IN :productIds
+            WHERE pv.product.id IN :productIds
             """)
     @NotNull
     List<@NotNull ProductVariant> findByProductIdIn(@Param("productIds") List<Long> productIds);

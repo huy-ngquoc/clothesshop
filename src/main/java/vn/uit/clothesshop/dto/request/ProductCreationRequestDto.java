@@ -23,7 +23,7 @@ public final class ProductCreationRequestDto {
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    private int categoryId = 0;
+    private long categoryId = 0;
 
     @NotNull
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
@@ -52,11 +52,11 @@ public final class ProductCreationRequestDto {
         this.detailDesc = detailDesc;
     }
 
-    public int getCategoryId() {
+    public long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(final int categoryId) {
+    public void setCategoryId(final long categoryId) {
         this.categoryId = categoryId;
     }
 

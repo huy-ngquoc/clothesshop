@@ -16,19 +16,23 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotNull;
+import lombok.experimental.FieldNameConstants;
 import vn.uit.clothesshop.domain.enums.EPaymentStatus;
 import vn.uit.clothesshop.domain.enums.EPaymentType;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
+@FieldNameConstants
 public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false, unique = true)
     private Order order = new Order();
 
     private String currency = "";

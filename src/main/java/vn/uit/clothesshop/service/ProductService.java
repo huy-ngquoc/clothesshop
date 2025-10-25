@@ -9,17 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.customexception.NotFoundException;
-import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
-import vn.uit.clothesshop.repository.ProductRepository;
-import vn.uit.clothesshop.utils.Message;
-
+import vn.uit.clothesshop.service.ProductTxService.CreationException;
+import vn.uit.clothesshop.service.ProductTxService.DeletionException;
+import vn.uit.clothesshop.service.ProductTxService.UpdateException;
+import vn.uit.clothesshop.utils.Expected;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,22 +26,40 @@ import org.springframework.data.jpa.domain.Specification;
 @Service
 @Slf4j
 public class ProductService {
+    public enum CreationError {
+        CANNOT_UPDATE_CATEGORY,
+        CANNOT_SAVE_PRODUCT,
+    }
+
+    public enum UpdateError {
+        PRODUCT_NOT_EXISTED,
+        CANNOT_UPDATE_OLD_CATEGORY,
+        CANNOT_UPDATE_NEW_CATEGORY,
+        CANNOT_SAVE_PRODUCT,
+    }
+
+    public enum DeletionError {
+        PRODUCT_NOT_EXISTED,
+        CANNOT_UPDATE_CATEGORY,
+        CANNOT_DELETE_PRODUCT,
+    }
+
     @NotNull
-    private final ProductRepository productRepository;
+    private final ProductLookupService productLookupService;
+
+    @NotNull
+    private final ProductTxService productTxService;
 
     @NotNull
     private final ProductVariantService productVariantService;
 
-    @NotNull
-    private final CategoryService categoryService;
-
     public ProductService(
-            @NotNull final ProductRepository productRepository,
-            @NotNull ProductVariantService productVariantService,
-            final CategoryService categoryService) {
-        this.productRepository = productRepository;
+            @NotNull final ProductLookupService productLookupService,
+            @NotNull final ProductTxService productTxService,
+            @NotNull final ProductVariantService productVariantService) {
+        this.productLookupService = productLookupService;
+        this.productTxService = productTxService;
         this.productVariantService = productVariantService;
-        this.categoryService = categoryService;
     }
 
     @NotNull
@@ -58,7 +75,7 @@ public class ProductService {
 
     @NotNull
     public List<@NotNull Product> findAllProduct() {
-        return this.productRepository.findAll();
+        return this.productLookupService.findAll();
     }
 
     @NotNull
@@ -76,7 +93,7 @@ public class ProductService {
     public Page<@NotNull Product> findAllProduct(
             @Nullable final Specification<Product> spec,
             @NotNull final Pageable pageable) {
-        return this.productRepository.findAll(spec, pageable);
+        return this.productLookupService.findAll(spec, pageable);
     }
 
     @Nullable
@@ -97,35 +114,21 @@ public class ProductService {
 
     @Nullable
     public Product findProductById(final long id) {
-        Product p = this.productRepository.findById(id).orElse(null);
-        if (p == null) {
-            throw new NotFoundException(Message.productNotFound);
-        }
-        return p;
+        return this.productLookupService.findById(id);
     }
 
     public boolean existsProductById(final long id) {
-        return this.productRepository.existsById(id);
+        return this.productLookupService.existsById(id);
     }
 
     @Nullable
-    public Long handleCreateProduct(
+    public Expected<Long, CreationError> handleCreateProduct(
             @NotNull final ProductCreationRequestDto requestDto) {
-        Category category = categoryService.findById(requestDto.getCategoryId());
-        category.setAmountOfProduct(category.getAmountOfProduct() + 1);
-        final var product = new Product(
-                requestDto.getName(),
-                requestDto.getShortDesc(),
-                requestDto.getDetailDesc(),
-                category,
-                requestDto.getTargets());
-
-        final var savedProduct = this.handleSaveProduct(product);
-        if (savedProduct == null) {
-            return null;
+        try {
+            return Expected.success(this.productTxService.handleCreateProduct(requestDto));
+        } catch (final CreationException exception) {
+            return Expected.failure(exception.getError());
         }
-
-        return savedProduct.getId();
     }
 
     public void updateMinPriceAndMaxPrice(Product p) {
@@ -137,7 +140,7 @@ public class ProductService {
         p.setMaxPrice(mostExpensiveVariant.getPriceCents());
         ProductVariant cheapestVariant = Collections.min(listVariants);
         p.setMinPrice(cheapestVariant.getPriceCents());
-        productRepository.save(p);
+        this.productTxService.handleSaveProduct(p);
 
     }
 
@@ -156,58 +159,25 @@ public class ProductService {
     }
 
     @Transactional
-    public boolean handleUpdateProduct(
+    @Nullable
+    public UpdateError handleUpdateProduct(
             final long id,
             @NotNull final ProductUpdateRequestDto requestDto) {
-        final var product = this.findProductById(id);
-        if (product == null) {
-            return false;
+        try {
+            this.productTxService.handleUpdateProduct(id, requestDto);
+            return null;
+        } catch (final UpdateException exception) {
+            return exception.getError();
         }
-
-        final var oldCategoryId = product.getCategoryId();
-        final var newCategoryId = requestDto.getCategoryId();
-        if (oldCategoryId != newCategoryId) {
-            if (!this.categoryService.increaseAmountOfProduct(newCategoryId, 1)) {
-                return false;
-            }
-
-            if (!this.categoryService.decreaseAmountOfProduct(oldCategoryId, 1)) {
-                return false;
-            }
-
-            final var newCategory = this.categoryService.getReferenceById(newCategoryId);
-            product.setCategory(newCategory);
-        }
-
-        product.setName(requestDto.getName());
-        product.setShortDesc(requestDto.getShortDesc());
-        product.setDetailDesc(requestDto.getDetailDesc());
-        product.setTarget(requestDto.getTargets());
-
-        return this.handleSaveProduct(product) != null;
-    }
-
-    @Transactional
-    public void deleteProductById(final long id) {
-        final var product = findProductById(id);
-        if (product == null) {
-            return;
-        }
-
-        final var categoryId = product.getCategoryId();
-        this.categoryService.decreaseAmountOfProduct(categoryId, 1);
-
-        // TODO: cascade to delete variant as well without using varian repo.
-        this.productRepository.deleteById(id);
     }
 
     @Nullable
-    private Product handleSaveProduct(@NotNull final Product product) {
+    public DeletionError deleteProductById(final long id) {
         try {
-            return this.productRepository.save(product);
-        } catch (final Exception exception) {
-            log.error("Error saving Product", exception);
+            this.productTxService.deleteProductById(id);
             return null;
+        } catch (final DeletionException exception) {
+            return exception.getError();
         }
     }
 }
