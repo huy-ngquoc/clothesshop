@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
+import vn.uit.clothesshop.dto.request.LoginRequest;
 import vn.uit.clothesshop.dto.request.RegisterDto;
 import vn.uit.clothesshop.service.UserService;
 
@@ -35,6 +36,8 @@ public class AuthController {
 
     @GetMapping("/auth/login") 
     public String getLoginPage(final Model model) {
+        LoginRequest loginRequest = new LoginRequest();
+        model.addAttribute("loginForm", loginRequest);
         return "client/homepage/login";
     }
 }
