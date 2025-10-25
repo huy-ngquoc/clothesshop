@@ -251,4 +251,7 @@ public class UserService {
         
 
     }
+    public User findUserByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
 }
