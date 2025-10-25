@@ -169,7 +169,7 @@ public class User {
     public Role getRole() {
         return this.role;
     }
-
+    
     public void setRole(final Role role) {
         this.role = role;
     }

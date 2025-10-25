@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import jakarta.servlet.DispatcherType;
 import vn.uit.clothesshop.service.CustomUserDetailsService;
@@ -46,15 +47,22 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorize -> authorize.dispatcherTypeMatchers(DispatcherType.FORWARD,DispatcherType.INCLUDE) .permitAll()
 
                         .requestMatchers("/auth/**", "/client/**", "/css/**", "/js/**", "/img/**","/","/shop","/product/detail/**").permitAll()
-                        .anyRequest().authenticated())
-
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/client/**").hasRole("USER")
+                        .anyRequest().authenticated()
+                        )
 
                 .formLogin(formLogin -> formLogin
                         .loginPage("/auth/login")
                         .failureUrl("/auth/login?error")
+                        .successHandler(authenticationSuccessHandler())
                         .permitAll());
 
         return http.build();
 
+    }
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+        return new CustomSuccessHandler();
     }
 }
