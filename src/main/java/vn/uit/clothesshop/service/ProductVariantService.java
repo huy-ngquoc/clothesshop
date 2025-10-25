@@ -17,10 +17,9 @@ import vn.uit.clothesshop.dto.request.ProductVariantUpdateRequestDto;
 import vn.uit.clothesshop.dto.response.ProductVariantBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductVariantDetailInfoResponseDto;
 import vn.uit.clothesshop.repository.ProductRepository;
-import vn.uit.clothesshop.dto.selectcolumninteface.ColorCount;
-import vn.uit.clothesshop.dto.selectcolumninteface.GetProductId;
-import vn.uit.clothesshop.dto.selectcolumninteface.SizeCount;
 import vn.uit.clothesshop.repository.ProductVariantRepository;
+import vn.uit.clothesshop.repository.projection.ProductVariantColorCount;
+import vn.uit.clothesshop.repository.projection.ProductVariantSizeCount;
 
 @Service
 @Slf4j
@@ -231,11 +230,11 @@ public class ProductVariantService {
         return productVariantRepository.save(productVariant) != null;
     }
 
-    public List<ColorCount> countProductVariantByColor() {
+    public List<ProductVariantColorCount> countProductVariantByColor() {
         return productVariantRepository.countByColor();
     }
 
-    public List<SizeCount> countProductVariantBySize() {
+    public List<ProductVariantSizeCount> countProductVariantBySize() {
         return productVariantRepository.countBySize();
     }
 
@@ -248,11 +247,11 @@ public class ProductVariantService {
     }
 
     public List<Long> getProductIdByColor(List<String> listColor) {
-        return productVariantRepository.findByColorIn(listColor).stream().map(GetProductId::getProduct_Id).toList();
+        return productVariantRepository.findByColorIn(listColor);
     }
 
     public List<Long> getProductIdBySize(List<String> listSize) {
-        return productVariantRepository.findBySizeIn(listSize).stream().map(GetProductId::getProduct_Id).toList();
+        return productVariantRepository.findBySizeIn(listSize);
     }
 
 }

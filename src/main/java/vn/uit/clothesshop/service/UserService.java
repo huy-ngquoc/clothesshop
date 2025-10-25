@@ -43,7 +43,7 @@ public class UserService {
         this.userRepository = userRepository;
         this.imageFileService = imageFileService;
         this.passwordEncoder = passwordEncoder;
-        this.userMapper= userMapper;
+        this.userMapper = userMapper;
     }
 
     @NotNull
@@ -248,10 +248,10 @@ public class UserService {
     public void userRegister(RegisterDto registerDto) {
         User user = userMapper.getUserFromRegisterDto(registerDto);
         userRepository.save(user);
-        
 
     }
-    public User findUserByEmail(String email){
-        return userRepository.findByEmail(email);
+
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 }
