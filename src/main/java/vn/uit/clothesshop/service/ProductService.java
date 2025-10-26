@@ -4,8 +4,6 @@ import java.util.Collections;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +11,7 @@ import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
 import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
+import vn.uit.clothesshop.dto.response.ProductHomepageInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductBasicInfoResponseDto;
 import vn.uit.clothesshop.dto.response.ProductDetailInfoResponseDto;
 import vn.uit.clothesshop.service.ProductTxService.CreationException;
@@ -44,6 +43,8 @@ public class ProductService {
         CANNOT_DELETE_PRODUCT,
     }
 
+    private static final String IMAGE_SUB_FOLDER_NAME = "user";
+
     @NotNull
     private final ProductLookupService productLookupService;
 
@@ -53,13 +54,18 @@ public class ProductService {
     @NotNull
     private final ProductVariantService productVariantService;
 
+    @NotNull
+    private final ImageFileService imageFileService;
+
     public ProductService(
             @NotNull final ProductLookupService productLookupService,
             @NotNull final ProductTxService productTxService,
-            @NotNull final ProductVariantService productVariantService) {
+            @NotNull final ProductVariantService productVariantService,
+            @NotNull final ImageFileService imageFileService) {
         this.productLookupService = productLookupService;
         this.productTxService = productTxService;
         this.productVariantService = productVariantService;
+        this.imageFileService = imageFileService;
     }
 
     @NotNull
@@ -80,13 +86,27 @@ public class ProductService {
 
     @NotNull
     public Page<@NotNull ProductBasicInfoResponseDto> handleFindAllProduct(
-            @NotNull final Specification<Product> spec,
+            @Nullable final Specification<Product> spec,
             @NotNull final Pageable pageable) {
         return this.findAllProduct(spec, pageable)
                 .map((final var product) -> new ProductBasicInfoResponseDto(
                         product.getId(),
                         product.getName(),
                         product.getShortDesc()));
+    }
+
+    @NotNull
+    public Page<@NotNull ProductHomepageInfoResponseDto> handleFindAllProductForHomepage(
+            @Nullable final Specification<Product> spec,
+            @NotNull final Pageable pageable) {
+        return this.findAllProduct(spec, pageable)
+                .map((final var product) -> new ProductHomepageInfoResponseDto(
+                        product.getId(),
+                        product.getName(),
+                        product.getShortDesc(),
+                        this.imageFileService.getPathString(product.getImage(), IMAGE_SUB_FOLDER_NAME),
+                        product.getMinPrice(),
+                        product.getMaxPrice()));
     }
 
     @NotNull
