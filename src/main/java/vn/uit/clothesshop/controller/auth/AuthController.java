@@ -15,26 +15,31 @@ import vn.uit.clothesshop.service.UserService;
 @Controller
 public class AuthController {
     private final UserService userService;
-    public AuthController(UserService userService) {
+
+    public AuthController(final UserService userService) {
         this.userService = userService;
     }
+
     @GetMapping("/auth/register")
     public String getRegisterPage(final Model model) {
-        RegisterDto registerDto= new RegisterDto();
+        final RegisterDto registerDto = new RegisterDto();
         model.addAttribute("registerDto", registerDto);
         return "client/homepage/register";
     }
 
     @PostMapping("/auth/register")
-    public String register(@ModelAttribute("registerDto") @Valid RegisterDto registerDto, BindingResult bindingResult) {
-        if(bindingResult.hasErrors()) {
+    public String register(
+            @ModelAttribute("registerDto") @Valid final RegisterDto registerDto,
+            final BindingResult bindingResult,
+            final Model model) {
+        if (bindingResult.hasErrors()) {
             return "client/homepage/register";
         }
         userService.userRegister(registerDto);
         return "redirect:/auth/login";
     }
 
-    @GetMapping("/auth/login") 
+    @GetMapping("/auth/login")
     public String getLoginPage(final Model model) {
         LoginRequest loginRequest = new LoginRequest();
         model.addAttribute("loginForm", loginRequest);

@@ -31,10 +31,6 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    private void handleSaveCategory(@NotNull final Category category) {
-        categoryRepository.save(category);
-    }
-
     Category getReferenceById(final long id) {
         return this.categoryRepository.getReferenceById(id);
     }
@@ -51,5 +47,9 @@ public class CategoryService {
             @Nullable final Long id,
             @PositiveOrZero final int amount) {
         return this.categoryRepository.decreaseAmountOfProduct(id, amount) > 0;
+    }
+
+    private void handleSaveCategory(@NotNull final Category category) {
+        categoryRepository.save(category);
     }
 }

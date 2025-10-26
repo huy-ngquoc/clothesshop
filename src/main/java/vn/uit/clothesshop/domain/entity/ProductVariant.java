@@ -1,7 +1,5 @@
 package vn.uit.clothesshop.domain.entity;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,7 +15,7 @@ import lombok.experimental.FieldNameConstants;
 
 @Entity
 @FieldNameConstants
-public class ProductVariant implements Comparable<ProductVariant>  {
+public class ProductVariant implements Comparable<ProductVariant> {
     public static final int MAX_LENGTH_COLOR = 10;
     public static final int MAX_LENGTH_SIZE = 10;
 
@@ -26,7 +24,7 @@ public class ProductVariant implements Comparable<ProductVariant>  {
     private long id = 0;
 
     @NotNull
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     private Product product = new Product();
 
     @NotBlank
@@ -50,8 +48,7 @@ public class ProductVariant implements Comparable<ProductVariant>  {
     private String image = "";
 
     @PositiveOrZero
-    @ColumnDefault("0")
-    private int sold;
+    private int sold = 0;
 
     ProductVariant() {
     }
@@ -62,27 +59,25 @@ public class ProductVariant implements Comparable<ProductVariant>  {
             final String size,
             final int stockQuantity,
             final int priceCents,
-            final int weightGrams, final int sold) {
+            final int weightGrams) {
         this.product = product;
         this.color = color;
         this.size = size;
         this.stockQuantity = stockQuantity;
         this.priceCents = priceCents;
         this.weightGrams = weightGrams;
-        this.sold= sold;
-    }
-    public int getSold() {
-        return this.sold;
-    } 
-    public void setSold(int sold) {
-        this.sold = sold;
-    }
-    public void setId(long id) {
-        this.id = id;
     }
 
-    public Product getProduct() {
-        return product;
+    public long getId() {
+        return this.id;
+    }
+
+    public int getSold() {
+        return this.sold;
+    }
+
+    public void setSold(int sold) {
+        this.sold = sold;
     }
 
     public String getImage() {
@@ -91,10 +86,6 @@ public class ProductVariant implements Comparable<ProductVariant>  {
 
     public void setImage(String image) {
         this.image = image;
-    }
-
-    public long getId() {
-        return this.id;
     }
 
     public long getProductId() {

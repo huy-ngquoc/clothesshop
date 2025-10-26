@@ -1,21 +1,55 @@
 package vn.uit.clothesshop.domain.entity;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
+import lombok.experimental.FieldNameConstants;
 
 @Entity
-@Table(name = "CATEGORY")
+@EntityListeners(AuditingEntityListener.class)
+@FieldNameConstants
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
 
-    private String name;
-    private String image;
-    private int amountOfProduct;
+    @NotBlank
+    private String name = "";
+
+    @Nullable
+    private String image = "";
+
+    @PositiveOrZero
+    private int amountOfProduct = 0;
+
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    public Category(
+            final String name,
+            final String image,
+            final int amountOfProduct) {
+        this.name = name;
+        this.image = image;
+        this.amountOfProduct = amountOfProduct;
+    }
+
+    Category() {
+    }
 
     public long getId() {
         return id;
@@ -25,11 +59,11 @@ public class Category {
         return this.amountOfProduct;
     }
 
-    public void setAmountOfProduct(int amountOfProduct) {
+    public void setAmountOfProduct(final int amountOfProduct) {
         this.amountOfProduct = amountOfProduct;
     }
 
-    void setId(long id) {
+    void setId(final long id) {
         this.id = id;
     }
 
@@ -37,7 +71,7 @@ public class Category {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -45,17 +79,11 @@ public class Category {
         return image;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 
-    public Category(int id, String name, String image, int amountOfProduct) {
-        this.id = id;
-        this.name = name;
-        this.image = image;
-        this.amountOfProduct = amountOfProduct;
-    }
-
-    Category() {
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 }

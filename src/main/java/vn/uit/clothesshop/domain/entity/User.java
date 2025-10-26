@@ -72,8 +72,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    @OneToOne(mappedBy="user")
+    @OneToOne(mappedBy = "user")
     private Cart cart;
+
     public User() {
     }
 
@@ -93,12 +94,15 @@ public class User {
         this.phoneNumber = phoneNumber;
         this.role = role;
     }
+
     public Cart getCart() {
         return this.cart;
-    } 
+    }
+
     public void setCart(Cart cart) {
         this.cart = cart;
     }
+
     public long getId() {
         return this.id;
     }
@@ -177,5 +181,5 @@ public class User {
     void setId(final long id) {
         this.id = id;
     }
-    
+
 }

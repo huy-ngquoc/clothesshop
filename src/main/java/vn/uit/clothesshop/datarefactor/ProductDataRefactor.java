@@ -14,28 +14,30 @@ import vn.uit.clothesshop.repository.ProductVariantRepository;
 public class ProductDataRefactor {
     private final ProductRepository productRepo;
     private final ProductVariantRepository productVariantRepo;
+
     public ProductDataRefactor(ProductRepository productRepo, ProductVariantRepository productVariantRepo) {
         this.productRepo = productRepo;
-        this.productVariantRepo= productVariantRepo;
+        this.productVariantRepo = productVariantRepo;
 
         List<Product> listProduct = this.productRepo.findAll();
         List<Long> listProductId = listProduct.stream().map(Product::getId).toList();
         List<Product> listProductToSave = new ArrayList<>();
-        for(int i=0;i<listProductId.size();i++) {
-            
+        for (int i = 0; i < listProductId.size(); i++) {
+
             List<ProductVariant> listVariants = this.productVariantRepo.findByProduct_Id(listProductId.get(i));
-            if(listVariants!=null&&listVariants.size()>0) {
+            if (listVariants != null && listVariants.size() > 0) {
                 ProductVariant firstVariant = listVariants.get(0);
-                Product p= firstVariant.getProduct();
+                final var productId = firstVariant.getProductId();
+                final var p = this.productRepo.findById(productId).orElse(null);
                 p.setImage(firstVariant.getImage());
-                int sold=0;
-                int quantity=0;
-                int maxPrice=0;
-                int minPrice=Integer.MAX_VALUE;
-                for(int j=0;j<listVariants.size();j++) {
-                    sold=sold+listVariants.get(j).getSold();
-                    quantity=quantity+listVariants.get(j).getStockQuantity();
-                    maxPrice =Integer.max(maxPrice, listVariants.get(j).getPriceCents());
+                int sold = 0;
+                int quantity = 0;
+                int maxPrice = 0;
+                int minPrice = Integer.MAX_VALUE;
+                for (int j = 0; j < listVariants.size(); j++) {
+                    sold = sold + listVariants.get(j).getSold();
+                    quantity = quantity + listVariants.get(j).getStockQuantity();
+                    maxPrice = Integer.max(maxPrice, listVariants.get(j).getPriceCents());
                     minPrice = Integer.min(minPrice, listVariants.get(j).getPriceCents());
                 }
                 p.setSold(sold);

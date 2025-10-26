@@ -4,37 +4,49 @@ import java.io.Serializable;
 import java.util.Objects;
 
 import jakarta.persistence.Embeddable;
+import lombok.experimental.FieldNameConstants;
 
 @Embeddable
+@FieldNameConstants
 public class OrderDetailKey implements Serializable {
-    private Long orderId;
-    private Long productVariantId;
-    public OrderDetailKey(){
+    private long orderId = 0;
+    private long productVariantId = 0;
 
-    } 
-    public OrderDetailKey(Long orderId, Long productVariantId) {
+    public OrderDetailKey() {
+    }
+
+    public OrderDetailKey(
+            final long orderId,
+            final long productVariantId) {
         this.orderId = orderId;
-        this.productVariantId = productVariantId;
-    } 
-    public Long getOrderId() {
-        return this.orderId;
-    } 
-    public Long getProductVariantId() {
-        return this.productVariantId;
-    } 
-    public void setOrderId(Long orderId) {
-        this.orderId = orderId;
-    } 
-    public void setProductVariantId(Long productVariantId) {
         this.productVariantId = productVariantId;
     }
+
+    public long getOrderId() {
+        return this.orderId;
+    }
+
+    public long getProductVariantId() {
+        return this.productVariantId;
+    }
+
+    public void setOrderId(final long orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setProductVariantId(final long productVariantId) {
+        this.productVariantId = productVariantId;
+    }
+
     @Override
     public boolean equals(Object o) {
-        if(o instanceof OrderDetailKey other) {
-            return Objects.equals(this.orderId, other.orderId)&&Objects.equals(this.productVariantId, other.productVariantId);
-        } 
+        if (o instanceof OrderDetailKey other) {
+            return Objects.equals(this.orderId, other.orderId)
+                    && Objects.equals(this.productVariantId, other.productVariantId);
+        }
         return false;
     }
+
     @Override
     public int hashCode() {
         return Objects.hash(this.orderId, this.productVariantId);
