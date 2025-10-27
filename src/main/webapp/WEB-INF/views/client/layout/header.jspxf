@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" title="Aurora Apparel">Aurora Apparel</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#primaryNav"
+                aria-controls="primaryNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="primaryNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#new-arrivals">New Arrivals</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#newsletter">Newsletter</a></li>
+                </ul>
+                <form class="d-flex" role="search" action="#" method="get">
+                    <input class="form-control me-2" type="search" name="q" placeholder="Search products…"
+                        aria-label="Search" />
+                    <button class="btn btn-dark" type="submit">Search</button>
+                </form>
+                <a class="btn btn-outline-dark ms-3" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+            </div>
+        </div>
+    </nav>
+
+</jsp:root>

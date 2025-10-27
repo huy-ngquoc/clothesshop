@@ -53,9 +53,19 @@ public class HomepageController {
 
     @GetMapping("/")
     public String getHomepage(final Model model) {
-        model.addAttribute("categories", categoryService.findAll());
+        final var categoryList = this.categoryService.handleFindRadomForHomepage(PageRequest.of(0, 3)).getContent();
+
+        final var productSort = Sort.by(Sort.Order.desc(Product.Fields.createdAt));
+        final var productPageRequest = PageRequest.of(0, 4, productSort);
+        final var productList = this.productService
+                .handleFindAllProductForHomepage(null, productPageRequest)
+                .getContent();
+
+        model.addAttribute("categoryList", categoryList);
+        model.addAttribute("productList", productList);
         model.addAttribute("sizeCounts", productVariantService.countProductVariantBySize());
         model.addAttribute("colorCounts", productVariantService.countProductVariantByColor());
+
         return "client/homepage/show";
     }
 
@@ -68,7 +78,7 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) final Pageable pageable,
             final Model model) {
-        final var safePaging = this.sanitizePagable(pageable);
+        final var safePageable = this.sanitizePageable(pageable);
 
         final var spec = ProductSpecification
                 .nameLike(q)
@@ -76,7 +86,7 @@ public class HomepageController {
                 .and(ProductSpecification.anyColors(colors))
                 .and(ProductSpecification.anySizes(sizes));
 
-        final var result = this.productService.findAllProduct(spec, safePaging);
+        final var result = this.productService.findAllProduct(spec, safePageable);
 
         model.addAttribute("products", result.getContent());
         model.addAttribute("currentPage", result.getNumber());
@@ -87,7 +97,7 @@ public class HomepageController {
         return "client/homepage/shop";
     }
 
-    private static final Pageable sanitizePagable(@NotNull final Pageable pageable) {
+    private static final Pageable sanitizePageable(@NotNull final Pageable pageable) {
         var mapped = Sort.by(
                 pageable.getSort().stream().map((final var order) -> {
                     final var property = order.getProperty();

@@ -15,6 +15,7 @@ import vn.uit.clothesshop.dto.request.ProductCreationRequestDto;
 import vn.uit.clothesshop.dto.request.ProductUpdateRequestDto;
 import vn.uit.clothesshop.service.CategoryService;
 import vn.uit.clothesshop.service.ProductService;
+
 @Controller
 @RequestMapping("/admin/product")
 public class ProductController {
@@ -100,7 +101,7 @@ public class ProductController {
     }
 
     @GetMapping("/delete/{id}")
-    private String getProductDeletePage(
+    public String getProductDeletePage(
             final Model model,
             @PathVariable final long id) {
         model.addAttribute("id", id);
@@ -108,7 +109,7 @@ public class ProductController {
     }
 
     @PostMapping("/delete/{id}")
-    private String deleteProduct(
+    public String deleteProduct(
             final Model model,
             @PathVariable final long id) {
         this.productService.deleteProductById(id);

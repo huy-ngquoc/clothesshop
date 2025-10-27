@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <c:choose>
+        <c:when test="${not empty imageFilePath}">
+            <form:form method="post" action="/admin/category/update/image/delete/${id}">
+                <p class="alert alert-warning">Are you sure you want to delete this category image?</p>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <label class="form-label" for="inputId">ID:</label>
+                        <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <img id="imageFilePreview" src="/img/${imageFilePath}" alt=""
+                            style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                    </div>
+                </div>
+                <div class="d-flex gap-3 mb-3">
+                    <button type="submit" class="btn btn-warning">Confirm</button>
+                    <a class="btn btn-success" href="/admin/category/update/image/${id}">Back</a>
+                </div>
+            </form:form>
+        </c:when>
+
+        <c:otherwise>
+            <p class="alert alert-primary">This category has no image to delete!</p>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputId">ID:</label>
+                    <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                </div>
+            </div>
+            <a class="btn btn-primary" href="/admin/category/update/image/${id}">Back</a>
+        </c:otherwise>
+    </c:choose>
+
+</jsp:root>

@@ -133,8 +133,8 @@ public class UserController {
     public String updateUserAvatar(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("avatarFile") final MultipartFile avatarFile) {
-        this.userService.handleUpdateUserAvatar(id, avatarFile);
+            @ModelAttribute("requestDto") final UserUpdateAvatarRequestDto requestDto) {
+        this.userService.handleUpdateUserAvatar(id, requestDto.getAvatarFile());
         return "redirect:/admin/user/update/info/" + id;
     }
 

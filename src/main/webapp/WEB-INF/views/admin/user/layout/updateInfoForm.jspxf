@@ -12,11 +12,11 @@
                 <label class="form-label" for="inputId">ID:</label>
                 <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
             </div>
-            <div class="col-md-6 col-12">
+            <div class="col-md-5 col-12">
                 <label class="form-label" for="inputUsername">Username:</label>
                 <input id="inputUsername" class="form-control" type="text" value="${username}" readonly="true" />
             </div>
-            <div class="col-md-3 col-12">
+            <div class="col-md-4 col-12">
                 <p class="form-label">Password:</p>
                 <a class="btn btn-primary w-100" href="/admin/user/update/password/${id}">Change password</a>
             </div>
