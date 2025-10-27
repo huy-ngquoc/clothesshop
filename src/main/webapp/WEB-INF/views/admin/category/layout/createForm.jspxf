@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:form="http://www.springframework.org/tags/form">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <form:form method="post" action="/admin/category/create" modelAttribute="requestDto">
+
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <c:set var="errorName">
+                    <form:errors cssClass="invalid-feedback" path="name" />
+                </c:set>
+
+                <form:label cssClass="form-label" for="inputName" path="name">Category Name:</form:label>
+                <form:input id="inputName" cssClass="form-control ${not empty errorName ? 'is-invalid' : ''}"
+                    type="text" path="name" />
+                ${errorName}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <c:set var="errorDesc">
+                    <form:errors cssClass="invalid-feedback" path="desc" />
+                </c:set>
+
+                <label class="form-label" for="inputDesc" path="desc">
+                    Description:
+                </label>
+                <textarea id="inputDesc" name="desc" class="form-control ${not empty errorDesc ? 'is-invalid' : ''}"
+                    rows="3" />
+                ${errorDesc}
+            </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </div>
+    </form:form>
+
+</jsp:root>

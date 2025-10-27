@@ -15,18 +15,27 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 import lombok.experimental.FieldNameConstants;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @FieldNameConstants
 public class Category {
+    public static final int MAX_LENGTH_NAME = 100;
+    public static final int MAX_LENGTH_DESC = 300;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id = 0;
 
     @NotBlank
+    @Size(max = MAX_LENGTH_NAME)
     private String name = "";
+
+    @NotBlank
+    @Size(max = MAX_LENGTH_DESC)
+    private String desc = "";
 
     @Nullable
     private String image = "";
@@ -41,11 +50,9 @@ public class Category {
 
     public Category(
             final String name,
-            final String image,
-            final int amountOfProduct) {
+            final String desc) {
         this.name = name;
-        this.image = image;
-        this.amountOfProduct = amountOfProduct;
+        this.desc = desc;
     }
 
     Category() {
@@ -61,10 +68,6 @@ public class Category {
 
     public void setAmountOfProduct(final int amountOfProduct) {
         this.amountOfProduct = amountOfProduct;
-    }
-
-    void setId(final long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -83,7 +86,23 @@ public class Category {
         this.image = image;
     }
 
+    public String getDesc() {
+        return this.desc;
+    }
+
+    public void setDesc(final String desc) {
+        this.desc = desc;
+    }
+
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    void setId(final long id) {
+        this.id = id;
+    }
+
+    public void setCreatedAt(final Instant createdAt) {
+        this.createdAt = createdAt;
     }
 }

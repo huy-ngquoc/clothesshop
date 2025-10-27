@@ -1,36 +1,29 @@
 package vn.uit.clothesshop.dto.response;
 
-public final class CategoryHomepageInfoResponseDto {
+public final class CategoryBasicInfoResponseDto {
     private final long id;
     private final String name;
     private final String desc;
-    private final String imageFilePath;
 
-    public CategoryHomepageInfoResponseDto(
+    public CategoryBasicInfoResponseDto(
             final long id,
             final String name,
-            final String desc,
-            final String imageFilePath) {
+            final String desc) {
         this.id = id;
         this.name = name;
         this.desc = desc;
-        this.imageFilePath = imageFilePath;
     }
 
     public long getId() {
-        return this.id;
+        return id;
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
     public String getDesc() {
         return desc;
-    }
-
-    public String getImageFilePath() {
-        return this.imageFilePath;
     }
 
 }
