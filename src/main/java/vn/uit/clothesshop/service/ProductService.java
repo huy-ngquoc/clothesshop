@@ -43,7 +43,7 @@ public class ProductService {
         CANNOT_DELETE_PRODUCT,
     }
 
-    private static final String IMAGE_SUB_FOLDER_NAME = "user";
+    private static final String IMAGE_SUB_FOLDER_NAME = "productvariant";
 
     @NotNull
     private final ProductLookupService productLookupService;
@@ -175,7 +175,8 @@ public class ProductService {
                 product.getName(),
                 product.getShortDesc(),
                 product.getDetailDesc(),
-                product.getCategoryId(), product.getTarget());
+                product.getCategoryId(),
+                product.getTarget());
     }
 
     @Nullable

@@ -4,7 +4,6 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.enums.ETarget;
@@ -23,7 +22,6 @@ public class ProductUpdateRequestDto {
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    @Positive
     private long categoryId = 0;
 
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
@@ -72,7 +70,7 @@ public class ProductUpdateRequestDto {
         return categoryId;
     }
 
-    public void setCategoryId(final int categoryId) {
+    public void setCategoryId(final long categoryId) {
         this.categoryId = categoryId;
     }
 

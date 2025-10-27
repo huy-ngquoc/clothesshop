@@ -70,6 +70,7 @@
                                             alt="Men category" loading="lazy" />
                                         <div class="card-body">
                                             <h3 class="h5 text-dark mb-1">${category.name}</h3>
+                                            <p class="text-secondary small mb-2">${category.desc}</p>
                                         </div>
                                     </div>
                                 </a>
