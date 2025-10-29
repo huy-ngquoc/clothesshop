@@ -27,7 +27,7 @@ public final class ProductSpecification {
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {
             if (!StringUtils.hasText(keyword)) {
-                return criteriaBuilder.conjunction();
+                return null;
             }
 
             return criteriaBuilder.like(
@@ -47,7 +47,7 @@ public final class ProductSpecification {
 
             if (from == null) {
                 if (to == null) {
-                    return criteriaBuilder.conjunction();
+                    return null;
                 }
 
                 return criteriaBuilder.lessThanOrEqualTo(minPricePath, to);
@@ -66,7 +66,7 @@ public final class ProductSpecification {
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {
             if ((categoryIds == null) || (categoryIds.isEmpty())) {
-                return criteriaBuilder.conjunction();
+                return null;
             }
 
             final var categoryIdPath = root
@@ -84,7 +84,7 @@ public final class ProductSpecification {
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {
             if ((listColors == null) || (listColors.isEmpty())) {
-                return criteriaBuilder.conjunction();
+                return null;
             }
 
             final var colorVariantPath = root
@@ -102,7 +102,7 @@ public final class ProductSpecification {
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {
             if ((listSizes == null) || (listSizes.isEmpty())) {
-                return criteriaBuilder.conjunction();
+                return null;
             }
 
             final var sizeVariantPath = root
