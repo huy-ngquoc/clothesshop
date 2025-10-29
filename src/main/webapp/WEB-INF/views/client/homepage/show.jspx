@@ -64,7 +64,7 @@
                     <div class="row g-4">
                         <c:forEach var="category" items="${categoryList}">
                             <div class="col-12 col-md-4">
-                                <a href="#men" class="text-decoration-none">
+                                <a href="/shop?categoryIds=${category.id}" class="text-decoration-none">
                                     <div class="card border-0 shadow-sm h-100">
                                         <img src="/img/${category.imageFilePath}" class="category-img rounded-top"
                                             alt="Men category" loading="lazy" />

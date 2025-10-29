@@ -13,6 +13,7 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import vn.uit.clothesshop.domain.entity.Category;
 import vn.uit.clothesshop.domain.entity.Product;
 import vn.uit.clothesshop.domain.entity.ProductVariant;
 
@@ -60,6 +61,24 @@ public final class ProductSpecification {
         };
     }
 
+    public static Specification<Product> anyCategoryIds(@Nullable final Set<@NotNull Long> categoryIds) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if ((categoryIds == null) || (categoryIds.isEmpty())) {
+                return criteriaBuilder.conjunction();
+            }
+
+            final var categoryIdPath = root
+                    .<Product, Category>join(Product.Fields.category, JoinType.INNER)
+                    .<Long>get(Category.Fields.id);
+            final var categoryIdIn = criteriaBuilder.in(categoryIdPath);
+            categoryIds.forEach(categoryIdIn::value);
+
+            return categoryIdIn;
+        };
+    }
+
     public static Specification<Product> anyColors(@Nullable final Set<@NotBlank String> listColors) {
         return (final Root<Product> root,
                 final CriteriaQuery<?> _,
@@ -78,7 +97,7 @@ public final class ProductSpecification {
         };
     }
 
-    public static Specification<Product> anySizes(@Nullable final Set<String> listSizes) {
+    public static Specification<Product> anySizes(@Nullable final Set<@NotBlank String> listSizes) {
         return (final Root<Product> root,
                 final CriteriaQuery<?> _,
                 final CriteriaBuilder criteriaBuilder) -> {

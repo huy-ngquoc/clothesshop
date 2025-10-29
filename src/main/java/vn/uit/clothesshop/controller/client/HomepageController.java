@@ -74,6 +74,7 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable final String q,
             @RequestParam(required = false) @Nullable final Integer fromPrice,
             @RequestParam(required = false) @Nullable final Integer toPrice,
+            @RequestParam(required = false) @Nullable Set<@NotNull Long> categoryIds,
             @RequestParam(required = false) @Nullable Set<@NotBlank String> colors,
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) final Pageable pageable,
@@ -83,6 +84,7 @@ public class HomepageController {
         final var spec = ProductSpecification
                 .nameLike(q)
                 .and(ProductSpecification.priceBetween(fromPrice, toPrice))
+                .and(ProductSpecification.anyCategoryIds(categoryIds))
                 .and(ProductSpecification.anyColors(colors))
                 .and(ProductSpecification.anySizes(sizes));
 
