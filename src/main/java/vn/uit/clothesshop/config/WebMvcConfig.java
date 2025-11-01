@@ -15,6 +15,7 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 public class WebMvcConfig implements WebMvcConfigurer {
     @Bean
+    @NonNull
     ViewResolver viewResolver() {
         final var bean = new InternalResourceViewResolver();
         bean.setViewClass(JstlView.class);

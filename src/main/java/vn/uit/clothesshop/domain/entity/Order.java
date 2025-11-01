@@ -16,7 +16,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.experimental.FieldNameConstants;
@@ -35,16 +34,6 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EOrderStatus status = EOrderStatus.PROGRESSING;
 
-    @CreatedDate
-    @NotNull
-    @Column(nullable = false, updatable = false)
-    private final Instant createAt = Instant.now();
-
-    @LastModifiedDate
-    @NotNull
-    @Column(nullable = false)
-    private final Instant updateAt = Instant.now();
-
     private long productPrice = 0;
 
     private long shippingFee = 0;
@@ -53,6 +42,16 @@ public class Order {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user = new User();
+
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private Instant updatedAt = Instant.now();
 
     public Order(
             final EOrderStatus status,
@@ -82,12 +81,12 @@ public class Order {
         this.status = status;
     }
 
-    public Instant getCreateAt() {
-        return createAt;
+    public Instant getCreatedAt() {
+        return createdAt;
     }
 
-    public Instant getUpdateAt() {
-        return updateAt;
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
     public long getProductPrice() {
@@ -124,5 +123,13 @@ public class Order {
 
     void setId(final long id) {
         this.id = id;
+    }
+
+    void setCreatedAt(final Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(final Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

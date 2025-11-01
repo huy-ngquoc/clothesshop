@@ -6,7 +6,7 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/category/update/${id}" modelAttribute="requestDto">
+    <form:form method="post" action="/admin/category/update/info/${id}" modelAttribute="requestDto">
         <div class="row g-3 mb-3">
             <div class="col-12">
                 <c:set var="errorName">

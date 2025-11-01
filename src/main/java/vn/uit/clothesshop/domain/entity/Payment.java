@@ -48,12 +48,12 @@ public class Payment {
     @CreatedDate
     @NotNull
     @Column(nullable = false, updatable = false)
-    private Instant createAt = Instant.now();
+    private Instant createdAt = Instant.now();
 
     @LastModifiedDate
     @NotNull
     @Column(nullable = false)
-    private Instant updateAt = Instant.now();
+    private Instant updatedAt = Instant.now();
 
     public Payment(
             final long id,
@@ -117,12 +117,12 @@ public class Payment {
         this.total = total;
     }
 
-    public Instant getCreateAt() {
-        return this.createAt;
+    public Instant getCreatedAt() {
+        return this.createdAt;
     }
 
-    public Instant getUpdateAt() {
-        return this.updateAt;
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
     }
 
     void setId(long id) {

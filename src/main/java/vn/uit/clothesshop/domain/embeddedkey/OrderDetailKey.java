@@ -1,8 +1,6 @@
 package vn.uit.clothesshop.domain.embeddedkey;
 
 import java.io.Serializable;
-import java.util.Objects;
-
 import jakarta.persistence.Embeddable;
 import lombok.experimental.FieldNameConstants;
 
@@ -36,19 +34,5 @@ public class OrderDetailKey implements Serializable {
 
     public void setProductVariantId(final long productVariantId) {
         this.productVariantId = productVariantId;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof OrderDetailKey other) {
-            return Objects.equals(this.orderId, other.orderId)
-                    && Objects.equals(this.productVariantId, other.productVariantId);
-        }
-        return false;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(this.orderId, this.productVariantId);
     }
 }
