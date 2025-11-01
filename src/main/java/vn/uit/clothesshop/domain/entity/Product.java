@@ -3,7 +3,6 @@ package vn.uit.clothesshop.domain.entity;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.EnumSet;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -11,6 +10,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.annotation.Nullable;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -61,9 +61,6 @@ public class Product {
     @Nullable
     private String image = null;
 
-    @OneToMany(mappedBy = ProductVariant.Fields.product)
-    private Set<ProductVariant> variants = Collections.emptySet();
-
     @PositiveOrZero
     private int minPrice = 0;
 
@@ -76,23 +73,28 @@ public class Product {
     @PositiveOrZero
     private int sold = 0;
 
-    @NotNull
+    @Nullable
     @ManyToOne(fetch = FetchType.LAZY)
-    private Category category = new Category();
+    private Category category = null;
 
     @ElementCollection(targetClass = ETarget.class)
     @Enumerated(EnumType.STRING)
-    private Set<ETarget> target = EnumSet.noneOf(ETarget.class);
+    @NotNull
+    private Set<@NotNull ETarget> target = EnumSet.noneOf(ETarget.class);
 
     @CreatedDate
     @NotNull
     @Column(nullable = false, updatable = false)
-    private final Instant createdAt = Instant.now();
+    private Instant createdAt = Instant.now();
 
     @LastModifiedDate
     @NotNull
     @Column(nullable = false)
-    private final Instant updatedAt = Instant.now();
+    private Instant updatedAt = Instant.now();
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = ProductVariant.Fields.product)
+    @NotNull
+    private Set<@NotNull ProductVariant> variants = Collections.emptySet();
 
     public Product(
             final String name,
@@ -118,11 +120,11 @@ public class Product {
         return this.quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(final int quantity) {
         this.quantity = quantity;
     }
 
-    public void setImage(String image) {
+    public void setImage(final String image) {
         this.image = image;
     }
 
@@ -130,7 +132,7 @@ public class Product {
         return this.sold;
     }
 
-    public void setSold(int sold) {
+    public void setSold(final int sold) {
         this.sold = sold;
     }
 
@@ -206,18 +208,15 @@ public class Product {
         this.id = id;
     }
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof Product p) {
-            return p.id == this.id;
-        }
-        return false;
+    void setCreatedAt(final Instant createdAt) {
+        this.createdAt = createdAt;
     }
 
-    @Override
-    public int hashCode() {
-        Long idObject = id;
-        return Objects.hash(idObject);
+    void setUpdatedAt(final Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
+    void setVariants(@NotNull final Set<@NotNull ProductVariant> variants) {
+        this.variants = Set.copyOf(variants);
     }
 }

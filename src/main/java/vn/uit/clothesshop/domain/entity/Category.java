@@ -1,8 +1,8 @@
 package vn.uit.clothesshop.domain.entity;
 
 import java.time.Instant;
-
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import jakarta.annotation.Nullable;
@@ -47,6 +47,11 @@ public class Category {
     @NotNull
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private Instant updatedAt = Instant.now();
 
     public Category(
             final String name,
@@ -98,11 +103,19 @@ public class Category {
         return createdAt;
     }
 
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
     void setId(final long id) {
         this.id = id;
     }
 
-    public void setCreatedAt(final Instant createdAt) {
+    void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 }

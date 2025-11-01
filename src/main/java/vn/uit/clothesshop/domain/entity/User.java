@@ -1,22 +1,32 @@
 package vn.uit.clothesshop.domain.entity;
 
+import java.time.Instant;
+
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import jakarta.annotation.Nullable;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 import vn.uit.clothesshop.config.SecurityConfiguration;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 @FieldNameConstants
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
     public enum Role {
         USER,
@@ -37,6 +47,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @EqualsAndHashCode.Include
     private long id = 0;
 
     @NotBlank
@@ -72,8 +83,15 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
 
-    @OneToOne(mappedBy = "user")
-    private Cart cart;
+    @CreatedDate
+    @NotNull
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt = Instant.now();
+
+    @LastModifiedDate
+    @NotNull
+    @Column(nullable = false)
+    private Instant updatedAt = Instant.now();
 
     public User() {
     }
@@ -93,14 +111,6 @@ public class User {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.role = role;
-    }
-
-    public Cart getCart() {
-        return this.cart;
-    }
-
-    public void setCart(Cart cart) {
-        this.cart = cart;
     }
 
     public long getId() {
@@ -173,13 +183,29 @@ public class User {
     public Role getRole() {
         return this.role;
     }
-    
+
     public void setRole(final Role role) {
         this.role = role;
     }
 
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
     void setId(final long id) {
         this.id = id;
+    }
+
+    void setCreatedAt(final Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    void setUpdatedAt(final Instant updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
 }
