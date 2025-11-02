@@ -25,9 +25,9 @@ import vn.uit.clothesshop.category.presentation.viewmodel.CategoryCardViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryUpdateInfoViewModel;
 import vn.uit.clothesshop.category.repository.CategoryRepository;
 import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
-import vn.uit.clothesshop.shared.port.storage.ImageFolder;
-import vn.uit.clothesshop.shared.port.storage.event.ImageDeleted;
-import vn.uit.clothesshop.shared.port.storage.event.ImageReplaced;
+import vn.uit.clothesshop.shared.storage.ImageFolder;
+import vn.uit.clothesshop.shared.storage.event.ImageDeleted;
+import vn.uit.clothesshop.shared.storage.event.ImageReplaced;
 
 @Service
 @Validated

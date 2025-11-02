@@ -1,6 +1,6 @@
-package vn.uit.clothesshop.shared.port.storage.event;
+package vn.uit.clothesshop.shared.storage.event;
 
-import vn.uit.clothesshop.shared.port.storage.ImageFolder;
+import vn.uit.clothesshop.shared.storage.ImageFolder;
 
 public record ImageReplaced(
         String oldFileName,
