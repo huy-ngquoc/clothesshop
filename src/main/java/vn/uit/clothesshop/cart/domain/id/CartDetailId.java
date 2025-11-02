@@ -3,10 +3,12 @@ package vn.uit.clothesshop.cart.domain.id;
 import java.io.Serializable;
 
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 
 @Embeddable
 @FieldNameConstants
+@EqualsAndHashCode
 public class CartDetailId implements Serializable {
     private long userId = 0;
     private long productVariantId = 0;

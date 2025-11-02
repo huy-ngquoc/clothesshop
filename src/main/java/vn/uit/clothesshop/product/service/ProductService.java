@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.ProductVariant;
 import vn.uit.clothesshop.product.presentation.form.ProductCreationRequestDto;
@@ -17,7 +18,6 @@ import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoRespon
 import vn.uit.clothesshop.product.service.ProductTxService.CreationException;
 import vn.uit.clothesshop.product.service.ProductTxService.DeletionException;
 import vn.uit.clothesshop.product.service.ProductTxService.UpdateException;
-import vn.uit.clothesshop.service.ImageFileService;
 import vn.uit.clothesshop.shared.util.Expected;
 
 import org.springframework.data.domain.Page;
@@ -57,13 +57,13 @@ public class ProductService {
     private final ProductVariantService productVariantService;
 
     @NotNull
-    private final ImageFileService imageFileService;
+    private final LocalImageStorage imageFileService;
 
     public ProductService(
             @NotNull final ProductLookupService productLookupService,
             @NotNull final ProductTxService productTxService,
             @NotNull final ProductVariantService productVariantService,
-            @NotNull final ImageFileService imageFileService) {
+            @NotNull final LocalImageStorage imageFileService) {
         this.productLookupService = productLookupService;
         this.productTxService = productTxService;
         this.productVariantService = productVariantService;

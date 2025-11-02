@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -15,14 +16,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.category.domain.Category;
-import vn.uit.clothesshop.category.presentation.form.CategoryCreationRequestDto;
+import vn.uit.clothesshop.category.presentation.form.CategoryCreationForm;
 import vn.uit.clothesshop.category.presentation.form.CategoryUpdateInfoRequestDto;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryBasicInfoResponseDto;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryDetailInfoResponseDto;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryHomepageInfoResponseDto;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryUpdateInfoMiddleDto;
 import vn.uit.clothesshop.category.repository.CategoryRepository;
-import vn.uit.clothesshop.service.ImageFileService;
+import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 
 @Service
 @Validated
@@ -34,11 +35,11 @@ public class CategoryService {
     private final CategoryRepository categoryRepository;
 
     @NotNull
-    private final ImageFileService imageFileService;
+    private final LocalImageStorage imageFileService;
 
     public CategoryService(
             @NotNull final CategoryRepository categoryRepo,
-            @NotNull final ImageFileService imageFileService) {
+            @NotNull final LocalImageStorage imageFileService) {
         this.categoryRepository = categoryRepo;
         this.imageFileService = imageFileService;
     }
@@ -109,7 +110,7 @@ public class CategoryService {
     }
 
     @Nullable
-    public Long handleCreateCategory(@NotNull final CategoryCreationRequestDto requestDto) {
+    public Long handleCreateCategory(@NotNull final CategoryCreationForm requestDto) {
         final var category = new Category(
                 requestDto.getName(),
                 requestDto.getDesc());
@@ -219,7 +220,7 @@ public class CategoryService {
     }
 
     @Nullable
-    private Category handleSaveCategory(@NotNull final Category category) {
+    private Category handleSaveCategory(@NonNull final Category category) {
         try {
             return categoryRepository.save(category);
         } catch (final Exception exception) {

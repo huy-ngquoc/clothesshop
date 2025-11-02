@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.service;
+package vn.uit.clothesshop.infrastructure.storage;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.annotation.Nullable;
@@ -15,15 +15,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 
-@Service
+@Component
 @Slf4j
-public class ImageFileService {
+public class LocalImageStorage /* implements ImageStoragePort */ {
     private static final String IMAGE_FOLDER_PATH = "/resources/img";
 
     @NotNull
     private final Path imagesRoot;
 
-    public ImageFileService(@NotNull final ServletContext servletContext) {
+    public LocalImageStorage(@NotNull final ServletContext servletContext) {
         final String realPath = servletContext.getRealPath(IMAGE_FOLDER_PATH);
         if (realPath == null) {
             throw new IllegalStateException("Cannot resolve real path for: " + IMAGE_FOLDER_PATH);
@@ -149,4 +149,38 @@ public class ImageFileService {
             log.warn("Failed to delete old file '{}' in '{}'", fileName, subFolder, e);
         }
     }
+
 }
+
+/*
+ * @Component
+ * 
+ * @Profile("local")
+ * class LocalImageStorage implements ImageStoragePort {
+ * private final Path root = Paths.get("uploads");
+ * 
+ * @Override
+ * public String buildPath(String fileName, String subFolder) { // join +
+ * sanitize
+ * }
+ * 
+ * @Override
+ * public String upload(InputStream in, long size, String contentType, String
+ * targetPath) {
+ * var path = root.resolve(targetPath);
+ * Files.createDirectories(path.getParent());
+ * Files.copy(in, path, StandardCopyOption.REPLACE_EXISTING);
+ * return targetPath;
+ * }
+ * 
+ * @Override
+ * public void delete(String targetPath) {
+ * Files.deleteIfExists(root.resolve(targetPath));
+ * }
+ * 
+ * @Override
+ * public String publicUrl(String targetPath) { return "/static/" + targetPath;
+ * }
+ * }
+ * 
+ */

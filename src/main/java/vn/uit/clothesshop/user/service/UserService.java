@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.service.ImageFileService;
+import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.user.domain.User;
 import vn.uit.clothesshop.user.mapper.UserMapper;
 import vn.uit.clothesshop.user.presentation.form.RegisterDto;
@@ -32,14 +32,14 @@ public class UserService {
     @NotNull
     private final UserMapper userMapper;
     @NotNull
-    private final ImageFileService imageFileService;
+    private final LocalImageStorage imageFileService;
 
     @NotNull
     private final PasswordEncoder passwordEncoder;
 
     public UserService(
             final UserRepository userRepository,
-            final ImageFileService imageFileService,
+            final LocalImageStorage imageFileService,
             final PasswordEncoder passwordEncoder, final UserMapper userMapper) {
         this.userRepository = userRepository;
         this.imageFileService = imageFileService;

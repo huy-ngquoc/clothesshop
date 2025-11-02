@@ -2,10 +2,12 @@ package vn.uit.clothesshop.order.domain.id;
 
 import java.io.Serializable;
 import jakarta.persistence.Embeddable;
+import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
 
 @Embeddable
 @FieldNameConstants
+@EqualsAndHashCode
 public class OrderDetailId implements Serializable {
     private long orderId = 0;
     private long productVariantId = 0;

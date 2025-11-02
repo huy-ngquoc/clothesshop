@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
+import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.ProductVariant;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantCreateRequestDto;
@@ -20,7 +21,6 @@ import vn.uit.clothesshop.product.repository.ProductRepository;
 import vn.uit.clothesshop.product.repository.ProductVariantRepository;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantColorCount;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantSizeCount;
-import vn.uit.clothesshop.service.ImageFileService;
 
 @Service
 @Slf4j
@@ -33,12 +33,12 @@ public class ProductVariantService {
     private final ProductRepository productRepository;
 
     @NotNull
-    private final ImageFileService imageFileService;
+    private final LocalImageStorage imageFileService;
 
     public ProductVariantService(
             @NotNull final ProductVariantRepository productVariantRepository,
             @NotNull final ProductRepository productRepository,
-            @NotNull final ImageFileService imageFileService) {
+            @NotNull final LocalImageStorage imageFileService) {
         this.productVariantRepository = productVariantRepository;
         this.productRepository = productRepository;
         this.imageFileService = imageFileService;
