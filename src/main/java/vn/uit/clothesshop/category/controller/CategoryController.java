@@ -76,7 +76,7 @@ public class CategoryController {
         model.addAttribute("id", id);
         if (viewModel.isPresent()) {
             model.addAttribute("requestDto", viewModel.get().form());
-            model.addAttribute("imageFilePath", viewModel.get().form());
+            model.addAttribute("imageFilePath", viewModel.get().imageFilePath());
         }
 
         return "admin/category/update/info";
