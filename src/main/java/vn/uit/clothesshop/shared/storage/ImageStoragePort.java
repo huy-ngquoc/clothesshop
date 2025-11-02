@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.shared.port.storage;
+package vn.uit.clothesshop.shared.storage;
 
 import java.io.InputStream;
 

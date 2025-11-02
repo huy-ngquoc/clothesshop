@@ -4,9 +4,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
-import vn.uit.clothesshop.shared.port.storage.event.ImageAdded;
-import vn.uit.clothesshop.shared.port.storage.event.ImageDeleted;
-import vn.uit.clothesshop.shared.port.storage.event.ImageReplaced;
+import vn.uit.clothesshop.shared.storage.event.ImageAdded;
+import vn.uit.clothesshop.shared.storage.event.ImageDeleted;
+import vn.uit.clothesshop.shared.storage.event.ImageReplaced;
 
 // package: com.yourapp.infrastructure.storage
 @Component

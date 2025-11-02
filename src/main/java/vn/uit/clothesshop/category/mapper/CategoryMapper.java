@@ -13,7 +13,7 @@ import vn.uit.clothesshop.category.presentation.viewmodel.CategoryCardViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryDetailInfoViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryUpdateInfoViewModel;
 import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
-import vn.uit.clothesshop.shared.port.storage.ImageFolder;
+import vn.uit.clothesshop.shared.storage.ImageFolder;
 import vn.uit.clothesshop.shared.util.StringUtil;
 
 @Component
@@ -73,7 +73,7 @@ public class CategoryMapper {
         return new CategoryUpdateInfoViewModel(this.getPathString(e), form);
     }
 
-    public String getPathString(@Nullable final Category e) {
+    public String getPathString(@NotNull final Category e) {
         return this.getPathString(e.getImage());
     }
 
