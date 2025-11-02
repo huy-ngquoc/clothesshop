@@ -73,7 +73,7 @@ public class CategoryMapper {
         return new CategoryUpdateInfoViewModel(this.getPathString(e), form);
     }
 
-    public String getPathString(@Nullable final Category e) {
+    public String getPathString(@NotNull final Category e) {
         return this.getPathString(e.getImage());
     }
 

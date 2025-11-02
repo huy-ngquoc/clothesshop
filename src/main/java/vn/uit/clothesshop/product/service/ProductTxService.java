@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.category.service.CategoryAccess;
+import vn.uit.clothesshop.category.domain.CategoryAccess;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.presentation.form.ProductCreationRequestDto;
 import vn.uit.clothesshop.product.presentation.form.ProductUpdateRequestDto;

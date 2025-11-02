@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import vn.uit.clothesshop.category.service.CategoryAccess;
+import vn.uit.clothesshop.category.domain.CategoryAccess;
 import vn.uit.clothesshop.product.presentation.form.ProductCreationRequestDto;
 import vn.uit.clothesshop.product.presentation.form.ProductUpdateRequestDto;
 import vn.uit.clothesshop.product.service.ProductService;
