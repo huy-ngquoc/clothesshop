@@ -29,7 +29,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
                 and (c.amountOfProduct >= :amount)
             """)
     int decreaseProductCount(
-            @Param("id") final Long id,
+            @Param("id") final long id,
             @Param("amount") final int amount);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
@@ -38,7 +38,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             set c.amountOfProduct = (c.amountOfProduct + :amount)
             where (c.id = :id)
             """)
-    int decreaseProductCount(
+    int increaseProductCount(
             @Param("id") final long id,
             @Param("amount") final int amount);
 }

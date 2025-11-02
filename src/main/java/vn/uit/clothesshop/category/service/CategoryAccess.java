@@ -44,7 +44,7 @@ public class CategoryAccess {
     public boolean increaseProductCount(
             @Nullable final Long id,
             @PositiveOrZero final int amount) {
-        return this.repository.decreaseProductCount(id, amount) > 0;
+        return this.repository.increaseProductCount(id, amount) > 0;
     }
 
     @Transactional
