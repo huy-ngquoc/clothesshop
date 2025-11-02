@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.category.domain.Category;
 
-public final class CategoryUpdateInfoRequestDto {
+public final class CategoryUpdateInfoForm {
     @NotBlank
     @Size(max = Category.MAX_LENGTH_NAME)
     private String name = "";
@@ -13,7 +13,7 @@ public final class CategoryUpdateInfoRequestDto {
     @Size(max = Category.MAX_LENGTH_DESC)
     private String desc = "";
 
-    public CategoryUpdateInfoRequestDto(
+    public CategoryUpdateInfoForm(
             final String name,
             final String desc) {
         this.name = name;

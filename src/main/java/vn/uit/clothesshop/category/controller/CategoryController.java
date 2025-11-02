@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.category.controller;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import vn.uit.clothesshop.category.presentation.form.CategoryCreationRequestDto;
-import vn.uit.clothesshop.category.presentation.form.CategoryUpdateImageRequestDto;
-import vn.uit.clothesshop.category.presentation.form.CategoryUpdateInfoRequestDto;
+import vn.uit.clothesshop.category.presentation.form.CategoryCreationForm;
+import vn.uit.clothesshop.category.presentation.form.CategoryUpdateImageForm;
+import vn.uit.clothesshop.category.presentation.form.CategoryUpdateInfoForm;
 import vn.uit.clothesshop.category.service.CategoryService;
 
 @Controller
@@ -29,7 +30,8 @@ public class CategoryController {
 
     @GetMapping
     public String getCategoryPage(final Model model) {
-        final var responseDtoList = this.categoryService.handleFindAll();
+        final var responseDtoList = this.categoryService
+                .findAllBasic(PageRequest.of(0, 100)).toList();
         model.addAttribute("responseDtoList", responseDtoList);
         return "admin/category/show";
     }
@@ -38,7 +40,7 @@ public class CategoryController {
     public String getCategoryDetailPage(
             final Model model,
             @PathVariable final long id) {
-        final var responseDto = this.categoryService.handleFindById(id);
+        final var responseDto = this.categoryService.findDetailById(id);
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
         return "admin/category/detail";
@@ -47,7 +49,7 @@ public class CategoryController {
     @GetMapping("/create")
     public String getCategoryCreationPage(
             final Model model) {
-        final var requestDto = new CategoryCreationRequestDto();
+        final var requestDto = new CategoryCreationForm();
         model.addAttribute("requestDto", requestDto);
         return "admin/category/create";
     }
@@ -55,13 +57,13 @@ public class CategoryController {
     @PostMapping("/create")
     public String createCategory(
             final Model model,
-            @ModelAttribute("requestDto") @Valid final CategoryCreationRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid final CategoryCreationForm requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/category/create";
         }
 
-        this.categoryService.handleCreateCategory(requestDto);
+        this.categoryService.create(requestDto);
         return "redirect:/admin/category";
     }
 
@@ -69,12 +71,12 @@ public class CategoryController {
     public String getCategoryUpdateInfoPage(
             final Model model,
             @PathVariable final long id) {
-        final var middleDto = this.categoryService.handleCreateMiddleDtoForUpdate(id);
+        final var viewModel = this.categoryService.getUpdateInfoViewModel(id);
 
         model.addAttribute("id", id);
-        if (middleDto != null) {
-            model.addAttribute("requestDto", middleDto.requestDto());
-            model.addAttribute("imageFilePath", middleDto.imageFilePath());
+        if (viewModel.isPresent()) {
+            model.addAttribute("requestDto", viewModel.get().form());
+            model.addAttribute("imageFilePath", viewModel.get().form());
         }
 
         return "admin/category/update/info";
@@ -84,13 +86,13 @@ public class CategoryController {
     public String updateCategoryInfo(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") @Valid CategoryUpdateInfoRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid CategoryUpdateInfoForm requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/category/update/info";
         }
 
-        this.categoryService.handleUpdateCategory(id, requestDto);
+        this.categoryService.updateInfo(id, requestDto);
         return "redirect:/admin/category";
     }
 
@@ -98,11 +100,11 @@ public class CategoryController {
     public String getCategoryUpdateImagePage(
             final Model model,
             @PathVariable final long id) {
-        final var imageFilePath = this.categoryService.findImageFilePathOfCategoryById(id);
+        final var imageFilePath = this.categoryService.getPathStringById(id).orElse(null);
 
         model.addAttribute("id", id);
         model.addAttribute("imageFilePath", imageFilePath);
-        model.addAttribute("requestDto", new CategoryUpdateImageRequestDto());
+        model.addAttribute("requestDto", new CategoryUpdateImageForm());
 
         return "admin/category/update/image";
     }
@@ -111,8 +113,8 @@ public class CategoryController {
     public String updateCategoryImage(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") final CategoryUpdateImageRequestDto requestDto) {
-        this.categoryService.handleUpdateCategoryImage(id, requestDto.getImageFile());
+            @ModelAttribute("requestDto") final CategoryUpdateImageForm requestDto) {
+        this.categoryService.updateImage(id, requestDto.getImageFile());
         return "redirect:/admin/category/update/info/" + id;
     }
 
@@ -120,7 +122,7 @@ public class CategoryController {
     public String getCategoryUpdateAvatarDeletionPage(
             final Model model,
             @PathVariable final long id) {
-        final var imageFilePath = this.categoryService.findImageFilePathOfCategoryById(id);
+        final var imageFilePath = this.categoryService.getPathStringById(id).orElse(null);
 
         model.addAttribute("id", id);
         model.addAttribute("imageFilePath", imageFilePath);
@@ -132,7 +134,7 @@ public class CategoryController {
     public String updateCategoryImageDeletion(
             final Model model,
             @PathVariable final long id) {
-        this.categoryService.handleUpdateCategoryImageDeletion(id);
+        this.categoryService.deleteImage(id);
         return "redirect:/admin/category/update/info/" + id;
     }
 
@@ -148,7 +150,7 @@ public class CategoryController {
     public String deleteCategory(
             final Model model,
             @PathVariable final long id) {
-        this.categoryService.deleteCategoryById(id);
+        this.categoryService.deleteById(id);
         return "redirect:/admin/category";
     }
 }

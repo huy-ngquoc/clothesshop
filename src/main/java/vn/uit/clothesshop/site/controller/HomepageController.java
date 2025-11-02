@@ -53,7 +53,7 @@ public class HomepageController {
 
     @GetMapping("/")
     public String getHomepage(final Model model) {
-        final var categoryList = this.categoryService.handleFindRadomForHomepage(PageRequest.of(0, 3)).getContent();
+        final var categoryList = this.categoryService.findRandomForHomepage(3);
 
         final var productSort = Sort.by(Sort.Order.desc(Product.Fields.createdAt));
         final var productPageRequest = PageRequest.of(0, 4, productSort);

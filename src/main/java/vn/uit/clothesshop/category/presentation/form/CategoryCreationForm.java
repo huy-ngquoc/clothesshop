@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.category.domain.Category;
 
-public final class CategoryCreationRequestDto {
+public final class CategoryCreationForm {
     @NotBlank
     @Size(max = Category.MAX_LENGTH_NAME)
     private String name = "";

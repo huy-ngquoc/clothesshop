@@ -1,11 +1,14 @@
 package vn.uit.clothesshop.category.presentation.viewmodel;
 
-public final class CategoryBasicInfoResponseDto {
+import lombok.Value;
+
+@Value
+public final class CategoryBasicInfoViewModel {
     private final long id;
     private final String name;
     private final String desc;
 
-    public CategoryBasicInfoResponseDto(
+    public CategoryBasicInfoViewModel(
             final long id,
             final String name,
             final String desc) {

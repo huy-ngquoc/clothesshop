@@ -1,24 +1,28 @@
 package vn.uit.clothesshop.category.presentation.viewmodel;
 
-public final class CategoryDetailInfoResponseDto {
+public final class CategoryCardViewModel {
+    private final long id;
     private final String name;
     private final String desc;
     private final String imageFilePath;
-    private final int amountOfProduct;
 
-    public CategoryDetailInfoResponseDto(
+    public CategoryCardViewModel(
+            final long id,
             final String name,
             final String desc,
-            final String imageFilePath,
-            final int amountOfProduct) {
+            final String imageFilePath) {
+        this.id = id;
         this.name = name;
         this.desc = desc;
         this.imageFilePath = imageFilePath;
-        this.amountOfProduct = amountOfProduct;
+    }
+
+    public long getId() {
+        return this.id;
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     public String getDesc() {
@@ -26,10 +30,7 @@ public final class CategoryDetailInfoResponseDto {
     }
 
     public String getImageFilePath() {
-        return imageFilePath;
+        return this.imageFilePath;
     }
 
-    public int getAmountOfProduct() {
-        return amountOfProduct;
-    }
 }

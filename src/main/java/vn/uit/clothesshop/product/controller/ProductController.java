@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.product.controller;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import vn.uit.clothesshop.category.service.CategoryService;
+import vn.uit.clothesshop.category.service.CategoryAccess;
 import vn.uit.clothesshop.product.presentation.form.ProductCreationRequestDto;
 import vn.uit.clothesshop.product.presentation.form.ProductUpdateRequestDto;
 import vn.uit.clothesshop.product.service.ProductService;
@@ -21,12 +22,12 @@ import vn.uit.clothesshop.product.service.ProductService;
 public class ProductController {
     @NotNull
     private final ProductService productService;
-    private final CategoryService categoryService;
+    private final CategoryAccess categoryAccess;
 
     public ProductController(
-            @NotNull final ProductService productService, CategoryService categoryService) {
+            @NotNull final ProductService productService, CategoryAccess categoryAccess) {
         this.productService = productService;
-        this.categoryService = categoryService;
+        this.categoryAccess = categoryAccess;
     }
 
     @GetMapping
@@ -51,7 +52,8 @@ public class ProductController {
             final Model model) {
         final var requestDto = new ProductCreationRequestDto();
         model.addAttribute("requestDto", requestDto);
-        model.addAttribute("categories", categoryService.findAll());
+        // TODO: for now
+        model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
         return "admin/product/create";
     }
 
@@ -76,7 +78,8 @@ public class ProductController {
 
         model.addAttribute("id", id);
         model.addAttribute("requestDto", requestDto);
-        model.addAttribute("categories", categoryService.findAll());
+        // TODO: for now
+        model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
 
         return "admin/product/update";
     }
@@ -91,7 +94,8 @@ public class ProductController {
             requestDto = this.productService.handleCreateRequestDtoForUpdate(id);
             model.addAttribute("id", id);
             model.addAttribute("requestDto", requestDto);
-            model.addAttribute("categories", categoryService.findAll());
+            // TODO: for now
+            model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
             System.out.println(bindingResult.getFieldError().getObjectName());
             return "admin/product/update";
         }

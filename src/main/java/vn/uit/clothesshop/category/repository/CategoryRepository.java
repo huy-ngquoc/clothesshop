@@ -1,14 +1,15 @@
 package vn.uit.clothesshop.category.repository;
 
-import org.springframework.data.domain.Page;
+import java.util.List;
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 
-import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.category.domain.Category;
 
 @Repository
@@ -16,9 +17,9 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("""
             SELECT c
             FROM Category c
-            ORDER BY function('RANDOM')
+            ORDER BY function("RANDOM")
             """)
-    Page<Category> findRandom(@NotNull Pageable pageable);
+    List<Category> findRandom(@NonNull Pageable pageable);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("""
@@ -27,7 +28,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             where (c.id = :id)
                 and (c.amountOfProduct >= :amount)
             """)
-    int decreaseAmountOfProduct(
+    int decreaseProductCount(
             @Param("id") final Long id,
             @Param("amount") final int amount);
 
@@ -37,7 +38,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             set c.amountOfProduct = (c.amountOfProduct + :amount)
             where (c.id = :id)
             """)
-    int increaseAmountOfProduct(
-            @Param("id") final Long id,
+    int decreaseProductCount(
+            @Param("id") final long id,
             @Param("amount") final int amount);
 }
