@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.category.domain.CategoryAccess;
-import vn.uit.clothesshop.product.presentation.form.ProductCreationRequestDto;
-import vn.uit.clothesshop.product.presentation.form.ProductUpdateRequestDto;
+import vn.uit.clothesshop.product.presentation.form.ProductCreationForm;
+import vn.uit.clothesshop.product.presentation.form.ProductUpdateInfoForm;
 import vn.uit.clothesshop.product.service.ProductService;
 
 @Controller
@@ -32,7 +32,8 @@ public class ProductController {
 
     @GetMapping
     public String getProductPage(final Model model) {
-        final var responseDtoList = this.productService.handleFindAllProduct();
+        // TODO: for now
+        final var responseDtoList = this.productService.findAllBasic(PageRequest.of(0, Integer.MAX_VALUE)).getContent();
         model.addAttribute("responseDtoList", responseDtoList);
         return "admin/product/show";
     }
@@ -41,7 +42,7 @@ public class ProductController {
     public String getProductDetailPage(
             final Model model,
             @PathVariable final long id) {
-        final var responseDto = this.productService.handleFindProductById(id);
+        final var responseDto = this.productService.findDetailById(id);
         model.addAttribute("id", id);
         model.addAttribute("responseDto", responseDto);
         return "admin/product/detail";
@@ -50,7 +51,7 @@ public class ProductController {
     @GetMapping("/create")
     public String getProductCreationPage(
             final Model model) {
-        final var requestDto = new ProductCreationRequestDto();
+        final var requestDto = new ProductCreationForm();
         model.addAttribute("requestDto", requestDto);
         // TODO: for now
         model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
@@ -60,13 +61,13 @@ public class ProductController {
     @PostMapping("/create")
     public String createProduct(
             final Model model,
-            @ModelAttribute("requestDto") @Valid final ProductCreationRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid final ProductCreationForm requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "admin/product/create";
         }
 
-        this.productService.handleCreateProduct(requestDto);
+        this.productService.create(requestDto);
         return "redirect:/admin/product";
     }
 
@@ -74,10 +75,10 @@ public class ProductController {
     public String getProductUpdatePage(
             final Model model,
             @PathVariable final long id) {
-        final var requestDto = this.productService.handleCreateRequestDtoForUpdate(id);
+        final var viewModel = this.productService.getUpdateInfoById(id).orElse(null);
 
         model.addAttribute("id", id);
-        model.addAttribute("requestDto", requestDto);
+        model.addAttribute("requestDto", viewModel.getForm());
         // TODO: for now
         model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
 
@@ -88,19 +89,14 @@ public class ProductController {
     public String updateProduct(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") @Valid ProductUpdateRequestDto requestDto,
+            @ModelAttribute("requestDto") @Valid ProductUpdateInfoForm requestDto,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            requestDto = this.productService.handleCreateRequestDtoForUpdate(id);
-            model.addAttribute("id", id);
-            model.addAttribute("requestDto", requestDto);
-            // TODO: for now
-            model.addAttribute("categories", categoryAccess.findAll(PageRequest.of(0, Integer.MAX_VALUE)).getContent());
             System.out.println(bindingResult.getFieldError().getObjectName());
             return "admin/product/update";
         }
 
-        this.productService.handleUpdateProduct(id, requestDto);
+        this.productService.updateInfoById(id, requestDto);
         return "redirect:/admin/product";
     }
 
@@ -116,7 +112,7 @@ public class ProductController {
     public String deleteProduct(
             final Model model,
             @PathVariable final long id) {
-        this.productService.deleteProductById(id);
+        this.productService.deleteById(id);
         return "redirect:/admin/product";
     }
 

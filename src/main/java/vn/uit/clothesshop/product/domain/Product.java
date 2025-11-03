@@ -81,7 +81,7 @@ public class Product {
     @ElementCollection(targetClass = ETarget.class)
     @Enumerated(EnumType.STRING)
     @NotNull
-    private Set<@NotNull ETarget> target = EnumSet.noneOf(ETarget.class);
+    private Set<@NotNull ETarget> targets = EnumSet.noneOf(ETarget.class);
 
     @CreatedDate
     @NotNull
@@ -107,7 +107,7 @@ public class Product {
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
         this.category = category;
-        this.target = EnumSetHelper.copyOf(target, ETarget.class);
+        this.targets = EnumSetHelper.copyOf(target, ETarget.class);
     }
 
     Product() {
@@ -145,12 +145,12 @@ public class Product {
         this.category = category;
     }
 
-    public Set<ETarget> getTarget() {
-        return EnumSetHelper.copyOf(this.target, ETarget.class);
+    public Set<ETarget> getTargets() {
+        return EnumSetHelper.copyOf(this.targets, ETarget.class);
     }
 
-    public void setTarget(final Set<ETarget> target) {
-        this.target = EnumSetHelper.copyOf(target, ETarget.class);
+    public void setTargets(final Set<ETarget> target) {
+        this.targets = EnumSetHelper.copyOf(target, ETarget.class);
     }
 
     public long getId() {
