@@ -79,4 +79,10 @@ public class CartController {
         cartService.clearCart(userId);
         return "redirect:shop";
     }
+    @PostMapping("/update_cart")
+    public String updateCart(@RequestParam("userId") long userId, @RequestParam("productVariantId") long productVariantId, @RequestParam("amount") int amount) {
+        cartService.updateAmount(userId, productVariantId, amount);
+        return "redirect:cart";
+
+    }
 }

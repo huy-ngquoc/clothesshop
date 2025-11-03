@@ -28,13 +28,15 @@ public class CartService {
         if(oldCartDetail==null) {
             ProductVariant pv = productVariantRepo.findById(productVariantId).orElseThrow(()-> new NotFoundException("Variant not found"));
             cartDetail = new CartDetail(user, pv,amount);
+            cartDetail = cartDetailRepo.save(cartDetail);
+            return cartDetail;
         }
         else {
-            cartDetail=oldCartDetail;
-            cartDetail.setAmount(amount);
+            oldCartDetail.setAmount(amount);
+            return cartDetailRepo.save(oldCartDetail);
         }
-        cartDetail = cartDetailRepo.save(cartDetail);
-        return cartDetail;
+        
+        
 
     }
 
@@ -66,5 +68,14 @@ public class CartService {
     public void clearCart(long userId) {
         List<CartDetail> listCartDetails = cartDetailRepo.findByUser_Id(userId);
         cartDetailRepo.deleteAll(listCartDetails);
+    }
+
+    public void updateAmount(long userId, long productVariantId, int amount) {
+         CartDetailId cartDetailId = new CartDetailId(userId, productVariantId);
+        CartDetail cartDetail = cartDetailRepo.findById(cartDetailId).orElse(null);
+        if(cartDetail!=null&&amount>0) {
+            cartDetail.setAmount(amount);
+            cartDetailRepo.save(cartDetail);
+        }
     }
 }
