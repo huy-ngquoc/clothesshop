@@ -94,6 +94,7 @@
 </div>
                         </c:forEach>
                     </div>
+                    <input type="hidden" id="selectedVariant" name="selectedVariant" />
 
                     <!-- Quantity -->
                     <div class="mb-3">
@@ -185,10 +186,12 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/client/project_js/home/productDetail.js">
+    
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
         
-    </script>
+    
 </body>
 
 </html>

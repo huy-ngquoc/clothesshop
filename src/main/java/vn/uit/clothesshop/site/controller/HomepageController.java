@@ -19,6 +19,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import vn.uit.clothesshop.category.service.CategoryService;
 import vn.uit.clothesshop.product.domain.Product;
@@ -27,6 +30,7 @@ import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoRespon
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoResponseDto;
 import vn.uit.clothesshop.product.service.ProductService;
 import vn.uit.clothesshop.product.service.ProductVariantService;
+import vn.uit.clothesshop.user.domain.User;
 
 @Controller
 public class HomepageController {
@@ -79,6 +83,15 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) final Pageable pageable,
             final Model model) {
+                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+                User user ;
+                if(auth==null||auth instanceof AnonymousAuthenticationToken) {
+                    user=null;
+                } 
+                else {
+                    user=(User) auth.getPrincipal();
+                }
+                model.addAttribute("User",user);
         final var safePageable = this.sanitizePageable(pageable);
 
         final var spec = ProductSpecification

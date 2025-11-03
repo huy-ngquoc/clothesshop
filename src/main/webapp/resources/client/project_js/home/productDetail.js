@@ -1,5 +1,6 @@
 // ===== Sample product with variants (replace with real data from your backend) =====
-        var PRODUCT = {
+console.log("Hello");  
+var PRODUCT = {
             id: 101,
             name: "Everyday Denim Jacket",
             description: "A relaxed denim jacket built for daily wear.",
@@ -250,6 +251,31 @@
                 });
             });
         }
+        function logicFroChooseVariant() {
+    console.log("Function called");
+  const checkboxes = document.querySelectorAll(".variant-checkbox");
+  const hiddenInput = document.getElementById("selectedVariant");
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener("change", function() {
+      if (this.checked) {
+        
+        checkboxes.forEach(other => {
+          if (other !== this) other.checked = false;
+        });
+
+        
+        const color = this.dataset.color;
+        const size = this.dataset.size;
+        hiddenInput.value = `${color}-${size}`;
+      } else {
+        
+        hiddenInput.value = "";
+      }
+    });
+  });
+}
+
 
         // ===== Init =====
         (function init() {
@@ -266,7 +292,7 @@
             attachQtyEvents();
             attachCartButtons();
             attachThumbClicks();
-
+           
             // Optional: preselect the first in-stock size for initial color
             var firstInStock = variantsForColor(state.color).find(function (v) { return v.stock > 0; });
             if (firstInStock) {
@@ -281,3 +307,5 @@
                 updateVariantUI();
             }
         })();
+        logicFroChooseVariant();
+ 
