@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.cart.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import vn.uit.clothesshop.cart.domain.CartDetail;
@@ -34,5 +36,31 @@ public class CartService {
         cartDetail = cartDetailRepo.save(cartDetail);
         return cartDetail;
 
+    }
+
+    public List<CartDetail> getCartOfUser(User user) {
+        return cartDetailRepo.findByUser_Id(user.getId());
+    }
+
+    public void deleteCartDetail(long userId, long productVariantId) {
+        CartDetailId cartDetailId = new CartDetailId(userId, productVariantId);
+        cartDetailRepo.deleteById(cartDetailId);
+    }
+
+    public void increaseCartAmount(long userId, long productVariantId) {
+        CartDetailId cartDetailId = new CartDetailId(userId, productVariantId);
+        CartDetail cartDetail = cartDetailRepo.findById(cartDetailId).orElse(null);
+        if(cartDetail!=null) {
+            cartDetail.setAmount(cartDetail.getAmount()+1);
+            cartDetailRepo.save(cartDetail);
+        }
+    }
+    public void decreaseCartAmount(long userId, long productVariantId) {
+        CartDetailId cartDetailId = new CartDetailId(userId, productVariantId);
+        CartDetail cartDetail = cartDetailRepo.findById(cartDetailId).orElse(null);
+        if(cartDetail!=null&&cartDetail.getAmount()>1) {
+            cartDetail.setAmount(cartDetail.getAmount()-1);
+            cartDetailRepo.save(cartDetail);
+        }
     }
 }

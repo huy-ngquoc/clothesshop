@@ -32,6 +32,7 @@ import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfo
 import vn.uit.clothesshop.product.service.ProductService;
 import vn.uit.clothesshop.product.service.ProductVariantService;
 import vn.uit.clothesshop.user.domain.User;
+import vn.uit.clothesshop.user.repository.UserRepository;
 
 @Controller
 public class HomepageController {
@@ -47,13 +48,16 @@ public class HomepageController {
 
     private final CategoryService categoryService;
 
+    private final UserRepository userRepo;
+
     public HomepageController(
             final ProductService productService,
             final ProductVariantService productVariantService,
-            final CategoryService categoryService) {
+            final CategoryService categoryService, final UserRepository userRepo) {
         this.productService = productService;
         this.productVariantService = productVariantService;
         this.categoryService = categoryService;
+        this.userRepo = userRepo;
     }
 
     @GetMapping("/")
@@ -84,15 +88,15 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) final Pageable pageable,
             final Model model) {
-                Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-                User user ;
-                if(auth==null||auth instanceof AnonymousAuthenticationToken) {
-                    user=null;
-                } 
-                else {
-                    user=(User) auth.getPrincipal();
-                }
-                model.addAttribute("User",user);
+                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user ;
+        Object principal = auth.getPrincipal();
+        if(auth instanceof AnonymousAuthenticationToken) {
+            return "redirect:/login";
+        }
+        org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
+        user = userRepo.findByEmail(u.getUsername()).orElse(null);
+        model.addAttribute("user",user);
         final var safePageable = this.sanitizePageable(pageable);
 
         final var spec = ProductSpecification

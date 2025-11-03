@@ -34,7 +34,7 @@
                 <c:if test="${not empty user}">
     <div class="dropdown me-3">
         <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="${user.avatar != null ? '/img/avatars/' += user.avatar : '/img/default-avatar.png'}" alt="User Avatar" width="40" height="40" class="rounded-circle" />
+            <img src="${user.avatarFileName != null ? '/img/avatars/' += user.avatarFileName : '/img/default-avatar.png'}" alt="User Avatar" width="40" height="40" class="rounded-circle" />
         </a>
         <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
             <li class="px-3 py-2">
