@@ -71,12 +71,12 @@ public class CategoryController {
     public String getCategoryUpdateInfoPage(
             final Model model,
             @PathVariable final long id) {
-        final var viewModel = this.categoryService.getUpdateInfoViewModel(id);
+        final var viewModel = this.categoryService.getUpdateInfoById(id).orElse(null);
 
         model.addAttribute("id", id);
-        if (viewModel.isPresent()) {
-            model.addAttribute("requestDto", viewModel.get().form());
-            model.addAttribute("imageFilePath", viewModel.get().imageFilePath());
+        if (viewModel != null) {
+            model.addAttribute("requestDto", viewModel.getForm());
+            model.addAttribute("imageFilePath", viewModel.getImageFilePath());
         }
 
         return "admin/category/update/info";
@@ -92,7 +92,7 @@ public class CategoryController {
             return "admin/category/update/info";
         }
 
-        this.categoryService.updateInfo(id, requestDto);
+        this.categoryService.updateInfoById(id, requestDto);
         return "redirect:/admin/category";
     }
 
@@ -114,7 +114,7 @@ public class CategoryController {
             final Model model,
             @PathVariable final long id,
             @ModelAttribute("requestDto") final CategoryUpdateImageForm requestDto) {
-        this.categoryService.updateImage(id, requestDto.getImageFile());
+        this.categoryService.updateImageById(id, requestDto.getImageFile());
         return "redirect:/admin/category/update/info/" + id;
     }
 
@@ -134,7 +134,7 @@ public class CategoryController {
     public String updateCategoryImageDeletion(
             final Model model,
             @PathVariable final long id) {
-        this.categoryService.deleteImage(id);
+        this.categoryService.deleteImageById(id);
         return "redirect:/admin/category/update/info/" + id;
     }
 

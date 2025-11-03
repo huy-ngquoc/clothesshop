@@ -21,7 +21,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             """)
     List<Category> findRandom(@NonNull Pageable pageable);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update Category c
             set c.amountOfProduct = (c.amountOfProduct - :amount)
@@ -32,7 +32,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
             @Param("id") final long id,
             @Param("amount") final int amount);
 
-    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("""
             update Category c
             set c.amountOfProduct = (c.amountOfProduct + :amount)

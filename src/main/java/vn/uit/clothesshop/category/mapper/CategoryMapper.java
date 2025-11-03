@@ -32,14 +32,14 @@ public class CategoryMapper {
     }
 
     public void applyUpdateInfo(
-            @NotNull final CategoryUpdateInfoForm form,
-            @NotNull final Category entity) {
+            @NotNull final Category entity,
+            @NotNull final CategoryUpdateInfoForm form) {
         entity.setName(StringUtil.trimOrNull(form.getName()));
         entity.setDesc(StringUtil.trimOrNull(form.getDesc()));
     }
 
     @NotNull
-    public CategoryBasicInfoViewModel toBasicInfo(@NotNull Category e) {
+    public CategoryBasicInfoViewModel toBasicInfo(@NotNull final Category e) {
         return new CategoryBasicInfoViewModel(
                 e.getId(),
                 e.getName(),
@@ -47,7 +47,7 @@ public class CategoryMapper {
     }
 
     @NotNull
-    public CategoryDetailInfoViewModel toDetailInfo(@NotNull Category e) {
+    public CategoryDetailInfoViewModel toDetailInfo(@NotNull final Category e) {
         return new CategoryDetailInfoViewModel(
                 e.getName(),
                 e.getDesc(),
@@ -56,7 +56,7 @@ public class CategoryMapper {
     }
 
     @NotNull
-    public CategoryCardViewModel toCard(@NotNull Category e) {
+    public CategoryCardViewModel toCard(@NotNull final Category e) {
         return new CategoryCardViewModel(
                 e.getId(),
                 e.getName(),
@@ -65,7 +65,7 @@ public class CategoryMapper {
     }
 
     @NotNull
-    public CategoryUpdateInfoViewModel toUpdateInfo(@NotNull Category e) {
+    public CategoryUpdateInfoViewModel toUpdateInfo(@NotNull final Category e) {
         final var form = new CategoryUpdateInfoForm(
                 e.getName(),
                 e.getDesc());
