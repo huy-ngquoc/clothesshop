@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.category.domain.Category;
@@ -40,8 +41,9 @@ class JpaCategoryAccess implements CategoryAccess {
     }
 
     @Override
-    public void deleteById(final long id) {
-        this.repository.deleteById(id);
+    @NotNull
+    public Category getReferenceById(final long id) {
+        return this.repository.getReferenceById(id);
     }
 
     @Override

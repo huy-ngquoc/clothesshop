@@ -1,6 +1,6 @@
 package vn.uit.clothesshop.product.presentation.viewmodel;
 
-public final class ProductVariantBasicInfoResponseDto {
+public final class ProductVariantBasicInfoViewModel {
     private final long id;
     private final String color;
     private final String size;
@@ -9,7 +9,7 @@ public final class ProductVariantBasicInfoResponseDto {
     private final int weightGrams;
     private final String imageFilePath;
 
-    public ProductVariantBasicInfoResponseDto(
+    public ProductVariantBasicInfoViewModel(
             final long id,
             final String color,
             final String size,

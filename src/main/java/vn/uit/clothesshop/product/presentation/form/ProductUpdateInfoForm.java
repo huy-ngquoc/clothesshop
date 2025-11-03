@@ -9,7 +9,7 @@ import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.enumerator.ETarget;
 import vn.uit.clothesshop.shared.util.EnumSetHelper;
 
-public class ProductUpdateRequestDto {
+public final class ProductUpdateInfoForm {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
     private String name = "";
@@ -26,10 +26,10 @@ public class ProductUpdateRequestDto {
 
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
 
-    public ProductUpdateRequestDto() {
+    public ProductUpdateInfoForm() {
     }
 
-    public ProductUpdateRequestDto(
+    public ProductUpdateInfoForm(
             final String name,
             final String shortDesc,
             final String detailDesc,

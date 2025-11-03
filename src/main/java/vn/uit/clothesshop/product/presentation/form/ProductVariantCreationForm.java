@@ -5,7 +5,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.product.domain.ProductVariant;
 
-public class ProductVariantUpdateRequestDto {
+public final class ProductVariantCreationForm {
     @NotBlank
     @Size(max = ProductVariant.MAX_LENGTH_COLOR)
     private String color = "";
@@ -22,19 +22,6 @@ public class ProductVariantUpdateRequestDto {
 
     @PositiveOrZero
     private int weightGrams = 0;
-
-    public ProductVariantUpdateRequestDto(
-            final String color,
-            final String size,
-            final int stockQuantity,
-            final int priceCents,
-            final int weightGrams) {
-        this.color = color;
-        this.size = size;
-        this.stockQuantity = stockQuantity;
-        this.priceCents = priceCents;
-        this.weightGrams = weightGrams;
-    }
 
     public String getColor() {
         return this.color;

@@ -1,11 +1,11 @@
 package vn.uit.clothesshop.product.presentation.viewmodel;
 
-public final class ProductBasicInfoResponseDto {
+public final class ProductBasicInfoViewModel {
     private final long id;
     private final String name;
     private final String shortDesc;
 
-    public ProductBasicInfoResponseDto(
+    public ProductBasicInfoViewModel(
             final long id,
             final String name,
             final String shortDesc) {

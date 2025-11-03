@@ -10,7 +10,7 @@ import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.enumerator.ETarget;
 import vn.uit.clothesshop.shared.util.EnumSetHelper;
 
-public final class ProductCreationRequestDto {
+public final class ProductCreationForm {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
     private String name = "";

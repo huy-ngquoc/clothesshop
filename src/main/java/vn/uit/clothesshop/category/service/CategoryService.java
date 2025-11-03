@@ -27,13 +27,13 @@ public interface CategoryService {
 
     long create(@NotNull final CategoryCreationForm form);
 
-    Optional<CategoryUpdateInfoViewModel> getUpdateInfoViewModel(final long id);
+    Optional<CategoryUpdateInfoViewModel> getUpdateInfoById(final long id);
 
-    boolean updateInfo(final long id, @NotNull final CategoryUpdateInfoForm form);
+    boolean updateInfoById(final long id, @NotNull final CategoryUpdateInfoForm form);
 
-    boolean updateImage(final long id, final MultipartFile file);
+    boolean updateImageById(final long id, final MultipartFile file);
 
-    boolean deleteImage(final long id);
+    boolean deleteImageById(final long id);
 
     void deleteById(final long id);
 }

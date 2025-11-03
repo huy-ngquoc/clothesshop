@@ -27,8 +27,8 @@ import vn.uit.clothesshop.cart.dto.request.CartDetailRequest;
 import vn.uit.clothesshop.category.service.CategoryService;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.specification.ProductSpecification;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoResponseDto;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoResponseDto;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoViewModel;
 import vn.uit.clothesshop.product.service.ProductService;
 import vn.uit.clothesshop.product.service.ProductVariantService;
 import vn.uit.clothesshop.user.domain.User;
@@ -67,7 +67,7 @@ public class HomepageController {
         final var productSort = Sort.by(Sort.Order.desc(Product.Fields.createdAt));
         final var productPageRequest = PageRequest.of(0, 4, productSort);
         final var productList = this.productService
-                .handleFindAllProductForHomepage(null, productPageRequest)
+                .findAllForHomepage(null, productPageRequest)
                 .getContent();
 
         model.addAttribute("categoryList", categoryList);
@@ -106,7 +106,7 @@ public class HomepageController {
                 .and(ProductSpecification.anyColors(colors))
                 .and(ProductSpecification.anySizes(sizes));
 
-        final var result = this.productService.findAllProduct(spec, safePageable);
+        final var result = this.productService.findAllBasic(spec, safePageable);
 
         model.addAttribute("products", result.getContent());
         model.addAttribute("currentPage", result.getNumber());
@@ -144,11 +144,11 @@ public class HomepageController {
 
     @GetMapping("/product/detail/{id}")
     public String getProductDetail(final Model model, @PathVariable long id) {
-        ProductDetailInfoResponseDto responseDto = productService.handleFindProductById(id);
+        ProductDetailInfoViewModel responseDto = productService.findDetailById(id).orElse(null);
         model.addAttribute("responseDto", responseDto);
         Set<String> sizeSet = new HashSet<>();
         Set<String> colorSet = new HashSet<>();
-        for (ProductVariantBasicInfoResponseDto pvBasicInfo : responseDto.getVariantList()) {
+        for (ProductVariantBasicInfoViewModel pvBasicInfo : responseDto.getVariantList()) {
             sizeSet.add(pvBasicInfo.getSize());
             colorSet.add(pvBasicInfo.getColor());
         }

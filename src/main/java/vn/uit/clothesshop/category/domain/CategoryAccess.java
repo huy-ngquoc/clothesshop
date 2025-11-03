@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
 
 import jakarta.annotation.Nullable;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public interface CategoryAccess {
@@ -14,7 +15,8 @@ public interface CategoryAccess {
 
     Optional<Category> findById(final long id);
 
-    void deleteById(final long id);
+    @NotNull
+    Category getReferenceById(final long id);
 
     boolean increaseProductCount(
             @Nullable final Long id,

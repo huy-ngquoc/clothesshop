@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotNull;
 
-public final class ProductVariantUpdateImageRequestDto {
+public final class ProductVariantUpdateImageForm {
     @NotNull
     private MultipartFile imageFile = null;
 

@@ -1,6 +1,6 @@
-package vn.uit.clothesshop.product.presentation.form;
+package vn.uit.clothesshop.product.presentation.viewmodel;
 
-public class ProductHomepageInfoResponseDto {
+public class ProductCardViewModel {
     private final long id;
     private final String name;
     private final String shortDesc;
@@ -8,7 +8,7 @@ public class ProductHomepageInfoResponseDto {
     private final int minPriceCents;
     private final int maxPriceCents;
 
-    public ProductHomepageInfoResponseDto(
+    public ProductCardViewModel(
             final long id,
             final String name,
             final String shortDesc,

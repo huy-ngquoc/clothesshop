@@ -1,6 +1,7 @@
 package vn.uit.clothesshop.product.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -11,6 +12,7 @@ import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.ProductVariant;
 import vn.uit.clothesshop.product.repository.projection.ProductInfoHomePage;
+import vn.uit.clothesshop.product.repository.projection.ProductPriceBound;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantColorCount;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantSizeCount;
 
@@ -21,6 +23,13 @@ public interface ProductVariantRepository
 
     @NotNull
     List<ProductVariant> findByProduct_Id(long productId);
+
+    @Query("""
+            SELECT pv.product.id
+            FROM ProductVariant pv
+            WHERE pv.id = :id
+            """)
+    Optional<Long> findProductIdById(@Param("id") final long id);
 
     void deleteByProduct_Id(long productId);
 
@@ -58,6 +67,14 @@ public interface ProductVariantRepository
             """)
     @NotNull
     List<@NotNull ProductVariant> findByProductIdIn(@Param("productIds") List<Long> productIds);
+
+    @Query("""
+            SELECT MIN(pv.priceCents) AS min,
+                   MAX(pv.priceCents) AS max
+            FROM ProductVariant pv
+            WHERE pv.product.id = :productId
+            """)
+    ProductPriceBound findPriceBoundByProductId(@Param("productId") final long productId);
 
     @Query("""
             SELECT pv.id

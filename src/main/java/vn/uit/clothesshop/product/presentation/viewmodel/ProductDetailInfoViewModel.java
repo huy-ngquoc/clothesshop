@@ -3,22 +3,22 @@ package vn.uit.clothesshop.product.presentation.viewmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class ProductDetailInfoResponseDto {
+public final class ProductDetailInfoViewModel {
     private final String name;
     private final String shortDesc;
     private final String detailDesc;
-    private final List<ProductVariantBasicInfoResponseDto> variantList;
+    private final List<ProductVariantBasicInfoViewModel> variantList;
     private final int minPrice;
     private final int maxPrice;
     private final int sold;
     private final int quantity;
     private final String image;
 
-    public ProductDetailInfoResponseDto(
+    public ProductDetailInfoViewModel(
             final String name,
             final String shortDesc,
             final String detailDesc,
-            final List<ProductVariantBasicInfoResponseDto> variantList, int minPrice, int maxPrice, int sold,
+            final List<ProductVariantBasicInfoViewModel> variantList, int minPrice, int maxPrice, int sold,
             int quantity, final String image) {
         this.name = name;
         this.shortDesc = shortDesc;
@@ -63,7 +63,7 @@ public final class ProductDetailInfoResponseDto {
         return this.detailDesc;
     }
 
-    public List<ProductVariantBasicInfoResponseDto> getVariantList() {
+    public List<ProductVariantBasicInfoViewModel> getVariantList() {
         return new ArrayList<>(this.variantList);
     }
 
