@@ -131,9 +131,11 @@
 
                     <div class="d-flex flex-column flex-md-row gap-2 justify-content-between mt-3">
                         <div>
-                            <button id="clearCartBtn" class="btn btn-outline-secondary" type="button">Clear
+                        <form:form action="/clear_cart?userId=${user.id}">
+                            <button id="clearCartBtn" class="btn btn-outline-secondary" type="submit">Clear
                                 Cart</button>
-                            <a class="btn btn-link" href="shop.html" role="button">Continue Shopping</a>
+                            <a class="btn btn-link" href="/shop" role="button">Continue Shopping</a>
+                            </form:form>
                         </div>
                         <small class="text-secondary">Prices in USD. Taxes calculated at checkout (if
                             applicable).</small>

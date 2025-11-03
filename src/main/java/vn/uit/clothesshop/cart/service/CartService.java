@@ -63,4 +63,8 @@ public class CartService {
             cartDetailRepo.save(cartDetail);
         }
     }
+    public void clearCart(long userId) {
+        List<CartDetail> listCartDetails = cartDetailRepo.findByUser_Id(userId);
+        cartDetailRepo.deleteAll(listCartDetails);
+    }
 }

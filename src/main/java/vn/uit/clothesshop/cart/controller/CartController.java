@@ -52,6 +52,7 @@ public class CartController {
         user = userRepo.findByEmail(u.getUsername()).orElse(null);
         List<CartDetail> listCartDetails = cartService.getCartOfUser(user);
         model.addAttribute("listCartDetails",listCartDetails);
+        model.addAttribute("user",user);
         return "client/cart/cart";
     }
 
@@ -71,5 +72,11 @@ public class CartController {
     public String deleteCartAmount(@RequestParam("userId") long userId, @RequestParam("productVariantId") long productVariantId) {
         cartService.decreaseCartAmount(userId, productVariantId);
         return "redirect:cart";
+    }
+    @PostMapping("/clear_cart")
+    public String clearCart(@RequestParam("userId") long userId) 
+    {
+        cartService.clearCart(userId);
+        return "redirect:shop";
     }
 }
