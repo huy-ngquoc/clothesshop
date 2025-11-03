@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import vn.uit.clothesshop.cart.dto.request.CartDetailRequest;
 import vn.uit.clothesshop.category.service.CategoryService;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.specification.ProductSpecification;
@@ -147,6 +148,8 @@ public class HomepageController {
             sizeSet.add(pvBasicInfo.getSize());
             colorSet.add(pvBasicInfo.getColor());
         }
+        CartDetailRequest request = new CartDetailRequest(0,0);
+        model.addAttribute("cart_request", request);
         model.addAttribute("sizeList", new ArrayList<>(sizeSet));
         model.addAttribute("colorList", new ArrayList<>(colorSet));
         return "client/homepage/productdetail";

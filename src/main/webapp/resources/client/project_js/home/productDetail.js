@@ -190,7 +190,7 @@ var PRODUCT = {
             var qtyEl = document.getElementById("qty");
             var minus = document.getElementById("btnMinus");
             var plus = document.getElementById("btnPlus");
-
+            
             function clamp() {
                 var min = Number(qtyEl.min) || 1;
                 var max = state.variant ? Number(qtyEl.max || state.variant.stock) : 99;
@@ -198,6 +198,8 @@ var PRODUCT = {
                 if (isNaN(val) || val < min) { val = min; }
                 if (val > max) { val = max; }
                 qtyEl.value = String(val);
+                var cartRequestAmount = document.getElementById("cartAmount");
+                cartRequestAmount.value = val;
             }
 
             minus.addEventListener("click", function () {
@@ -265,9 +267,11 @@ var PRODUCT = {
         });
 
         
-        const color = this.dataset.color;
-        const size = this.dataset.size;
-        hiddenInput.value = `${color}-${size}`;
+        const elementId = cb.id;
+        const variantId = parseInt(elementId.substring(7));
+        const variantInput = document.getElementById("pvId");
+        variantInput.value = variantId;
+
       } else {
         
         hiddenInput.value = "";
@@ -275,37 +279,11 @@ var PRODUCT = {
     });
   });
 }
+function listenToCartChange() {
 
+}
 
         // ===== Init =====
-        (function init() {
-            // Footer year
-            var yEl = document.getElementById("year");
-            if (yEl) { yEl.textContent = new Date().getFullYear().toString(); }
-
-            document.getElementById("productName").textContent = PRODUCT.name;
-
-            renderColors();      // also sets first color and resets size
-            renderSizes();       // sizes for the first color
-            updateVariantUI();   // initial UI
-
-            attachQtyEvents();
-            attachCartButtons();
-            attachThumbClicks();
-           
-            // Optional: preselect the first in-stock size for initial color
-            var firstInStock = variantsForColor(state.color).find(function (v) { return v.stock > 0; });
-            if (firstInStock) {
-                state.size = firstInStock.size;
-                state.variant = firstInStock;
-                // Reflect pill UI
-                var pills = document.querySelectorAll("#sizeOptions .size-pill");
-                pills.forEach(function (p) {
-                    if (p.getAttribute("data-size") === state.size) { p.classList.add("active"); }
-                });
-                setMainImage(imageForColor(state.color));
-                updateVariantUI();
-            }
-        })();
+        attachQtyEvents();
         logicFroChooseVariant();
  
