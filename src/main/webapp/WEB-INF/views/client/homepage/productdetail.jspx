@@ -2,6 +2,7 @@
 
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
           xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:form="http://www.springframework.org/tags/form"
           version="2.0">
 
     <jsp:directive.page contentType="text/html; charset=UTF-8" />
@@ -88,12 +89,13 @@
                         <c:forEach var="variant" items = "${responseDto.variantList}">
                         <div class="variant-item ">
   <label>
-    <input type="checkbox" class="variant-checkbox" data-color="${variant.color}" data-size="${variant.size}"/>
+    <input type="checkbox" class="variant-checkbox" data-color="${variant.color}" data-size="${variant.size}" id="variant${variant.id}"/>
     <span class="variant-label">${variant.color} - ${variant.size}</span>
   </label>
 </div>
                         </c:forEach>
                     </div>
+                    
 
                     <!-- Quantity -->
                     <div class="mb-3">
@@ -110,11 +112,17 @@
                     </div>
 
                     <!-- Add to Cart -->
-                    <div class="d-grid gap-2 d-sm-flex">
-                        <button id="btnAddToCart" class="btn btn-dark btn-lg" type="button" disabled="disabled">Add to
-                            Cart</button>
-                        <button id="btnBuyNow" class="btn btn-outline-dark btn-lg" type="button">Buy Now</button>
-                    </div>
+                    <form:form action="${pageContext.request.contextPath}/add_to_cart" modelAttribute="cart_request" method="post" cssClass="d-grid gap-2 d-sm-flex">
+    <form:input id="pvId" path="productVariantId" type="hidden" />
+    <form:input id="cartAmount" path="amount" type="hidden" />
+
+    <button id="btnAddToCart" class="btn btn-dark btn-lg" type="submit" >
+        Add to Cart
+    </button>
+    <button id="btnBuyNow" class="btn btn-outline-dark btn-lg" type="button">
+        Buy Now
+    </button>
+</form:form>
 
                     <!-- Details -->
                     <hr class="my-4" />
@@ -184,11 +192,13 @@
         </div>
     </div>
 
-    <!-- SCRIPTS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/client/project_js/home/productDetail.js">
+    
+<script src="${pageContext.request.contextPath}/client/project_js/home/productDetail.js"  type="text/javascript">console.log("Script loaded!");</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"  type="text/javascript">console.log("Script loaded!");</script>
+
+
         
-    </script>
+    
 </body>
 
 </html>

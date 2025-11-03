@@ -17,7 +17,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("""
             SELECT c
             FROM Category c
-            ORDER BY function("RANDOM")
+            ORDER BY RANDOM()
             """)
     List<Category> findRandom(@NonNull Pageable pageable);
 

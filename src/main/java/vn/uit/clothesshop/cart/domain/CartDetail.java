@@ -72,5 +72,8 @@ public class CartDetail {
         this.id.setUserId(user.getId());
         this.user = user;
     }
+    public ProductVariant getProductVariant() {
+        return this.productVariant;
+    }
 
 }

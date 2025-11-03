@@ -140,4 +140,7 @@ public class ProductVariant implements Comparable<ProductVariant> {
     public int compareTo(ProductVariant o) {
         return Integer.compare(this.priceCents, o.priceCents);
     }
+    public String getName() {
+        return this.product.getName();
+    }
 }

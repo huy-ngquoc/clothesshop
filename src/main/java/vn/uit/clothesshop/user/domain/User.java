@@ -1,10 +1,13 @@
 package vn.uit.clothesshop.user.domain;
 
 import java.time.Instant;
+import java.util.Collection;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
@@ -27,7 +30,7 @@ import vn.uit.clothesshop.config.security.SecurityConfig;
 @EntityListeners(AuditingEntityListener.class)
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class User {
+public class User  {
     public enum Role {
         USER,
         ADMIN,
@@ -207,5 +210,7 @@ public class User {
     void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    
 
 }
