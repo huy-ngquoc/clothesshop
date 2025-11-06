@@ -2,7 +2,7 @@ package vn.uit.clothesshop.user.presentation.viewmodel;
 
 import vn.uit.clothesshop.user.domain.User.Role;
 
-public final class UserDetailInfoResponseDto {
+public final class UserDetailInfoViewModel {
     private final String username;
     private final String firstName;
     private final String lastName;
@@ -11,7 +11,7 @@ public final class UserDetailInfoResponseDto {
     private final String avatarFilePath;
     private final Role role;
 
-    public UserDetailInfoResponseDto(
+    public UserDetailInfoViewModel(
             final String username,
             final String firstName,
             final String lastName,

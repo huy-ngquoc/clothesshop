@@ -4,7 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.validation.constraints.NotNull;
 
-public final class UserUpdateAvatarRequestDto {
+public final class UserAvatarUpdateForm {
     @NotNull
     private MultipartFile avatarFile = null;
 

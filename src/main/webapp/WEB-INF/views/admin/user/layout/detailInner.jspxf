@@ -5,25 +5,25 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <c:if test="${not empty responseDto}">
+    <c:if test="${not empty viewModel}">
         <div class="card mb-3" style="width: 60%;">
             <div class="card-header">
                 User information
             </div>
             <ol class="list-group list-group-flush">
                 <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Username: ${responseDto.username}</li>
-                <li class="list-group-item">First name: ${responseDto.firstName}</li>
-                <li class="list-group-item">Last name: ${responseDto.lastName}</li>
-                <li class="list-group-item">Email: ${responseDto.email}</li>
-                <li class="list-group-item">Phone number: ${responseDto.phoneNumber}</li>
-                <li class="list-group-item">Role: ${responseDto.role}</li>
+                <li class="list-group-item">Username: ${viewModel.username}</li>
+                <li class="list-group-item">First name: ${viewModel.firstName}</li>
+                <li class="list-group-item">Last name: ${viewModel.lastName}</li>
+                <li class="list-group-item">Email: ${viewModel.email}</li>
+                <li class="list-group-item">Phone number: ${viewModel.phoneNumber}</li>
+                <li class="list-group-item">Role: ${viewModel.role}</li>
             </ol>
         </div>
-        <c:if test="${not empty responseDto.avatarFilePath}">
+        <c:if test="${not empty viewModel.avatarFilePath}">
             <div class="row g-3 mb-3">
                 <div class="col-12">
-                    <img id="avatarFilePreview" src="/img/${responseDto.avatarFilePath}" alt="User Avatar"
+                    <img id="avatarFilePreview" src="/img/${viewModel.avatarFilePath}" alt="User Avatar"
                         style="max-width:100%; max-height:300px; height:auto; width:auto;" />
                 </div>
             </div>
@@ -35,12 +35,12 @@
         </div>
     </c:if>
 
-    <c:if test="${empty responseDto}">
+    <c:if test="${empty viewModel}">
         <p class="alert alert-danger">User not existed!</p>
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
-                <label class="form-label" for="inputId">ID:</label>
-                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                <label class="form-label" for="inputIdNotFound">ID:</label>
+                <input id="inputIdNotFound" class="form-control" type="text" value="${id}" readonly="true" />
             </div>
         </div>
         <div class="d-flex gap-3 mb-3">

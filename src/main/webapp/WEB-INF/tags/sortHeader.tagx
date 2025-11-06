@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+  <!-- Khai báo thuộc tính cho tag -->
+  <jsp:directive.attribute name="field"   required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="label"   required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="page"    required="true"  type="org.springframework.data.domain.Page"/>
+  <jsp:directive.attribute name="baseUrl" required="true"  type="java.lang.String"/>
+  <!-- CSV tên các query muốn giữ lại (vd: "q,role") -->
+  <jsp:directive.attribute name="preserve" required="false" type="java.lang.String"/>
+
+  <!-- logic xác định hướng sort kế tiếp -->
+  <c:set var="currentSort" value="${param.sort}"/>
+  <c:set var="isCurrent" value="${not empty currentSort and fn:startsWith(currentSort, field.concat(','))}"/>
+  <c:set var="curDir"     value="${isCurrent ? fn:split(currentSort, ',')[1] : ''}"/>
+  <c:set var="nextDir"    value="${curDir == 'asc' ? 'desc' : 'asc'}"/>
+
+  <c:url var="sortUrl" value="${baseUrl}">
+    <c:param name="page" value="0"/>
+    <c:param name="size" value="${page.size}"/>
+    <c:param name="sort" value="${field},${nextDir}"/>
+    <c:if test="${not empty preserve}">
+      <c:forEach var="name" items="${fn:split(preserve, ',')}">
+        <c:if test="${not empty param[name]}">
+          <c:param name="${name}" value="${param[name]}"/>
+        </c:if>
+      </c:forEach>
+    </c:if>
+  </c:url>
+
+  <a href="${fn:escapeXml(sortUrl)}">
+    <jsp:text>${label} </jsp:text>
+    <c:choose>
+      <c:when test="${isCurrent and curDir == 'asc'}">&#8593;</c:when>
+      <c:when test="${isCurrent and curDir == 'desc'}">&#8595;</c:when>
+    </c:choose>
+  </a>
+</jsp:root>

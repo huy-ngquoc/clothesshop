@@ -35,7 +35,9 @@ public class AuthController {
         if (bindingResult.hasErrors()) {
             return "client/homepage/register";
         }
-        userService.userRegister(registerDto);
+
+        // TODO: add method here
+        // userService.userRegister(registerDto);
         return "redirect:/auth/login";
     }
 

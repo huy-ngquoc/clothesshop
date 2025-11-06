@@ -1,258 +1,67 @@
 package vn.uit.clothesshop.user.service;
 
-import java.util.List;
+import java.util.Optional;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.util.Pair;
+import org.springframework.lang.NonNull;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
-import lombok.extern.slf4j.Slf4j;
-import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.user.domain.User;
-import vn.uit.clothesshop.user.mapper.UserMapper;
-import vn.uit.clothesshop.user.presentation.form.RegisterDto;
-import vn.uit.clothesshop.user.presentation.form.UserCreationRequestDto;
-import vn.uit.clothesshop.user.presentation.form.UserUpdateInfoRequestDto;
-import vn.uit.clothesshop.user.presentation.form.UserUpdatePasswordRequestDto;
-import vn.uit.clothesshop.user.presentation.viewmodel.UserBasicInfoResponseDto;
-import vn.uit.clothesshop.user.presentation.viewmodel.UserDetailInfoResponseDto;
-import vn.uit.clothesshop.user.presentation.viewmodel.UserUpdateInfoMiddleDto;
-import vn.uit.clothesshop.user.repository.UserRepository;
+import vn.uit.clothesshop.user.presentation.form.UserCreationForm;
+import vn.uit.clothesshop.user.presentation.form.UserAvatarUpdateForm;
+import vn.uit.clothesshop.user.presentation.form.UserInfoUpdateForm;
+import vn.uit.clothesshop.user.presentation.form.UserPasswordUpdateForm;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserBasicInfoViewModel;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserDeletionViewModel;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserDetailInfoViewModel;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserAvatarDeletionViewModel;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserAvatarUpdateViewModel;
+import vn.uit.clothesshop.user.presentation.viewmodel.UserInfoUpdateViewModel;
 
-@Service
-@Slf4j
-public class UserService {
-    private static final String IMAGE_SUB_FOLDER_NAME = "user";
-
-    @NotNull
-    private final UserRepository userRepository;
-    @NotNull
-    private final UserMapper userMapper;
-    @NotNull
-    private final LocalImageStorage imageFileService;
-
-    @NotNull
-    private final PasswordEncoder passwordEncoder;
-
-    public UserService(
-            final UserRepository userRepository,
-            final LocalImageStorage imageFileService,
-            final PasswordEncoder passwordEncoder, final UserMapper userMapper) {
-        this.userRepository = userRepository;
-        this.imageFileService = imageFileService;
-        this.passwordEncoder = passwordEncoder;
-        this.userMapper = userMapper;
+public interface UserService {
+    default Page<UserBasicInfoViewModel> findAllBasic(
+            @NonNull final Pageable pageable) {
+        return this.findAllBasic(null, pageable);
     }
 
-    @NotNull
-    public List<@NotNull UserBasicInfoResponseDto> handleFindAllUsers() {
-        return this.findAllUsers()
-                .stream()
-                .map((final var user) -> new UserBasicInfoResponseDto(
-                        user.getId(),
-                        user.getUsername(),
-                        user.getFullName(),
-                        user.getRole()))
-                .toList();
-    }
+    Page<UserBasicInfoViewModel> findAllBasic(
+            @Nullable final Specification<User> spec,
+            @NonNull final Pageable pageable);
 
-    @NotNull
-    public List<@NotNull User> findAllUsers() {
-        return this.userRepository.findAll();
-    }
+    Optional<UserDetailInfoViewModel> findDetailById(final long id);
 
-    @Nullable
-    public UserDetailInfoResponseDto handleFindUserById(final long id) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return null;
-        }
+    long create(@NonNull final UserCreationForm form);
 
-        final var avatarFilePath = this.imageFileService.getPathString(
-                user.getAvatarFileName(),
-                IMAGE_SUB_FOLDER_NAME);
+    Optional<Pair<UserInfoUpdateViewModel, UserInfoUpdateForm>> findInfoUpdateById(final long id);
 
-        return new UserDetailInfoResponseDto(
-                user.getUsername(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                avatarFilePath,
-                user.getRole());
-    }
+    Optional<UserInfoUpdateViewModel> findInfoUpdateViewModelById(final long id);
 
-    @Nullable
-    public User findUserById(final long id) {
-        return this.userRepository.findById(id).orElse(null);
-    }
-
-    @Nullable
-    public String findAvatarFilePathOfUserById(final long id) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return null;
-        }
-
-        return this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME);
-    }
-
-    @Nullable
-    public Long handleCreateUser(@NotNull final UserCreationRequestDto requestDto) {
-        final var hashedPassword = this.passwordEncoder.encode(requestDto.getPassword());
-
-        final var user = new User(
-                requestDto.getUsername(),
-                hashedPassword,
-                requestDto.getFirstName(),
-                requestDto.getLastName(),
-                requestDto.getEmail(),
-                requestDto.getPhoneNumber(),
-                requestDto.getRole());
-
-        final var savedUser = this.handleSaveUser(user);
-        if (savedUser == null) {
-            return null;
-        }
-
-        return savedUser.getId();
-    }
-
-    @Nullable
-    public UserUpdateInfoMiddleDto handleCreateMiddleDtoForUpdateInfo(final long id) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return null;
-        }
-
-        final var requestDto = new UserUpdateInfoRequestDto(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber(),
-                user.getRole());
-
-        return new UserUpdateInfoMiddleDto(
-                user.getUsername(),
-                this.imageFileService.getPathString(user.getAvatarFileName(), IMAGE_SUB_FOLDER_NAME),
-                requestDto);
-    }
-
-    public boolean handleUpdateUserInfo(
+    void updateInfoById(
             final long id,
-            @NotNull final UserUpdateInfoRequestDto requestDto) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return false;
-        }
+            @NonNull final UserInfoUpdateForm form);
 
-        user.setFirstName(requestDto.getFirstName());
-        user.setLastName(requestDto.getLastName());
-        user.setEmail(requestDto.getEmail());
-        user.setPhoneNumber(requestDto.getPhoneNumber());
-        user.setRole(requestDto.getRole());
+    Optional<UserPasswordUpdateForm> findPasswordUpdateFormById(final long id);
 
-        return this.handleSaveUser(user) != null;
-    }
-
-    public boolean handleUpdateUserPassword(
+    void updatePasswordById(
             final long id,
-            @NotNull final UserUpdatePasswordRequestDto requestDto) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return false;
-        }
+            @NonNull final UserPasswordUpdateForm form);
 
-        final var newHashedPassword = this.passwordEncoder.encode(requestDto.getNewPassword());
-        user.setHashedPassword(newHashedPassword);
+    Optional<Pair<UserAvatarUpdateViewModel, UserAvatarUpdateForm>> findAvatarUpdateById(final long id);
 
-        return this.handleSaveUser(user) != null;
-    }
+    Optional<UserAvatarUpdateViewModel> findAvatarUpdateViewModelById(final long id);
 
-    public boolean handleUpdateUserAvatar(
+    boolean updateAvatarById(
             final long id,
-            final MultipartFile file) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return false;
-        }
+            @NonNull final UserAvatarUpdateForm form);
 
-        var avatarFile = user.getAvatarFileName();
-        if (!StringUtils.hasText(avatarFile)) {
-            avatarFile = this.imageFileService.handleSaveUploadFile(file, IMAGE_SUB_FOLDER_NAME);
-        } else {
-            avatarFile = this.imageFileService.handleUpdateUploadFile(avatarFile, file, IMAGE_SUB_FOLDER_NAME);
-        }
+    Optional<UserAvatarDeletionViewModel> findAvatarDeletionById(final long id);
 
-        if (!StringUtils.hasText(avatarFile)) {
-            return false;
-        }
+    void deleteAvatarById(final long id);
 
-        user.setAvatarFileName(avatarFile);
-        if (this.handleSaveUser(user) == null) {
-            this.imageFileService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
-            return false;
-        }
+    Optional<UserDeletionViewModel> findDeletionViewModelById(final long id);
 
-        return true;
-    }
-
-    public boolean handleUpdateUserAvatarDeletion(final long id) {
-        final var user = this.findUserById(id);
-        if (user == null) {
-            return false;
-        }
-
-        var avatarFile = user.getAvatarFileName();
-        if (!StringUtils.hasText(avatarFile)) {
-            return true;
-        }
-
-        user.setAvatarFileName(null);
-
-        if (this.handleSaveUser(user) == null) {
-            return false;
-        }
-        this.imageFileService.handleDeleteUploadFile(avatarFile, IMAGE_SUB_FOLDER_NAME);
-
-        return true;
-    }
-
-    public void deleteUserById(final long id) {
-        final var user = this.findUserById(id);
-
-        if (user == null) {
-            return;
-        }
-
-        final var avatarFileName = user.getAvatarFileName();
-        if (StringUtils.hasText(avatarFileName)) {
-            this.imageFileService.handleDeleteUploadFile(avatarFileName, IMAGE_SUB_FOLDER_NAME);
-        }
-
-        this.userRepository.deleteById(id);
-    }
-
-    @Nullable
-    private User handleSaveUser(@NotNull final User user) {
-        try {
-            return this.userRepository.save(user);
-        } catch (final Exception exception) {
-            log.error("Error saving user", exception);
-            return null;
-        }
-    }
-
-    public void userRegister(RegisterDto registerDto) {
-        User user = userMapper.getUserFromRegisterDto(registerDto);
-        userRepository.save(user);
-
-    }
-
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
-    }
+    void deleteById(final long id);
 }

@@ -3,11 +3,13 @@ package vn.uit.clothesshop.shared.storage;
 public enum ImageFolder {
     CATEGORY("category"),
     PRODUCT("product"),
+    PRODUCT_VARIANT("productvariant"),
+    USER("user"),
     ;
 
     private final String sub;
 
-    ImageFolder(String s) {
+    private ImageFolder(final String s) {
         this.sub = s;
     }
 
