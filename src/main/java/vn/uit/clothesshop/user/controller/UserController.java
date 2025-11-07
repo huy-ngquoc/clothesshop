@@ -16,12 +16,15 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import vn.uit.clothesshop.shared.constant.ModelAttributeConstant;
 import vn.uit.clothesshop.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.user.presentation.form.UserCreationForm;
 import vn.uit.clothesshop.user.domain.User;
+import vn.uit.clothesshop.user.domain.specification.UserSpecification;
 import vn.uit.clothesshop.user.presentation.form.UserAvatarUpdateForm;
 import vn.uit.clothesshop.user.presentation.form.UserInfoUpdateForm;
 import vn.uit.clothesshop.user.presentation.form.UserPasswordUpdateForm;
@@ -47,9 +50,14 @@ public class UserController {
     @GetMapping
     public String getUserPage(
             final Model model,
+            @RequestParam(required = false) @Nullable final String q,
             @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
         final var safePageable = UserController.sanitizePagable(pageable);
-        final var page = this.userService.findAllBasic(safePageable);
+        final var spec = UserSpecification.usernameLike(q)
+                .or(UserSpecification.firstNameLike(q))
+                .or(UserSpecification.lastNameLike(q));
+
+        final var page = this.userService.findAllBasic(spec, safePageable);
 
         model.addAttribute(ModelAttributeConstant.PAGE, page);
 
