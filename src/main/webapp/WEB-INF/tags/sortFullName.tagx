@@ -20,7 +20,7 @@
 
   <c:url var="u" value="${baseUrl}">
     <c:param name="page" value="0"/>
-    <c:param name="size" value="${page.size}"/>
+    <c:param name="size" value="${page.getSize()}"/>
     <c:param name="sort" value="${firstNameField},${nextDir}"/>
     <c:param name="sort" value="${lastNameField},${nextDir}"/>
     <c:if test="${not empty preserve}">

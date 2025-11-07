@@ -55,7 +55,7 @@
   <!-- URL khi có sort (asc/desc): gửi 2 tham số sort -->
   <c:url var="sortedUrl" value="${baseUrl}">
     <c:param name="page" value="0"/>
-    <c:param name="size" value="${page.size}"/>
+    <c:param name="size" value="${page.getSize()}"/>
     <c:param name="sort" value="${firstNameField},${nextDir}"/>
     <c:param name="sort" value="${lastNameField},${nextDir}"/>
     <c:if test="${not empty preserve}">
@@ -70,7 +70,7 @@
   <!-- URL khi trở về 'none' (xóa sort cho cột này, giữ filter khác) -->
   <c:url var="clearedUrl" value="${baseUrl}">
     <c:param name="page" value="0"/>
-    <c:param name="size" value="${page.size}"/>
+    <c:param name="size" value="${page.getSize()}"/>
     <c:if test="${not empty preserve}">
       <c:forEach var="n" items="${fn:split(preserve, ',')}">
         <c:if test="${not empty param[n]}">

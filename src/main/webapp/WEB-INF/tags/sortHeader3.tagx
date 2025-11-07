@@ -34,7 +34,7 @@
   <!-- URL khi có sort (asc/desc) -->
   <c:url var="sortedUrl" value="${baseUrl}">
     <c:param name="page" value="0"/>
-    <c:param name="size" value="${page.size}"/>
+    <c:param name="size" value="${page.getSize()}"/>
     <c:param name="sort" value="${field},${nextDir}"/>
     <c:if test="${not empty preserve}">
       <c:forEach var="name" items="${fn:split(preserve, ',')}">
@@ -48,7 +48,7 @@
   <!-- URL khi trở về 'none' (xóa sort) -->
   <c:url var="clearedUrl" value="${baseUrl}">
     <c:param name="page" value="0"/>
-    <c:param name="size" value="${page.size}"/>
+    <c:param name="size" value="${page.getSize()}"/>
     <c:if test="${not empty preserve}">
       <c:forEach var="name" items="${fn:split(preserve, ',')}">
         <c:if test="${not empty param[name]}">
