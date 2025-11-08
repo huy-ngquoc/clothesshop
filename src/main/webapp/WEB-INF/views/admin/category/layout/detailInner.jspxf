@@ -5,45 +5,45 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <!-- Nếu có responseDto -->
-    <c:if test="${not empty responseDto}">
-        <div class="card mb-3" style="width: 60%;">
-            <div class="card-header">
-                Product Information
+    <c:choose>
+        <c:when test="${not empty viewModel}">
+            <div class="card mb-3" style="width: 60%;">
+                <div class="card-header">
+                    Product Information
+                </div>
+                <ol class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Name: ${viewModel.name}</li>
+                    <li class="list-group-item">Description: ${viewModel.desc}</li>
+                </ol>
             </div>
-            <ol class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Name: ${responseDto.name}</li>
-                <li class="list-group-item">Description: ${responseDto.desc}</li>
-            </ol>
-        </div>
-        <c:if test="${not empty responseDto.imageFilePath}">
+            <c:if test="${not empty viewModel.imageFilePath}">
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <img id="imageFilePreview" src="/img/${viewModel.imageFilePath}" alt=""
+                            style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                    </div>
+                </div>
+            </c:if>
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-success" href="/admin/category">Back</a>
+                <a class="btn btn-warning" href="/admin/category/update/info/${id}">Update</a>
+                <a class="btn btn-danger" href="/admin/category/delete/${id}">Delete</a>
+            </div>
+        </c:when>
+
+        <c:otherwise>
+            <p class="alert alert-danger">Category not found!</p>
             <div class="row g-3 mb-3">
-                <div class="col-12">
-                    <img id="imageFilePreview" src="/img/${responseDto.imageFilePath}" alt=""
-                        style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputId">ID:</label>
+                    <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
                 </div>
             </div>
-        </c:if>
-        <div class="d-flex gap-3 mb-3">
-            <a class="btn btn-success" href="/admin/category">Back</a>
-            <a class="btn btn-warning" href="/admin/category/update/info/${id}">Update</a>
-            <a class="btn btn-danger" href="/admin/category/delete/${id}">Delete</a>
-        </div>
-    </c:if>
-
-    <!-- Nếu không có responseDto -->
-    <c:if test="${empty responseDto}">
-        <p class="alert alert-danger">Category not found!</p>
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <label class="form-label" for="inputId">ID:</label>
-                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/category">Back</a>
             </div>
-        </div>
-        <div class="d-flex gap-3 mb-3">
-            <a class="btn btn-primary" href="/admin/category">Back</a>
-        </div>
-    </c:if>
+        </c:otherwise>
+    </c:choose>
 
 </jsp:root>

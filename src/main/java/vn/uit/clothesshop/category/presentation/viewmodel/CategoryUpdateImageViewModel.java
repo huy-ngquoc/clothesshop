@@ -1,15 +1,14 @@
 package vn.uit.clothesshop.category.presentation.viewmodel;
 
-public final class CategoryUpdateInfoViewModel {
+public final class CategoryUpdateImageViewModel {
     private final String imageFilePath;
 
-    public CategoryUpdateInfoViewModel(
-            final String imageFilePath) {
+    public CategoryUpdateImageViewModel(final String imageFilePath) {
         this.imageFilePath = imageFilePath;
     }
 
     public String getImageFilePath() {
-        return this.imageFilePath;
+        return imageFilePath;
     }
 
 }

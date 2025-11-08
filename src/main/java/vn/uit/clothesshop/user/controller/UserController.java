@@ -22,6 +22,7 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import vn.uit.clothesshop.shared.constant.ModelAttributeConstant;
 import vn.uit.clothesshop.shared.constraint.PagingConstraint;
+import vn.uit.clothesshop.shared.util.PageableSanitizer;
 import vn.uit.clothesshop.user.presentation.form.UserCreationForm;
 import vn.uit.clothesshop.user.domain.User;
 import vn.uit.clothesshop.user.domain.specification.UserSpecification;
@@ -39,8 +40,13 @@ public class UserController {
             User.Fields.firstName,
             User.Fields.lastName,
             User.Fields.role);
+    private static final PageableSanitizer pageableSanitizer;
 
     private final UserService userService;
+
+    static {
+        pageableSanitizer = new PageableSanitizer(ALLOWED_SORT, User.Fields.id);
+    }
 
     public UserController(
             final UserService userService) {
@@ -52,7 +58,7 @@ public class UserController {
             final Model model,
             @RequestParam(required = false) @Nullable final String q,
             @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
-        final var safePageable = UserController.sanitizePagable(pageable);
+        final var safePageable = UserController.pageableSanitizer.sanitize(pageable);
         final var spec = UserSpecification.usernameLike(q)
                 .or(UserSpecification.firstNameLike(q))
                 .or(UserSpecification.lastNameLike(q));
@@ -233,30 +239,5 @@ public class UserController {
             @PathVariable final long id) {
         this.userService.deleteById(id);
         return "redirect:/admin/user";
-    }
-
-    @NonNull
-    private static final Pageable sanitizePagable(@NonNull final Pageable pageable) {
-        final var orders = pageable.getSort().stream().map((final var order) -> {
-            final var property = order.getProperty();
-
-            if (!ALLOWED_SORT.contains(property)) {
-                return null;
-            }
-
-            return new Sort.Order(order.getDirection(), property);
-        }).filter(Objects::nonNull).toList();
-
-        var mapped = Sort.by(orders);
-        if (mapped.isUnsorted()) {
-            mapped = Sort.by(Sort.Order.asc(User.Fields.id));
-        } else if (mapped.stream().noneMatch(o -> o.getProperty().equals(User.Fields.id))) {
-            mapped = mapped.and(Sort.by(Sort.Order.asc(User.Fields.id)));
-        } else {
-            // Sort is ready!
-        }
-
-        final var pageSize = Math.clamp(pageable.getPageSize(), PagingConstraint.MIN_SIZE, PagingConstraint.MAX_SIZE);
-        return PageRequest.of(pageable.getPageNumber(), pageSize, mapped);
     }
 }

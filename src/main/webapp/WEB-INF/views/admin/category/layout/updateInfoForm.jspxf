@@ -6,55 +6,75 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/category/update/info/${id}" modelAttribute="requestDto">
-        <div class="row g-3 mb-3">
-            <div class="col-12">
-                <c:set var="errorName">
-                    <form:errors cssClass="invalid-feedback" path="name" />
-                </c:set>
+    <c:choose>
+        <c:when test="${(not empty viewModel) and (not empty form)}">
+            <form:form method="post" action="/admin/category/update/info/${id}" modelAttribute="form">
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <c:set var="errorName">
+                            <form:errors cssClass="invalid-feedback" path="name" />
+                        </c:set>
 
-                <form:label cssClass="form-label" for="inputName" path="name">Category Name:</form:label>
-                <form:input id="inputName" cssClass="form-control ${not empty errorName ? 'is-invalid' : ''}"
-                    type="text" path="name" />
-                ${errorName}
-            </div>
-        </div>
+                        <form:label cssClass="form-label" for="inputName" path="name">Category Name:</form:label>
+                        <form:input id="inputName" cssClass="form-control ${not empty errorName ? 'is-invalid' : ''}"
+                            type="text" path="name" />
+                        ${errorName}
+                    </div>
+                </div>
 
-        <div class="row g-3 mb-3">
-            <div class="col-12">
-                <c:set var="errorDesc">
-                    <form:errors cssClass="invalid-feedback" path="desc" />
-                </c:set>
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <c:set var="errorDesc">
+                            <form:errors cssClass="invalid-feedback" path="desc" />
+                        </c:set>
 
-                <label class="form-label" for="inputDesc">
-                    Description:
-                </label>
-                <textarea id="inputDesc" name="desc" class="form-control ${not empty errorDesc ? 'is-invalid' : ''}"
-                    rows="3">${requestDto.desc}</textarea>
-                ${errorDesc}
-            </div>
-        </div>
+                        <label class="form-label" for="inputDesc">
+                            Description:
+                        </label>
+                        <textarea id="inputDesc" name="desc"
+                            class="form-control ${not empty errorDesc ? 'is-invalid' : ''}"
+                            rows="3">${form.desc}</textarea>
+                        ${errorDesc}
+                    </div>
+                </div>
 
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <p class="form-label">Image:</p>
-                <a class="btn btn-primary w-100" href="/admin/category/update/image/${id}">Change image</a>
-            </div>
-        </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <p class="form-label">Image:</p>
+                        <a class="btn btn-primary w-100" href="/admin/category/update/image/${id}">Change image</a>
+                    </div>
+                </div>
 
-        <c:if test="${not empty imageFilePath}">
+                <c:if test="${not empty viewModel.imageFilePath}">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <img src="/img/${viewModel.imageFilePath}" alt="Category Image"
+                                style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                        </div>
+                    </div>
+                </c:if>
+
+                <div class="d-flex gap-3 mb-3">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                    <a class="btn btn-success" href="/admin/category">Back</a>
+                </div>
+            </form:form>
+        </c:when>
+
+        <c:otherwise>
+
+            <p class="alert alert-danger">Category not found!</p>
             <div class="row g-3 mb-3">
-                <div class="col-12">
-                    <img src="/img/${imageFilePath}" alt="Category Image"
-                        style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputId">ID:</label>
+                    <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
                 </div>
             </div>
-        </c:if>
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/category">Back</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
 
-        <div class="d-flex gap-3 mb-3">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <a class="btn btn-success" href="/admin/category">Back</a>
-        </div>
-    </form:form>
 
 </jsp:root>

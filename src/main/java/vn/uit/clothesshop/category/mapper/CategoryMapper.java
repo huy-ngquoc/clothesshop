@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.category.mapper;
 
+import org.springframework.data.util.Pair;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -7,10 +8,13 @@ import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.category.domain.Category;
 import vn.uit.clothesshop.category.presentation.form.CategoryCreationForm;
+import vn.uit.clothesshop.category.presentation.form.CategoryUpdateImageForm;
 import vn.uit.clothesshop.category.presentation.form.CategoryUpdateInfoForm;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryBasicInfoViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryCardViewModel;
+import vn.uit.clothesshop.category.presentation.viewmodel.CategoryDeleteImageViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryDetailInfoViewModel;
+import vn.uit.clothesshop.category.presentation.viewmodel.CategoryUpdateImageViewModel;
 import vn.uit.clothesshop.category.presentation.viewmodel.CategoryUpdateInfoViewModel;
 import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.shared.storage.ImageFolder;
@@ -65,12 +69,49 @@ public class CategoryMapper {
     }
 
     @NotNull
-    public CategoryUpdateInfoViewModel toUpdateInfo(@NotNull final Category e) {
-        final var form = new CategoryUpdateInfoForm(
+    public Pair<CategoryUpdateInfoViewModel, CategoryUpdateInfoForm> toUpdateInfo(
+            @NotNull final Category e) {
+        return Pair.of(
+                this.toUpdateInfoViewModel(e),
+                this.toUpdateInfoForm(e));
+    }
+
+    @NotNull
+    public CategoryUpdateInfoViewModel toUpdateInfoViewModel(
+            @NotNull final Category e) {
+        return new CategoryUpdateInfoViewModel(this.getPathString(e));
+    }
+
+    @NotNull
+    public CategoryUpdateInfoForm toUpdateInfoForm(@NotNull final Category e) {
+        return new CategoryUpdateInfoForm(
                 e.getName(),
                 e.getDesc());
+    }
 
-        return new CategoryUpdateInfoViewModel(this.getPathString(e), form);
+    @NotNull
+    public Pair<CategoryUpdateImageViewModel, CategoryUpdateImageForm> toUpdateImage(
+            @NotNull final Category e) {
+        return Pair.of(
+                this.toUpdateImageViewModel(e),
+                this.toUpdateImageForm(e));
+    }
+
+    @NotNull
+    public CategoryUpdateImageViewModel toUpdateImageViewModel(
+            @NotNull final Category e) {
+        return new CategoryUpdateImageViewModel(this.getPathString(e));
+    }
+
+    @NotNull
+    public CategoryUpdateImageForm toUpdateImageForm(@NotNull final Category e) {
+        return new CategoryUpdateImageForm();
+    }
+
+    @NotNull
+    public CategoryDeleteImageViewModel toDeleteImageViewModel(
+            @NotNull final Category e) {
+        return new CategoryDeleteImageViewModel(this.getPathString(e));
     }
 
     public String getPathString(@NotNull final Category e) {
