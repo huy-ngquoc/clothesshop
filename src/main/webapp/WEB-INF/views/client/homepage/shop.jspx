@@ -5,252 +5,263 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Aurora Apparel — Shop</title>
-    <meta name="description"
-        content="Browse products, filter by price, size, and color. Sort by price or popularity. Pagination included." />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="/client/project_css/shop.css" rel="stylesheet"/>
-</head>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Aurora Apparel — Shop</title>
+        <meta name="description"
+            content="Browse products, filter by price, size, and color. Sort by price or popularity. Pagination included." />
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/client/project_css/shop.css" rel="stylesheet" />
+    </head>
 
-<body>
-    
-    <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#" title="Aurora Apparel">Aurora Apparel</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
-                aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navMain">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Shop</a></li>
-                </ul>
-                <c:if test="${not empty user}">
-    <div class="dropdown me-3">
-        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="${user.avatarFileName != null ? '/img/avatars/' += user.avatarFileName : '/img/default-avatar.png'}" alt="User Avatar" width="40" height="40" class="rounded-circle" />
-        </a>
-        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-            <li class="px-3 py-2">
-                <span class="fw-semibold d-block">${user.fullName}</span>
-                <small class="text-muted">${user.email}</small>
-            </li>
-            <li><hr class="dropdown-divider" /></li>
-            <li><a class="dropdown-item text-danger" href="/auth/logout">Log out</a></li>
-        </ul>
-    </div>
-</c:if>
-                <a class="btn btn-outline-dark" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+    <body>
+
+        <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#" title="Aurora Apparel">Aurora Apparel</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                    aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Shop</a></li>
+                    </ul>
+                    <c:if test="${not empty user}">
+                        <div class="dropdown me-3">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="${user.avatarFileName != null ? '/img/avatars/' += user.avatarFileName : '/img/default-avatar.png'}"
+                                    alt="User Avatar" width="40" height="40" class="rounded-circle" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                                <li class="px-3 py-2">
+                                    <span class="fw-semibold d-block">${user.fullName}</span>
+                                    <small class="text-muted">${user.email}</small>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item text-danger" href="/auth/logout">Log out</a></li>
+                            </ul>
+                        </div>
+                    </c:if>
+                    <a class="btn btn-outline-dark" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    
-    <header class="py-4 border-bottom bg-light">
-        <div class="container">
-            <h1 class="h3 mb-1">Shop</h1>
-            <p class="text-secondary mb-0">Filter by price, size, and color. Sort results and paginate through the
-                catalog.</p>
-        </div>
-    </header>
 
-   
-    <main class="py-4">
-        <div class="container">
-            <div class="row g-4">
-                <!-- FILTERS -->
-                <aside class="col-12 col-lg-3">
-                    <div class="card filter-card shadow-sm">
-                        <div class="card-body">
-                            <h2 class="h5">Filters</h2>
-                            <hr />
-                            <!-- Price -->
-                            <form id="filtersForm" action="#" method="get">
-                                <fieldset class="mb-3">
-                                    <legend class="h6">Price</legend>
-                                    <div class="row g-2">
-                                        <div class="col-6">
-                                            <label for="priceFrom" class="form-label">From</label>
-                                            <input id="priceFrom" class="form-control" type="number" min="0" step="1"
-                                                placeholder="0" />
+        <header class="py-4 border-bottom bg-light">
+            <div class="container">
+                <h1 class="h3 mb-1">Shop</h1>
+                <p class="text-secondary mb-0">Filter by price, size, and color. Sort results and paginate through the
+                    catalog.</p>
+            </div>
+        </header>
+
+
+        <main class="py-4">
+            <div class="container">
+                <div class="row g-4">
+                    <!-- FILTERS -->
+                    <aside class="col-12 col-lg-3">
+                        <div class="card filter-card shadow-sm">
+                            <div class="card-body">
+                                <h2 class="h5">Filters</h2>
+                                <hr />
+                                <!-- Price -->
+                                <form id="filtersForm" action="#" method="get">
+                                    <fieldset class="mb-3">
+                                        <legend class="h6">Price</legend>
+                                        <div class="row g-2">
+                                            <div class="col-6">
+                                                <label for="priceFrom" class="form-label">From</label>
+                                                <input id="priceFrom" class="form-control" type="number" min="0"
+                                                    step="1" placeholder="0" />
+                                            </div>
+                                            <div class="col-6">
+                                                <label for="priceTo" class="form-label">To</label>
+                                                <input id="priceTo" class="form-control" type="number" min="0" step="1"
+                                                    placeholder="200" />
+                                            </div>
                                         </div>
-                                        <div class="col-6">
-                                            <label for="priceTo" class="form-label">To</label>
-                                            <input id="priceTo" class="form-control" type="number" min="0" step="1"
-                                                placeholder="200" />
+                                    </fieldset>
+
+                                    <!-- Size -->
+                                    <fieldset class="mb-3">
+                                        <legend class="h6">Size</legend>
+                                        <c:forEach var="size" items="${sizeCounts}">
+
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="${size.size}"
+                                                    value="${size.size}" />
+                                                <label class="form-check-label" for="${size.size}">${size.size}</label>
+                                            </div>
+                                        </c:forEach>
+                                    </fieldset>
+
+                                    <!-- Color -->
+                                    <fieldset class="mb-3">
+                                        <legend class="h6">Color</legend>
+                                        <c:forEach var="color" items="${colorCounts}">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="${color.color}"
+                                                    value="${color.color}" />
+                                                <label class="form-check-label" for="${color.color}"><span
+                                                        class="color-dot color-${color.color}"></span>${color.color}</label>
+                                            </div>
+                                        </c:forEach>
+                                    </fieldset>
+
+                                    <div class="d-grid gap-2">
+                                        <button id="applyFilters" class="btn btn-dark" type="button">Apply
+                                            Filters</button>
+                                        <button id="resetFilters" class="btn btn-outline-secondary"
+                                            type="button">Reset</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </aside>
+
+
+                    <section class="col-12 col-lg-9">
+                        <div
+                            class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+                            <div>
+                                <span id="resultsCount" class="text-secondary">Showing 0 results</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="sortSelect" class="form-label mb-0">Sort by:</label>
+                                <select id="sortSelect" class="form-select" aria-label="Sort products">
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="sold-asc">Sold: Low to High</option>
+                                    <option value="sold-desc">Sold: High to Low</option>
+                                </select>
+                                <label for="perPageSelect" class="form-label mb-0 ms-2">Per page:</label>
+                                <select id="perPageSelect" class="form-select" aria-label="Items per page">
+                                    <option value="9">9</option>
+                                    <option value="12" selected="selected">12</option>
+                                    <option value="16">16</option>
+                                    <option value="24">24</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div id="productGrid" class="row g-4">
+                            <c:forEach var="product" items="${products}">
+                                <div class="col-12 col-sm-6 col-lg-4">
+                                    <div class="card h-100 shadow-sm">
+                                        <img class="card-img-top" src="/img/productvariant/${product.image}" />
+                                        <div class="card-body d-flex flex-column">
                                         </div>
+                                        <h3 class="h6 mb-1">${product.name}</h3>
+                                        <div class="d-flex justify-content-between align-items-center mt-auto">
+                                            <span class="fw-semibold">${product.minPrice} VND</span>
+                                            <span class="badge text-bg-light">Sold ${product.sold}</span>
+                                        </div>
+                                        <a class="btn btn-dark w-100 mt-3" role="button">Add to Cart</a>
                                     </div>
-                                </fieldset>
-
-                                <!-- Size -->
-                                <fieldset class="mb-3">
-                                    <legend class="h6">Size</legend>
-                                    <c:forEach var="size" items="${sizeCounts}">
-
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="${size.size}" value="${size.size}" />
-                                        <label class="form-check-label" for="${size.size}">${size.size}</label>
-                                    </div>
-                                    </c:forEach>
-                                </fieldset>
-
-                                <!-- Color -->
-                                <fieldset class="mb-3">
-                                    <legend class="h6">Color</legend>
-                                    <c:forEach var="color" items="${colorCounts}"> 
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="${color.color}" value="${color.color}" />
-                                        <label class="form-check-label" for="${color.color}"><span
-                                                class="color-dot color-${color.color}"></span>${color.color}</label>
-                                    </div>
-                                    </c:forEach>
-                                </fieldset>
-
-                                <div class="d-grid gap-2">
-                                    <button id="applyFilters" class="btn btn-dark" type="button">Apply Filters</button>
-                                    <button id="resetFilters" class="btn btn-outline-secondary"
-                                        type="button">Reset</button>
                                 </div>
-                            </form>
-                        </div>
-                    </div>
-                </aside>
-
-                
-                <section class="col-12 col-lg-9">
-                    <div
-                        class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
-                        <div>
-                            <span id="resultsCount" class="text-secondary">Showing 0 results</span>
-                        </div>
-                        <div class="d-flex align-items-center gap-2">
-                            <label for="sortSelect" class="form-label mb-0">Sort by:</label>
-                            <select id="sortSelect" class="form-select" aria-label="Sort products">
-                                <option value="price-asc">Price: Low to High</option>
-                                <option value="price-desc">Price: High to Low</option>
-                                <option value="sold-asc">Sold: Low to High</option>
-                                <option value="sold-desc">Sold: High to Low</option>
-                            </select>
-                            <label for="perPageSelect" class="form-label mb-0 ms-2">Per page:</label>
-                            <select id="perPageSelect" class="form-select" aria-label="Items per page">
-                                <option value="9">9</option>
-                                <option value="12" selected="selected">12</option>
-                                <option value="16">16</option>
-                                <option value="24">24</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div id="productGrid" class="row g-4">
-                       <c:forEach var="product" items="${products}">
-                            <div class="col-12 col-sm-6 col-lg-4">
-                            <div class="card h-100 shadow-sm">
-                            <img class="card-img-top" src="/img/productvariant/${product.image}"/>
-                            <div class="card-body d-flex flex-column">
-                            </div>
-                            <h3 class="h6 mb-1">${product.name}</h3>
-                            <div class="d-flex justify-content-between align-items-center mt-auto">
-                            <span class="fw-semibold">${product.minPrice} VND</span>
-                            <span class="badge text-bg-light">Sold ${product.sold}</span>
-                            </div>
-                            <a class="btn btn-dark w-100 mt-3" role="button">Add to Cart</a>
-                            </div>
-                            </div>
-                        </c:forEach>
-                    </div>
-
-                    <nav aria-label="Page navigation example">
-                        <ul class="pagination justify-content-center">
-                        <c:choose>
-                        <c:when test="${currentPage==0}">
-                            <li class="page-item disabled">
-                            
-                            <a class="page-link" href="#" aria-label="Previous">
-                                
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            </li>
-                        </c:when>
-
-                        <c:when test="${currentPage!=0}">
-                        <li class="page-item">
-                            
-                            <a class="page-link" href="/shop?page=${currentPage-1}" aria-label="Previous">
-                                
-                                <span class="sr-only">Previous</span>
-                            </a>
-                            </li>
-                            </c:when>
-                        </c:choose>
-                            <c:forEach var="i" begin="1" end="${totalPages-1}">
-                            <c:choose>
-                            <c:when test="${i==1 and currentPage==0}">
-                            <li class="page-item active"><a class="page-link" href="/shop?page=${i}">${i}</a></li>
-                            </c:when>
-                            <c:when test="${i==(currentPage)}">
-                            <li class="page-item active"><a class="page-link" href="/shop?page=${i}">${i}</a></li>
-                            </c:when>
-                            <c:when test="${i!=(currentPage)}">
-                            <li class="page-item"><a class="page-link" href="/shop?page=${i}">${i}</a></li>
-                            </c:when>
-                            </c:choose>
-                            
                             </c:forEach>
-                            <c:choose>
-                            <c:when test="${currentPage!=(totalPages-1)}">
-                            <li class="page-item">
-                            
-                            <a class="page-link" href="/shop?page=${currentPage+1}" aria-label="Next">
-                                
-                                <span class="sr-only">Next</span>
-                            </a>
-                            </li>
-                            </c:when>
-                            <c:when test="${currentPage==(totalPages-1)}">
-                             <li class="page-item disabled">
-                            
-                            <a class="page-link" aria-label="Next">
-                                
-                                <span class="sr-only">Next</span>
-                            </a>
-                            </li>
-                            </c:when>
-                            </c:choose>
-                            
-                        </ul>
-                    </nav>
-                </section>
-            </div>
-        </div>
-    </main>
+                        </div>
 
-  
-    <footer class="py-5 border-top">
-        <div class="container">
-            <div class="row g-4">
-                <div class="col-12 col-md-6">
-                    <h3 class="h6">Aurora Apparel</h3>
-                    <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <c:choose>
+                                    <c:when test="${currentPage==0}">
+                                        <li class="page-item disabled">
+
+                                            <a class="page-link" href="#" aria-label="Previous">
+
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                    </c:when>
+
+                                    <c:when test="${currentPage!=0}">
+                                        <li class="page-item">
+
+                                            <a class="page-link" href="/shop?page=${currentPage-1}"
+                                                aria-label="Previous">
+
+                                                <span class="sr-only">Previous</span>
+                                            </a>
+                                        </li>
+                                    </c:when>
+                                </c:choose>
+                                <c:forEach var="i" begin="1" end="${totalPages-1}">
+                                    <c:choose>
+                                        <c:when test="${i==1 and currentPage==0}">
+                                            <li class="page-item active"><a class="page-link"
+                                                    href="/shop?page=${i}">${i}</a></li>
+                                        </c:when>
+                                        <c:when test="${i==(currentPage)}">
+                                            <li class="page-item active"><a class="page-link"
+                                                    href="/shop?page=${i}">${i}</a></li>
+                                        </c:when>
+                                        <c:when test="${i!=(currentPage)}">
+                                            <li class="page-item"><a class="page-link" href="/shop?page=${i}">${i}</a>
+                                            </li>
+                                        </c:when>
+                                    </c:choose>
+
+                                </c:forEach>
+                                <c:choose>
+                                    <c:when test="${currentPage!=(totalPages-1)}">
+                                        <li class="page-item">
+
+                                            <a class="page-link" href="/shop?page=${currentPage+1}" aria-label="Next">
+
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    </c:when>
+                                    <c:when test="${currentPage==(totalPages-1)}">
+                                        <li class="page-item disabled">
+
+                                            <a class="page-link" aria-label="Next">
+
+                                                <span class="sr-only">Next</span>
+                                            </a>
+                                        </li>
+                                    </c:when>
+                                </c:choose>
+
+                            </ul>
+                        </nav>
+                    </section>
                 </div>
-                <div class="col-12 col-md-6 text-md-end">
-                    <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights
-                        reserved.</p>
+            </div>
+        </main>
+
+
+        <footer class="py-5 border-top">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-12 col-md-6">
+                        <h3 class="h6">Aurora Apparel</h3>
+                        <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+                    </div>
+                    <div class="col-12 col-md-6 text-md-end">
+                        <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights
+                            reserved.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </footer>
+        </footer>
 
-    
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/client/project_js/home/shop.js">
-    </script>
-</body>
 
-</html>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="/client/project_js/home/shop.js">
+        </script>
+    </body>
+
+    </html>
 </jsp:root>

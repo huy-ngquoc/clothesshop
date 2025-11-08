@@ -1,12 +1,20 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 
 <jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:form="http://www.springframework.org/tags/form">
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:form="http://www.springframework.org/tags/form">
 
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/product/create" enctype="multipart/form-data" modelAttribute="requestDto">
+    <c:set var="catPage" value="${viewModel.categoryPage}" />
+    <c:url var="createUrl" value="/admin/product/create" />
+
+    <c:url var="postAction" value="${createUrl}">
+        <c:param name="categoryPage" value="${catPage.number}" />
+        <c:param name="categorySize" value="${catPage.size}" />
+    </c:url>
+
+    <form:form method="post" action="${postAction}" modelAttribute="form">
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
                 <c:set var="errorName">
@@ -19,48 +27,206 @@
                 ${errorName}
             </div>
         </div>
+
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <c:set var="currentCategoryId" value="${form.categoryId}" />
+
+                <div class="row g-3 mb-3">
+                    <div class="col">
+                        <c:set var="totalPages" value="${catPage.totalPages}" />
+                        <c:set var="pageNumber" value="${catPage.number}" />
+                        <c:set var="containsCurrent" value="false" />
+                        <c:forEach var="c" items="${catPage.content}">
+                            <c:if test="${c.id == currentCategoryId}">
+                                <c:set var="containsCurrent" value="true" />
+                            </c:if>
+                        </c:forEach>
+
+                        <label for="categoryId" class="form-label">Category</label>
+                        <form:select path="categoryId" cssClass="form-select">
+                            <form:option value="">-- Select category --</form:option>
+
+                            <c:if test="${currentCategoryId != null and !containsCurrent}">
+                                <form:option value="${currentCategoryId}">Selecting (ID: ${currentCategoryId})
+                                </form:option>
+                                <form:option value="" disabled="true">──────────</form:option>
+                            </c:if>
+
+                            <!-- Options của trang hiện tại -->
+                            <form:options items="${catPage.content}" itemValue="id" itemLabel="name" />
+                        </form:select>
+                    </div>
+                </div>
+
+                <c:set var="current" value="${catPage.getNumber()}" />
+                <c:set var="size" value="${catPage.getSize()}" />
+                <c:if test="${catPage.getTotalPages() gt 1}">
+                    <c:set var="last" value="${catPage.getTotalPages() - 1}" />
+                    <div class="row g-3 mb-3 justify-content-end">
+                        <div class="col-auto">
+                            <nav aria-label="Product Variants pagination">
+                                <div class="pagination">
+
+                                    <!-- First -->
+                                    <c:choose>
+                                        <c:when test="${!catPage.isFirst()}">
+                                            <button type="submit" class="page-link" formmethod="get"
+                                                formaction="${createUrl}" name="categoryPage" value="0">
+                                                First
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="page-link disabled" disabled="true">
+                                                First
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <!-- Prev -->
+                                    <c:choose>
+                                        <c:when test="${!catPage.isFirst()}">
+                                            <button type="submit" class="page-link" formmethod="get"
+                                                formaction="${createUrl}" name="categoryPage" value="${pageNumber - 1}">
+                                                Prev
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="page-link disabled" disabled="true">
+                                                Prev
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <!-- Windowed page numbers -->
+                                    <c:set var="window" value="2" />
+                                    <c:set var="start" value="${current - window}" />
+                                    <c:if test="${start lt 0}">
+                                        <c:set var="start" value="0" />
+                                    </c:if>
+                                    <c:set var="end" value="${current + window}" />
+                                    <c:if test="${end gt last}">
+                                        <c:set var="end" value="${last}" />
+                                    </c:if>
+
+                                    <!-- leading ellipsis -->
+                                    <c:if test="${start gt 0}">
+                                        <button type="button" class="page-link disabled" disabled="true">
+                                            ...
+                                        </button>
+                                    </c:if>
+
+                                    <!-- pages start..end -->
+                                    <c:forEach begin="${start}" end="${end}" var="i">
+                                        <c:url var="pageUrl" value="/admin/product/create">
+                                            <c:param name="categoryPage" value="${i}" />
+                                            <c:param name="categorySize" value="${size}" />
+                                            <c:if test="${not empty param.sort}">
+                                                <c:param name="sort" value="${param.sort}" />
+                                            </c:if>
+                                            <c:if test="${not empty param.q}">
+                                                <c:param name="q" value="${param.q}" />
+                                            </c:if>
+                                        </c:url>
+
+                                        <c:choose>
+                                            <c:when test="${i eq current}">
+                                                <button type="button" class="page-link active" aria-current="page"
+                                                    disabled="true">
+                                                    ${i + 1}
+                                                </button>
+                                            </c:when>
+                                            <c:otherwise>
+                                                <button type="submit" class="page-link" formmethod="get"
+                                                    formaction="${createUrl}" name="categoryPage" value="${i}">
+                                                    ${i + 1}
+                                                </button>
+                                            </c:otherwise>
+                                        </c:choose>
+                                    </c:forEach>
+
+                                    <!-- trailing ellipsis -->
+                                    <c:if test="${end lt last}">
+                                        <button type="button" class="page-link disabled" disabled="true">
+                                            ...
+                                        </button>
+                                    </c:if>
+
+                                    <!-- Next -->
+                                    <c:choose>
+                                        <c:when test="${!catPage.isLast()}">
+                                            <button type="submit" class="page-link" formmethod="get"
+                                                formaction="${createUrl}" name="categoryPage" value="${pageNumber + 1}">
+                                                Next
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="page-link disabled" disabled="true">
+                                                Next
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                    <!-- Last -->
+                                    <c:choose>
+                                        <c:when test="${!catPage.isLast()}">
+                                            <button type="submit" class="page-link" formmethod="get"
+                                                formaction="${createUrl}" name="categoryPage" value="${last}">
+                                                Last
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button type="button" class="page-link disabled" disabled="true">
+                                                Last
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
+
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- giữ size hiện tại cho GET kế tiếp -->
+                    <input type="hidden" name="categorySize" value="${catPage.size}" />
+                </c:if>
+            </div>
+        </div>
+
         <div class="mb-3">
-      <label for="categoryId" class="form-label">Category</label>
-      <form:select path="categoryId" cssClass="form-select" id="categoryId">
-       
-        <form:options items="${categories}" itemValue="id" itemLabel="name" />
-      </form:select>
-    </div>
-    <div class="mb-3">
-      <label class="form-label">Targets</label>
-      <div class="d-flex flex-wrap gap-3">
-        <div class="form-check">
-          <form:checkbox path="targets" value="TALL" cssClass="form-check-input" id="targetTall" />
-          <label class="form-check-label" for="targetTall">TALL</label>
+            <label class="form-label">Targets</label>
+            <div class="d-flex flex-wrap gap-3">
+                <div class="form-check">
+                    <form:checkbox path="targets" value="TALL" cssClass="form-check-input" id="targetTall" />
+                    <label class="form-check-label" for="targetTall">TALL</label>
+                </div>
+
+                <div class="form-check">
+                    <form:checkbox path="targets" value="SHORT" cssClass="form-check-input" id="targetShort" />
+                    <label class="form-check-label" for="targetShort">SHORT</label>
+                </div>
+
+                <div class="form-check">
+                    <form:checkbox path="targets" value="FAT" cssClass="form-check-input" id="targetFat" />
+                    <label class="form-check-label" for="targetFat">FAT</label>
+                </div>
+
+                <div class="form-check">
+                    <form:checkbox path="targets" value="THIN" cssClass="form-check-input" id="targetThin" />
+                    <label class="form-check-label" for="targetThin">THIN</label>
+                </div>
+
+                <div class="form-check">
+                    <form:checkbox path="targets" value="MALE" cssClass="form-check-input" id="targetMale" />
+                    <label class="form-check-label" for="targetMale">MALE</label>
+                </div>
+
+                <div class="form-check">
+                    <form:checkbox path="targets" value="FEMALE" cssClass="form-check-input" id="targetFemale" />
+                    <label class="form-check-label" for="targetFemale">FEMALE</label>
+                </div>
+            </div>
         </div>
 
-        <div class="form-check">
-          <form:checkbox path="targets" value="SHORT" cssClass="form-check-input" id="targetShort" />
-          <label class="form-check-label" for="targetShort">SHORT</label>
-        </div>
-
-        <div class="form-check">
-          <form:checkbox path="targets" value="FAT" cssClass="form-check-input" id="targetFat" />
-          <label class="form-check-label" for="targetFat">FAT</label>
-        </div>
-
-        <div class="form-check">
-          <form:checkbox path="targets" value="THIN" cssClass="form-check-input" id="targetThin" />
-          <label class="form-check-label" for="targetThin">THIN</label>
-        </div>
-
-        <div class="form-check">
-          <form:checkbox path="targets" value="MALE" cssClass="form-check-input" id="targetMale" />
-          <label class="form-check-label" for="targetMale">MALE</label>
-        </div>
-
-        <div class="form-check">
-          <form:checkbox path="targets" value="FEMALE" cssClass="form-check-input" id="targetFemale" />
-          <label class="form-check-label" for="targetFemale">FEMALE</label>
-        </div>
-      </div>
-    </div>
-     
         <div class="row g-3 mb-3">
             <div class="col-12">
                 <c:set var="errorShortDesc">

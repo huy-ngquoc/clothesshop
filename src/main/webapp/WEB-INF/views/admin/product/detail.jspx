@@ -31,7 +31,7 @@
                                 <a href="/admin/product">Product</a>
                             </li>
                             <li class="breadcrumb-item active">
-                                View detail
+                                Product detail
                             </li>
                         </ol>
                         <div class="mt-sm-5 mt-1">

@@ -1,7 +1,5 @@
 package vn.uit.clothesshop.product.service;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -9,23 +7,27 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.category.domain.CategoryAccess;
 import vn.uit.clothesshop.product.domain.Product;
+import vn.uit.clothesshop.product.domain.ProductVariant;
 import vn.uit.clothesshop.product.domain.ProductVariantAccess;
+import vn.uit.clothesshop.product.domain.specification.ProductVariantSpecification;
 import vn.uit.clothesshop.product.mapper.ProductMapper;
 import vn.uit.clothesshop.product.presentation.form.ProductCreationForm;
-import vn.uit.clothesshop.product.presentation.form.ProductUpdateInfoForm;
+import vn.uit.clothesshop.product.presentation.form.ProductInfoUpdateForm;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductBasicInfoViewModel;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductCardViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductCreationViewModel;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductUpdateInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductInfoUpdateViewModel;
 import vn.uit.clothesshop.product.repository.ProductRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 
 @Service
 @Transactional(readOnly = true)
@@ -62,25 +64,51 @@ class JpaProductService implements ProductService {
     @Override
     public Page<ProductBasicInfoViewModel> findAllBasic(
             @Nullable final Specification<Product> spec,
-            @NotNull final Pageable pageable) {
+            @NonNull final Pageable pageable) {
         return this.repository.findAll(spec, pageable).map(this.mapper::toBasicInfo);
     }
 
     @Override
     public Page<ProductCardViewModel> findAllForHomepage(
             @Nullable final Specification<Product> spec,
-            @NotNull final Pageable pageable) {
+            @NonNull final Pageable pageable) {
         return this.repository.findAll(spec, pageable).map(this.mapper::toCard);
     }
 
     @Override
-    public Optional<ProductDetailInfoViewModel> findDetailById(final long id) {
-        return this.repository.findById(id).map(this.mapper::toDetailInfo);
+    public Optional<ProductDetailInfoViewModel> findDetailById(
+            final long id,
+            @Nullable final Specification<ProductVariant> spec,
+            @NonNull final Pageable pageable) {
+        final var product = this.repository.findById(id).orElse(null);
+        if (product == null) {
+            return Optional.empty();
+        }
+
+        final var finalSpec = ProductVariantSpecification
+                .hasProductId(id).and(spec);
+        final var productVariantPage = this.productVariantAccess.findAll(finalSpec, pageable);
+
+        return Optional.of(this.mapper.toDetailInfo(product, productVariantPage));
+    }
+
+    @Override
+    public Pair<ProductCreationViewModel, ProductCreationForm> findCreation(
+            @NonNull final Pageable categoryPageable) {
+        final var categoryPage = this.categoryAccess.findAll(categoryPageable);
+        return this.mapper.toCreation(categoryPage);
+    }
+
+    @Override
+    public ProductCreationViewModel findCreationViewModel(
+            @NonNull final Pageable categoryPageable) {
+        final var categoryPage = this.categoryAccess.findAll(categoryPageable);
+        return this.mapper.toCreationViewModel(categoryPage);
     }
 
     @Override
     @Transactional
-    public long create(@NotNull final ProductCreationForm form) {
+    public long create(@NonNull final ProductCreationForm form) {
         final var categoryUpdated = this.categoryAccess.increaseProductCount(form.getCategoryId(), 1);
         if (!categoryUpdated) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Category not found");
@@ -92,13 +120,34 @@ class JpaProductService implements ProductService {
     }
 
     @Override
-    public Optional<ProductUpdateInfoViewModel> getUpdateInfoById(final long id) {
-        return this.repository.findById(id).map(this.mapper::toUpdateInfo);
+    public Optional<Pair<ProductInfoUpdateViewModel, ProductInfoUpdateForm>> findInfoUpdateById(
+            final long id,
+            @NonNull final Pageable categoryPageable) {
+        final var product = this.repository.findById(id).orElse(null);
+        if (product == null) {
+            return Optional.empty();
+        }
+
+        final var categoryPage = this.categoryAccess.findAll(categoryPageable);
+        return Optional.of(this.mapper.toInfoUpdate(product, categoryPage));
+    }
+
+    @Override
+    public Optional<ProductInfoUpdateViewModel> findInfoUpdateViewModelById(
+            final long id,
+            @NonNull final Pageable categoryPageable) {
+        final var product = this.repository.findById(id).orElse(null);
+        if (product == null) {
+            return Optional.empty();
+        }
+
+        final var categoryPage = this.categoryAccess.findAll(categoryPageable);
+        return Optional.of(this.mapper.toInfoUpdateViewModel(product, categoryPage));
     }
 
     @Override
     @Transactional
-    public void updateInfoById(final long id, @NotNull final ProductUpdateInfoForm form) {
+    public void updateInfoById(final long id, @NonNull final ProductInfoUpdateForm form) {
         final var product = this.repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
 

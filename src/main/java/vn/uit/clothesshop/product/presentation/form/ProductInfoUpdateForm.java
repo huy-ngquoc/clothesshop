@@ -4,12 +4,13 @@ import java.util.EnumSet;
 import java.util.Set;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.product.domain.Product;
 import vn.uit.clothesshop.product.domain.enumerator.ETarget;
 import vn.uit.clothesshop.shared.util.EnumSetHelper;
 
-public final class ProductUpdateInfoForm {
+public final class ProductInfoUpdateForm {
     @NotBlank
     @Size(min = Product.MIN_LENGTH_NAME, max = Product.MAX_LENGTH_NAME)
     private String name = "";
@@ -22,18 +23,19 @@ public final class ProductUpdateInfoForm {
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    private long categoryId = 0;
+    @NotNull
+    private Long categoryId = null;
 
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
 
-    public ProductUpdateInfoForm() {
+    public ProductInfoUpdateForm() {
     }
 
-    public ProductUpdateInfoForm(
+    public ProductInfoUpdateForm(
             final String name,
             final String shortDesc,
             final String detailDesc,
-            final long categoryId,
+            final Long categoryId,
             final Set<ETarget> targets) {
         this.name = name;
         this.shortDesc = shortDesc;
@@ -66,11 +68,11 @@ public final class ProductUpdateInfoForm {
         this.detailDesc = detailDesc;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(final long categoryId) {
+    public void setCategoryId(final Long categoryId) {
         this.categoryId = categoryId;
     }
 

@@ -65,7 +65,7 @@
                         <div class="card-body">
                             <form:form id="registerForm" class="needs-validation" action="/auth/register" method="post"
                                 modelAttribute="registerDto" enctype="multipart/form-data" novalidate="novalidate">
-                                
+
 
                                 <div class="row g-3">
 

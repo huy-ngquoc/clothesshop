@@ -37,6 +37,36 @@ public final class ProductSpecification {
     }
 
     @NotNull
+    public static Specification<Product> shortDescLike(@Nullable final String keyword) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if (!StringUtils.hasText(keyword)) {
+                return null;
+            }
+
+            return criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get(Product.Fields.shortDesc)),
+                    "%" + keyword.toLowerCase(Locale.ROOT) + "%");
+        };
+    }
+
+    @NotNull
+    public static Specification<Product> detailDescLike(@Nullable final String keyword) {
+        return (final Root<Product> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            if (!StringUtils.hasText(keyword)) {
+                return null;
+            }
+
+            return criteriaBuilder.like(
+                    criteriaBuilder.lower(root.get(Product.Fields.detailDesc)),
+                    "%" + keyword.toLowerCase(Locale.ROOT) + "%");
+        };
+    }
+
+    @NotNull
     public static Specification<Product> priceBetween(
             @Nullable final Integer from,
             @Nullable final Integer to) {
@@ -69,6 +99,7 @@ public final class ProductSpecification {
                 return null;
             }
 
+            // TODO: ommit "join"
             final var categoryIdPath = root
                     .<Product, Category>join(Product.Fields.category, JoinType.INNER)
                     .<Long>get(Category.Fields.id);

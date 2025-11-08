@@ -6,109 +6,128 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/product-variant/update/info/${id}" modelAttribute="requestDto">
+    <c:choose>
+        <c:when test="${(not empty form) and (not empty viewModel)}">
+            <form:form method="post" action="/admin/product-variant/update/info/${id}" modelAttribute="form">
 
-        <!-- PRODUCT VARIANT ID -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-3 col-12">
-                <label class="form-label" for="inputId">ID:</label>
-                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
-            </div>
-        </div>
+                <!-- PRODUCT VARIANT ID -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-3 col-12">
+                        <label class="form-label" for="inputId">ID:</label>
+                        <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                    </div>
+                </div>
 
-        <!-- COLOR -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <c:set var="errorColor">
-                    <form:errors cssClass="invalid-feedback" path="color" />
-                </c:set>
+                <!-- COLOR -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorColor">
+                            <form:errors cssClass="invalid-feedback" path="color" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputColor" path="color">Color:</form:label>
-                <form:input id="inputColor" cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
-                    type="text" path="color" />
-                ${errorColor}
-            </div>
+                        <form:label class="form-label" for="inputColor" path="color">Color:</form:label>
+                        <form:input id="inputColor" cssClass="form-control ${not empty errorColor ? 'is-invalid' : ''}"
+                            type="text" path="color" />
+                        ${errorColor}
+                    </div>
 
-            <!-- SIZE -->
-            <div class="col-md-6 col-12">
-                <c:set var="errorSize">
-                    <form:errors cssClass="invalid-feedback" path="size" />
-                </c:set>
+                    <!-- SIZE -->
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorSize">
+                            <form:errors cssClass="invalid-feedback" path="size" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputSize" path="size">Size:</form:label>
-                <form:input id="inputSize" cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
-                    type="text" path="size" />
-                ${errorSize}
-            </div>
-        </div>
+                        <form:label class="form-label" for="inputSize" path="size">Size:</form:label>
+                        <form:input id="inputSize" cssClass="form-control ${not empty errorSize ? 'is-invalid' : ''}"
+                            type="text" path="size" />
+                        ${errorSize}
+                    </div>
+                </div>
 
-        <!-- PRICE & STOCK -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <c:set var="errorPriceCents">
-                    <form:errors cssClass="invalid-feedback" path="priceCents" />
-                </c:set>
+                <!-- PRICE & STOCK -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorPriceCents">
+                            <form:errors cssClass="invalid-feedback" path="priceCents" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputPriceCents" path="priceCents">Price (cents):</form:label>
-                <form:input id="inputPriceCents"
-                    cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}" type="number" min="0"
-                    path="priceCents" />
-                ${errorPriceCents}
-            </div>
+                        <form:label class="form-label" for="inputPriceCents" path="priceCents">Price (cents):
+                        </form:label>
+                        <form:input id="inputPriceCents"
+                            cssClass="form-control ${not empty errorPriceCents ? 'is-invalid' : ''}" type="number"
+                            min="0" path="priceCents" />
+                        ${errorPriceCents}
+                    </div>
 
-            <div class="col-md-6 col-12">
-                <c:set var="errorStockQuantity">
-                    <form:errors cssClass="invalid-feedback" path="stockQuantity" />
-                </c:set>
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorStockQuantity">
+                            <form:errors cssClass="invalid-feedback" path="stockQuantity" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:
-                </form:label>
-                <form:input id="inputStockQuantity"
-                    cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}" type="number" min="0"
-                    path="stockQuantity" />
-                ${errorStockQuantity}
-            </div>
-        </div>
+                        <form:label class="form-label" for="inputStockQuantity" path="stockQuantity">Stock Quantity:
+                        </form:label>
+                        <form:input id="inputStockQuantity"
+                            cssClass="form-control ${not empty errorStockQuantity ? 'is-invalid' : ''}" type="number"
+                            min="0" path="stockQuantity" />
+                        ${errorStockQuantity}
+                    </div>
+                </div>
 
-        <!-- WEIGHT -->
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <c:set var="errorWeightGrams">
-                    <form:errors cssClass="invalid-feedback" path="weightGrams" />
-                </c:set>
+                <!-- WEIGHT -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorWeightGrams">
+                            <form:errors cssClass="invalid-feedback" path="weightGrams" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputWeightGrams" path="weightGrams">Weight (grams):</form:label>
-                <form:input id="inputWeightGrams"
-                    cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}" type="number" min="0"
-                    path="weightGrams" />
-                ${errorWeightGrams}
-            </div>
+                        <form:label class="form-label" for="inputWeightGrams" path="weightGrams">Weight (grams):
+                        </form:label>
+                        <form:input id="inputWeightGrams"
+                            cssClass="form-control ${not empty errorWeightGrams ? 'is-invalid' : ''}" type="number"
+                            min="0" path="weightGrams" />
+                        ${errorWeightGrams}
+                    </div>
 
-            <!-- IMAGE -->
-            <div class="col-md-6 col-12">
-                <p class="form-label">Image:</p>
-                <a class="btn btn-primary w-100" href="/admin/product-variant/update/image/${id}">
-                    Change image
-                </a>
-            </div>
-        </div>
+                    <!-- IMAGE -->
+                    <div class="col-md-6 col-12">
+                        <p class="form-label">Image:</p>
+                        <a class="btn btn-primary w-100" href="/admin/product-variant/update/image/${id}">
+                            Change image
+                        </a>
+                    </div>
+                </div>
 
-        <!-- IMAGE PREVIEW -->
-        <c:if test="${not empty image}">
+                <!-- IMAGE PREVIEW -->
+                <c:if test="${not empty viewModel.imageFilePath}">
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <img src="/img/${viewModel.imageFilePath}" alt="Product Variant Image"
+                                style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                        </div>
+                    </div>
+                </c:if>
+
+                <!-- BUTTONS -->
+                <div class="d-flex gap-3 mb-3">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                    <a class="btn btn-success" href="/admin/product/${viewModel.productId}">Back</a>
+                </div>
+
+            </form:form>
+        </c:when>
+
+        <c:otherwise>
+            <p class="alert alert-danger">Product Variant not existed!</p>
             <div class="row g-3 mb-3">
-                <div class="col-12">
-                    <img src="/img/${image}" alt="Product Variant Image"
-                        style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputIdNotFound">ID:</label>
+                    <input id="inputIdNotFound" class="form-control" type="text" value="${id}" readonly="true" />
                 </div>
             </div>
-        </c:if>
-
-        <!-- BUTTONS -->
-        <div class="d-flex gap-3 mb-3">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <a class="btn btn-success" href="/admin/product/${productId}">Back</a>
-        </div>
-
-    </form:form>
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/product">Back to product list</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
 
 </jsp:root>

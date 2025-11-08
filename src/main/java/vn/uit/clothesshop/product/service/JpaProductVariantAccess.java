@@ -2,6 +2,11 @@ package vn.uit.clothesshop.product.service;
 
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +23,14 @@ class JpaProductVariantAccess implements ProductVariantAccess {
     public JpaProductVariantAccess(
             final ProductVariantRepository repository) {
         this.repository = repository;
+    }
+
+    @Override
+    @NonNull
+    public Page<ProductVariant> findAll(
+            @Nullable Specification<ProductVariant> spec,
+            @NonNull Pageable pageable) {
+        return this.repository.findAll(spec, pageable);
     }
 
     @Override

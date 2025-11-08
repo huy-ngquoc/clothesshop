@@ -7,14 +7,15 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.annotation.Nullable;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.infrastructure.storage.LocalImageStorage;
 import vn.uit.clothesshop.product.domain.ProductAccess;
@@ -24,10 +25,11 @@ import vn.uit.clothesshop.product.presentation.form.ProductVariantCreationForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateImageForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateInfoForm;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantCreationInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantCreationViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantDeletionViewModel;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantDetailInfoViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantUpdateImageViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantUpdateInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantImageUpdateViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantInfoUpdateViewModel;
 import vn.uit.clothesshop.product.repository.ProductVariantRepository;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantColorCount;
 import vn.uit.clothesshop.product.repository.projection.ProductVariantSizeCount;
@@ -81,7 +83,7 @@ class JpaProductVariantService implements ProductVariantService {
     @Override
     public Page<ProductVariantBasicInfoViewModel> findAllBasic(
             @Nullable final Specification<ProductVariant> spec,
-            @NotNull final Pageable pageable) {
+            @NonNull final Pageable pageable) {
         return this.repository.findAll(spec, pageable).map(this.mapper::toBasicInfo);
     }
 
@@ -102,21 +104,30 @@ class JpaProductVariantService implements ProductVariantService {
     }
 
     @Override
-    public Optional<ProductVariantCreationInfoViewModel> getCreationInfo(
+    public Optional<Pair<ProductVariantCreationViewModel, ProductVariantCreationForm>> findCreationByProductId(
             final long productId) {
         if (!this.productAccess.existsById(productId)) {
             return Optional.empty();
         }
 
-        final var form = new ProductVariantCreationForm();
-        return Optional.of(new ProductVariantCreationInfoViewModel(form));
+        return Optional.of(this.mapper.toCreation(productId));
+    }
+
+    @Override
+    public Optional<ProductVariantCreationViewModel> findCreationViewModelByProductId(
+            final long productId) {
+        if (!this.productAccess.existsById(productId)) {
+            return Optional.empty();
+        }
+
+        return Optional.of(this.mapper.toCreationViewModel(productId));
     }
 
     @Override
     @Transactional
     public long create(
             final long productId,
-            @NotNull final ProductVariantCreationForm form) {
+            @NonNull final ProductVariantCreationForm form) {
         final var product = this.productAccess.findById(productId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found"));
         final var productVariant = this.mapper.toEntityOnCreate(form, product);
@@ -124,28 +135,42 @@ class JpaProductVariantService implements ProductVariantService {
     }
 
     @Override
-    public Optional<ProductVariantUpdateInfoViewModel> getUpdateInfoById(final long id) {
-        return this.repository.findById(id).map(this.mapper::toUpdateInfo);
+    public Optional<Pair<ProductVariantInfoUpdateViewModel, ProductVariantUpdateInfoForm>> findInfoUpdateById(
+            final long id) {
+        return this.repository.findById(id).map(this.mapper::toInfoUpdate);
+    }
+
+    @Override
+    public Optional<ProductVariantInfoUpdateViewModel> findInfoUpdateViewModelById(final long id) {
+        return this.repository.findById(id).map(this.mapper::toInfoUpdateViewModel);
     }
 
     @Override
     @Transactional
     public void updateInfoById(
             long id,
-            @NotNull ProductVariantUpdateInfoForm form) {
+            @NonNull ProductVariantUpdateInfoForm form) {
         final var productVariant = this.repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Variant not found"));
         this.mapper.applyUpdateInfo(productVariant, form);
     }
 
     @Override
-    public Optional<ProductVariantUpdateImageViewModel> getUpdateImageById(final long id) {
-        return this.repository.findById(id).map(this.mapper::toUpdateImage);
+    public Optional<Pair<ProductVariantImageUpdateViewModel, ProductVariantUpdateImageForm>> findImageUpdateById(
+            final long id) {
+        return this.repository.findById(id).map(this.mapper::toImageUpdate);
+    }
+
+    @Override
+    public Optional<ProductVariantImageUpdateViewModel> findImageUpdateViewModelById(final long id) {
+        return this.repository.findById(id).map(this.mapper::toImageUpdateViewModel);
     }
 
     @Override
     @Transactional
-    public void updateImageById(final long id, @NotNull final ProductVariantUpdateImageForm form) {
+    public void updateImageById(
+            final long id,
+            @NonNull final ProductVariantUpdateImageForm form) {
         final var productVariant = this.repository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product Variant not found"));
 
@@ -179,6 +204,11 @@ class JpaProductVariantService implements ProductVariantService {
 
         productVariant.setImage(null);
         eventPublisher.publishEvent(new ImageDeleted(imageFile, ImageFolder.PRODUCT_VARIANT));
+    }
+
+    @Override
+    public Optional<ProductVariantDeletionViewModel> findDeletionViewModelById(final long id) {
+        return this.repository.findById(id).map(this.mapper::toDeletionViewModel);
     }
 
     @Override
