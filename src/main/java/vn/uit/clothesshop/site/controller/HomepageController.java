@@ -19,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,7 @@ import vn.uit.clothesshop.product.presentation.viewmodel.ProductDetailInfoViewMo
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoViewModel;
 import vn.uit.clothesshop.product.service.ProductService;
 import vn.uit.clothesshop.product.service.ProductVariantService;
+import vn.uit.clothesshop.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.user.domain.User;
 import vn.uit.clothesshop.user.repository.UserRepository;
 
@@ -88,15 +90,15 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) final Pageable pageable,
             final Model model) {
-                 Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user ;
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user;
         Object principal = auth.getPrincipal();
-        if(auth instanceof AnonymousAuthenticationToken) {
+        if (auth instanceof AnonymousAuthenticationToken) {
             return "redirect:/login";
         }
         org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
         user = userRepo.findByEmail(u.getUsername()).orElse(null);
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         final var safePageable = this.sanitizePageable(pageable);
 
         final var spec = ProductSpecification
@@ -143,16 +145,19 @@ public class HomepageController {
     }
 
     @GetMapping("/product/detail/{id}")
-    public String getProductDetail(final Model model, @PathVariable long id) {
-        ProductDetailInfoViewModel responseDto = productService.findDetailById(id).orElse(null);
+    public String getProductDetail(
+            final Model model,
+            @PathVariable long id,
+            @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
+        ProductDetailInfoViewModel responseDto = productService.findDetailById(id, pageable).orElse(null);
         model.addAttribute("responseDto", responseDto);
         Set<String> sizeSet = new HashSet<>();
         Set<String> colorSet = new HashSet<>();
-        for (ProductVariantBasicInfoViewModel pvBasicInfo : responseDto.getVariantList()) {
+        for (ProductVariantBasicInfoViewModel pvBasicInfo : responseDto.getVariantPage().toList()) {
             sizeSet.add(pvBasicInfo.getSize());
             colorSet.add(pvBasicInfo.getColor());
         }
-        CartDetailRequest request = new CartDetailRequest(0,0);
+        CartDetailRequest request = new CartDetailRequest(0, 0);
         model.addAttribute("cart_request", request);
         model.addAttribute("sizeList", new ArrayList<>(sizeSet));
         model.addAttribute("colorList", new ArrayList<>(colorSet));

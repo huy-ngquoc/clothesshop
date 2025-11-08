@@ -5,94 +5,40 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <!-- Nếu có responseDto -->
-    <c:if test="${not empty responseDto}">
-        <div class="card mb-3" style="width: 60%;">
-            <div class="card-header">
-                Product Information
+    <c:choose>
+        <c:when test="${not empty viewModel}">
+            <div class="card mb-3" style="width: 60%;">
+                <div class="card-header">
+                    Product Information
+                </div>
+                <ol class="list-group list-group-flush">
+                    <li class="list-group-item">ID: ${id}</li>
+                    <li class="list-group-item">Name: ${viewModel.name}</li>
+                    <li class="list-group-item">Short Description: ${viewModel.shortDesc}</li>
+                    <li class="list-group-item">Detail Description:<br />${viewModel.detailDesc}</li>
+                </ol>
             </div>
-            <ol class="list-group list-group-flush">
-                <li class="list-group-item">ID: ${id}</li>
-                <li class="list-group-item">Name: ${responseDto.name}</li>
-                <li class="list-group-item">Short Description: ${responseDto.shortDesc}</li>
-                <li class="list-group-item">Detail Description:<br />${responseDto.detailDesc}</li>
-            </ol>
-        </div>
-
-        <!-- Bảng hiển thị danh sách variant -->
-        <c:if test="${not empty responseDto.variantList}">
-            <h3>Product Variants</h3>
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th>ID</th>
-                        <th>Image</th>
-                        <th>Color</th>
-                        <th>Size</th>
-                        <th>Stock Quantity</th>
-                        <th>Price (cents)</th>
-                        <th>Weight (grams)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <c:forEach var="variant" items="${responseDto.variantList}">
-                        <tr>
-                            <td>${variant.id}</td>
-                            <td>
-                                <c:if test="${not empty variant.imageFilePath}">
-                                    <img src="/img/${variant.imageFilePath}" alt="Variant Image"
-                                        style="max-width:80px; max-height:80px;" />
-                                </c:if>
-                            </td>
-                            <td>${variant.color}</td>
-                            <td>${variant.size}</td>
-                            <td>${variant.stockQuantity}</td>
-                            <td>${variant.priceCents}</td>
-                            <td>${variant.weightGrams}</td>
-                            <td>
-                                <a class="btn btn-primary btn-sm" href="/admin/product-variant/${variant.id}">
-                                    View
-                                </a>
-                                <a class="btn btn-warning btn-sm"
-                                    href="/admin/product-variant/update/info/${variant.id}">
-                                    Edit
-                                </a>
-                                <a class="btn btn-danger btn-sm" href="/admin/product-variant/delete/${variant.id}">
-                                    Delete
-                                </a>
-                            </td>
-                        </tr>
-                    </c:forEach>
-                </tbody>
-            </table>
-        </c:if>
-
-        <!-- Nếu không có variant -->
-        <c:if test="${empty responseDto.variantList}">
-            <p class="alert alert-warning">This product has no variants yet.</p>
-        </c:if>
-
-        <div class="d-flex gap-3 mb-3">
-            <a class="btn btn-success" href="/admin/product">Back</a>
-            <a class="btn btn-warning" href="/admin/product/update/${id}">Update</a>
-            <a class="btn btn-danger" href="/admin/product/delete/${id}">Delete</a>
-            <a class="btn btn-primary" href="/admin/product-variant/create?productId=${id}">Add Variant</a>
-        </div>
-    </c:if>
-
-    <!-- Nếu không có responseDto -->
-    <c:if test="${empty responseDto}">
-        <p class="alert alert-danger">Product not found!</p>
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <label class="form-label" for="inputId">ID:</label>
-                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-success" href="/admin/product">Back</a>
+                <a class="btn btn-warning" href="/admin/product/update/${id}">Update</a>
+                <a class="btn btn-danger" href="/admin/product/delete/${id}">Delete</a>
             </div>
-        </div>
-        <div class="d-flex gap-3 mb-3">
-            <a class="btn btn-primary" href="/admin/product">Back</a>
-        </div>
-    </c:if>
+            <jsp:directive.include file="productVariantsTable.jspxf" />
+        </c:when>
+
+        <!-- Nếu không có viewModel -->
+        <c:otherwise>
+            <p class="alert alert-danger">Product not found!</p>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputId">ID:</label>
+                    <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                </div>
+            </div>
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/product">Back</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
 
 </jsp:root>

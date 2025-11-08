@@ -23,7 +23,8 @@ public final class ProductCreationForm {
     @Size(min = Product.MIN_LENGTH_DETAIL_DESC, max = Product.MAX_LENGTH_DETAIL_DESC)
     private String detailDesc = "";
 
-    private long categoryId = 0;
+    @NotNull
+    private Long categoryId = null;
 
     @NotNull
     private EnumSet<ETarget> targets = EnumSet.noneOf(ETarget.class);
@@ -52,11 +53,11 @@ public final class ProductCreationForm {
         this.detailDesc = detailDesc;
     }
 
-    public long getCategoryId() {
+    public Long getCategoryId() {
         return categoryId;
     }
 
-    public void setCategoryId(final long categoryId) {
+    public void setCategoryId(final Long categoryId) {
         this.categoryId = categoryId;
     }
 

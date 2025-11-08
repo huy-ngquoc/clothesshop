@@ -6,7 +6,7 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/user/create" enctype="multipart/form-data" modelAttribute="requestDto">
+    <form:form method="post" action="/admin/user/create" enctype="multipart/form-data" modelAttribute="form">
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
                 <c:set var="errorFirstName">

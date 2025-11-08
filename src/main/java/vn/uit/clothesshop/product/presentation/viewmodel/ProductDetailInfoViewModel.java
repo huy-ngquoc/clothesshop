@@ -1,13 +1,12 @@
 package vn.uit.clothesshop.product.presentation.viewmodel;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Page;
 
 public final class ProductDetailInfoViewModel {
     private final String name;
     private final String shortDesc;
     private final String detailDesc;
-    private final List<ProductVariantBasicInfoViewModel> variantList;
+    private final Page<ProductVariantBasicInfoViewModel> variantPage;
     private final int minPrice;
     private final int maxPrice;
     private final int sold;
@@ -18,12 +17,16 @@ public final class ProductDetailInfoViewModel {
             final String name,
             final String shortDesc,
             final String detailDesc,
-            final List<ProductVariantBasicInfoViewModel> variantList, int minPrice, int maxPrice, int sold,
-            int quantity, final String image) {
+            final Page<ProductVariantBasicInfoViewModel> variantPage,
+            int minPrice,
+            int maxPrice,
+            int sold,
+            int quantity,
+            final String image) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.detailDesc = detailDesc;
-        this.variantList = List.copyOf(variantList);
+        this.variantPage = variantPage;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
         this.sold = sold;
@@ -63,8 +66,8 @@ public final class ProductDetailInfoViewModel {
         return this.detailDesc;
     }
 
-    public List<ProductVariantBasicInfoViewModel> getVariantList() {
-        return new ArrayList<>(this.variantList);
+    public Page<ProductVariantBasicInfoViewModel> getVariantPage() {
+        return this.variantPage;
     }
 
 }

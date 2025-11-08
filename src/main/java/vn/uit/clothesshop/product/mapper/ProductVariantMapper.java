@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.product.mapper;
 
+import org.springframework.data.util.Pair;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +13,11 @@ import vn.uit.clothesshop.product.presentation.form.ProductVariantCreationForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateImageForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateInfoForm;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantBasicInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantCreationViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantDeletionViewModel;
 import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantDetailInfoViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantUpdateImageViewModel;
-import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantUpdateInfoViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantImageUpdateViewModel;
+import vn.uit.clothesshop.product.presentation.viewmodel.ProductVariantInfoUpdateViewModel;
 import vn.uit.clothesshop.shared.storage.ImageFolder;
 
 @Component
@@ -73,28 +76,76 @@ public class ProductVariantMapper {
     }
 
     @NotNull
-    public ProductVariantUpdateInfoViewModel toUpdateInfo(@NotNull final ProductVariant e) {
-        final var form = new ProductVariantUpdateInfoForm(
-                e.getColor(),
-                e.getSize(),
-                e.getStockQuantity(),
-                e.getPriceCents(),
-                e.getWeightGrams());
-
-        return new ProductVariantUpdateInfoViewModel(
-                e.getProductId(),
-                this.getPathString(e),
-                form);
+    public Pair<ProductVariantCreationViewModel, ProductVariantCreationForm> toCreation(
+            @NotNull final long productId) {
+        return Pair.of(
+                this.toCreationViewModel(productId),
+                this.toCreationForm());
     }
 
     @NotNull
-    public ProductVariantUpdateImageViewModel toUpdateImage(@NotNull final ProductVariant e) {
-        final var form = new ProductVariantUpdateImageForm();
+    public ProductVariantCreationViewModel toCreationViewModel(@NotNull final long productId) {
+        return new ProductVariantCreationViewModel(productId);
+    }
 
-        return new ProductVariantUpdateImageViewModel(
-                e.getProductId(),
-                this.getPathString(e),
-                form);
+    @NotNull
+    public ProductVariantCreationForm toCreationForm() {
+        return new ProductVariantCreationForm();
+    }
+
+    @NonNull
+    public Pair<ProductVariantInfoUpdateViewModel, ProductVariantUpdateInfoForm> toInfoUpdate(
+            @NonNull final ProductVariant productVariant) {
+        return Pair.of(
+                this.toInfoUpdateViewModel(productVariant),
+                this.toInfoUpdateForm(productVariant));
+    }
+
+    @NonNull
+    public ProductVariantInfoUpdateViewModel toInfoUpdateViewModel(
+            @NonNull final ProductVariant productVariant) {
+        return new ProductVariantInfoUpdateViewModel(
+                productVariant.getProductId(),
+                this.getPathString(productVariant));
+    }
+
+    @NonNull
+    public ProductVariantUpdateInfoForm toInfoUpdateForm(
+            @NonNull final ProductVariant productVariant) {
+        return new ProductVariantUpdateInfoForm(
+                productVariant.getColor(),
+                productVariant.getSize(),
+                productVariant.getStockQuantity(),
+                productVariant.getPriceCents(),
+                productVariant.getWeightGrams());
+    }
+
+    @NonNull
+    public Pair<ProductVariantImageUpdateViewModel, ProductVariantUpdateImageForm> toImageUpdate(
+            @NonNull final ProductVariant productVariant) {
+        return Pair.of(
+                this.toImageUpdateViewModel(productVariant),
+                this.toImageUpdateForm(productVariant));
+    }
+
+    @NonNull
+    public ProductVariantImageUpdateViewModel toImageUpdateViewModel(
+            @NonNull final ProductVariant productVariant) {
+        return new ProductVariantImageUpdateViewModel(
+                productVariant.getProductId(),
+                this.getPathString(productVariant));
+    }
+
+    @NonNull
+    public ProductVariantUpdateImageForm toImageUpdateForm(
+            @NonNull final ProductVariant productVariant) {
+        return new ProductVariantUpdateImageForm();
+    }
+
+    @NonNull
+    public ProductVariantDeletionViewModel toDeletionViewModel(
+            @NonNull final ProductVariant productVariant) {
+        return new ProductVariantDeletionViewModel(productVariant.getProductId());
     }
 
     public String getPathString(@NotNull final ProductVariant e) {

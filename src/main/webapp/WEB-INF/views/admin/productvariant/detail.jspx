@@ -30,8 +30,13 @@
                             <li class="breadcrumb-item">
                                 <a href="/admin/product">Product</a>
                             </li>
+                            <li class="breadcrumb-item">
+                                <a href="/admin/product/${viewModel.productId}">
+                                    Product detail
+                                </a>
+                            </li>
                             <li class="breadcrumb-item active">
-                                View variant detail
+                                Variant detail
                             </li>
                         </ol>
                         <div class="mt-sm-5 mt-1">

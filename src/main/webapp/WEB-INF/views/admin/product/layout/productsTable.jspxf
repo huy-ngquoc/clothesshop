@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core">
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:x="urn:jsptagdir:/WEB-INF/tags">
 
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
@@ -8,39 +10,293 @@
     <div class="mt-sm-5 mt-1">
         <div class="row">
             <div class="col-12 mx-auto">
-                <div class="d-sm-flex justify-content-between">
-                    <h2>Products table</h2>
+                <div class="d-md-flex justify-content-center align-items-center gap-5">
+                    <h2 class="mb-0">Products table</h2>
+
+                    <form:form class="d-md-flex flex-grow-1 gap-2" method="get" action="/admin/product">
+                        <input id="inputSearch" class="form-control me-2 flex-grow-1" type="search" name="q"
+                            placeholder="Search…" value="${param.q}" aria-label="Search" />
+                        <button class="btn btn-outline-secondary" type="submit">
+                            Search
+                        </button>
+
+                        <c:if test="${not empty param.q}">
+                            <c:url var="clearUrl" value="/admin/product">
+                                <c:if test="${not empty param.size}">
+                                    <c:param name="size" value="${param.size}" />
+                                </c:if>
+                                <c:if test="${not empty param.sort}">
+                                    <c:param name="sort" value="${param.sort}" />
+                                </c:if>
+                            </c:url>
+
+                            <a href="${fn:escapeXml(clearUrl)}" class="btn btn-outline-danger">
+                                Clear
+                            </a>
+                        </c:if>
+
+                        <c:if test="${not empty param.size}">
+                            <input type="hidden" name="size" value="${param.size}" />
+                        </c:if>
+                        <c:if test="${not empty param.sort}">
+                            <input type="hidden" name="sort" value="${param.sort}" />
+                        </c:if>
+                    </form:form>
+
                     <a class="btn btn-primary" href="/admin/product/create">Create a new product</a>
                 </div>
             </div>
         </div>
         <hr />
+
         <div class="row">
             <div class="col-12 mx-auto">
                 <table class="table table-responsive table-bordered table-hover">
                     <thead class="text-center align-middle">
                         <tr>
-                            <th>ID</th>
-                            <th>Name</th>
+                            <th>
+                                <x:sortHeader3 field="id" label="ID" page="${page}" baseUrl="/admin/product"
+                                    preserve="q" />
+                            </th>
+                            <th>
+                                <x:sortHeader3 field="name" label="Name" page="${page}" baseUrl="/admin/product"
+                                    preserve="q" />
+                            </th>
                             <th>Short description</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody class="align-middle">
-                        <c:forEach var="responseDto" items="${responseDtoList}">
+                        <c:forEach var="viewModel" items="${page.content}">
                             <tr>
-                                <td>${responseDto.id}</td>
-                                <td>${responseDto.name}</td>
-                                <td>${responseDto.shortDesc}</td>
-                                <td class="d-flex justify-content-center align-items-center gap-2">
-                                    <a class="btn btn-success" href="/admin/product/${responseDto.id}">View</a>
-                                    <a class="btn btn-warning" href="/admin/product/update/${responseDto.id}">Update</a>
-                                    <a class="btn btn-danger" href="/admin/product/delete/${responseDto.id}">Delete</a>
+                                <td>${viewModel.id}</td>
+                                <td>${viewModel.name}</td>
+                                <td>${viewModel.shortDesc}</td>
+                                <td class="d-md-flex justify-content-center align-items-center gap-2">
+                                    <a class="btn btn-success" href="/admin/product/${viewModel.id}">View</a>
+                                    <a class="btn btn-warning" href="/admin/product/update/${viewModel.id}">Update</a>
+                                    <a class="btn btn-danger" href="/admin/product/delete/${viewModel.id}">Delete</a>
                                 </td>
                             </tr>
                         </c:forEach>
                     </tbody>
                 </table>
+            </div>
+        </div>
+
+        <c:set var="current" value="${page.getNumber()}" />
+        <c:set var="size" value="${page.getSize()}" />
+
+        <c:if test="${page.getTotalPages() gt 0}">
+            <div class="row justify-content-end">
+                <c:set var="last" value="${page.getTotalPages() - 1}" />
+                <div class="col-auto">
+                    <nav aria-label="Product pagination">
+                        <ul class="pagination">
+
+                            <!-- First -->
+                            <c:choose>
+                                <c:when test="${!page.isFirst()}">
+                                    <c:url var="firstUrl" value="/admin/product">
+                                        <c:param name="page" value="0" />
+                                        <c:param name="size" value="${size}" />
+                                        <c:if test="${not empty param.sort}">
+                                            <c:param name="sort" value="${param.sort}" />
+                                        </c:if>
+                                        <c:if test="${not empty param.q}">
+                                            <c:param name="q" value="${param.q}" />
+                                        </c:if>
+                                    </c:url>
+                                    <li class="page-item">
+                                        <a class="page-link" href="${fn:escapeXml(firstUrl)}">
+                                            First
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            First
+                                        </span>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- Prev -->
+                            <c:choose>
+                                <c:when test="${!page.isFirst()}">
+                                    <c:url var="prevUrl" value="/admin/product">
+                                        <c:param name="page" value="${current - 1}" />
+                                        <c:param name="size" value="${size}" />
+                                        <c:if test="${not empty param.sort}">
+                                            <c:param name="sort" value="${param.sort}" />
+                                        </c:if>
+                                        <c:if test="${not empty param.q}">
+                                            <c:param name="q" value="${param.q}" />
+                                        </c:if>
+                                    </c:url>
+                                    <li class="page-item">
+                                        <a class="page-link" href="${fn:escapeXml(prevUrl)}">
+                                            Prev
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            Prev
+                                        </span>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- Windowed page numbers -->
+                            <c:set var="window" value="2" />
+                            <c:set var="start" value="${current - window}" />
+                            <c:if test="${start lt 0}">
+                                <c:set var="start" value="0" />
+                            </c:if>
+                            <c:set var="end" value="${current + window}" />
+                            <c:if test="${end > last}">
+                                <c:set var="end" value="${last}" />
+                            </c:if>
+
+                            <!-- leading ellipsis -->
+                            <c:if test="${start gt 0}">
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        ...
+                                    </span>
+                                </li>
+                            </c:if>
+
+                            <!-- pages start..end -->
+                            <c:forEach begin="${start}" end="${end}" var="i">
+                                <c:url var="pageUrl" value="/admin/product">
+                                    <c:param name="page" value="${i}" />
+                                    <c:param name="size" value="${size}" />
+                                    <c:if test="${not empty param.sort}">
+                                        <c:param name="sort" value="${param.sort}" />
+                                    </c:if>
+                                    <c:if test="${not empty param.q}">
+                                        <c:param name="q" value="${param.q}" />
+                                    </c:if>
+                                </c:url>
+
+                                <c:choose>
+                                    <c:when test="${i eq current}">
+                                        <li class="page-item active" aria-current="page">
+                                            <span class="page-link">
+                                                ${i + 1}
+                                            </span>
+                                        </li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li class="page-item">
+                                            <a class="page-link" href="${fn:escapeXml(pageUrl)}">
+                                                ${i + 1}
+                                            </a>
+                                        </li>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+
+                            <!-- trailing ellipsis -->
+                            <c:if test="${end lt last}">
+                                <li class="page-item disabled">
+                                    <span class="page-link">
+                                        ...
+                                    </span>
+                                </li>
+                            </c:if>
+
+                            <!-- Next -->
+                            <c:choose>
+                                <c:when test="${!page.isLast()}">
+                                    <c:url var="nextUrl" value="/admin/product">
+                                        <c:param name="page" value="${current + 1}" />
+                                        <c:param name="size" value="${size}" />
+                                        <c:if test="${not empty param.sort}">
+                                            <c:param name="sort" value="${param.sort}" />
+                                        </c:if>
+                                        <c:if test="${not empty param.q}">
+                                            <c:param name="q" value="${param.q}" />
+                                        </c:if>
+                                    </c:url>
+                                    <li class="page-item">
+                                        <a class="page-link" href="${fn:escapeXml(nextUrl)}">
+                                            Next
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            Next
+                                        </span>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+
+                            <!-- Last -->
+                            <c:choose>
+                                <c:when test="${!page.isLast()}">
+                                    <c:url var="lastUrl" value="/admin/product">
+                                        <c:param name="page" value="${last}" />
+                                        <c:param name="size" value="${size}" />
+                                        <c:if test="${not empty param.sort}">
+                                            <c:param name="sort" value="${param.sort}" />
+                                        </c:if>
+                                        <c:if test="${not empty param.q}">
+                                            <c:param name="q" value="${param.q}" />
+                                        </c:if>
+                                    </c:url>
+                                    <li class="page-item">
+                                        <a class="page-link" href="${fn:escapeXml(lastUrl)}">
+                                            Last
+                                        </a>
+                                    </li>
+                                </c:when>
+                                <c:otherwise>
+                                    <li class="page-item disabled">
+                                        <span class="page-link">
+                                            Last
+                                        </span>
+                                    </li>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </c:if>
+
+        <div class="row justify-content-end">
+            <div class="col-auto">
+                <form:form method="get" action="/admin/product" class="d-inline-block">
+                    <label for="pageSize" class="form-label me-2">Rows/page:</label>
+                    <select id="pageSize" name="size" class="form-select d-inline-block w-auto"
+                        onchange="this.form.submit()">
+                        <c:forEach var="s" items="${fn:split('5,10,20,50,100', ',')}">
+                            <c:choose>
+                                <c:when test="${size eq s}">
+                                    <option value="${s}" selected="selected">${s}</option>
+                                </c:when>
+                                <c:otherwise>
+                                    <option value="${s}">${s}</option>
+                                </c:otherwise>
+                            </c:choose>
+                        </c:forEach>
+                    </select>
+
+                    <c:if test="${not empty param.sort}">
+                        <input type="hidden" name="sort" value="${param.sort}" />
+                    </c:if>
+                    <c:if test="${not empty param.q}">
+                        <input type="hidden" name="q" value="${param.q}" />
+                    </c:if>
+                </form:form>
             </div>
         </div>
     </div>

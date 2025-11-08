@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.user.domain.User;
 import vn.uit.clothesshop.user.domain.User.Role;
 
-public final class UserCreationRequestDto {
+public final class UserCreationForm {
     @NotBlank
     @Size(min = User.MIN_LENGTH_USERNAME, max = User.MAX_LENGTH_USERNAME)
     private String username = "";

@@ -31,29 +31,25 @@
                             <li class="breadcrumb-item">
                                 <a href="/admin/product">Product</a>
                             </li>
+                            <li class="breadcrumb-item">
+                                <a href="/admin/product/${viewModel.productId}">
+                                    Product detail
+                                </a>
+                            </li>
                             <li class="breadcrumb-item active">
-                                Update product variant
+                                Update variant info
                             </li>
                         </ol>
 
-                        <c:choose>
-                            <c:when test="${empty requestDto}">
-                                <div class="alert alert-danger mt-5 text-center fw-bold" role="alert">
-                                    Product variant does not exist.
+                        <div class="mt-5">
+                            <div class="row">
+                                <div class="col-xl-8 col-sm-10 col-12 mx-auto">
+                                    <h2>Update product variant info</h2>
+                                    <hr />
+                                    <jsp:directive.include file="layout/updateForm.jspxf" />
                                 </div>
-                            </c:when>
-                            <c:otherwise>
-                                <div class="mt-5">
-                                    <div class="row">
-                                        <div class="col-xl-8 col-sm-10 col-12 mx-auto">
-                                            <h2>Update product variant info</h2>
-                                            <hr />
-                                            <jsp:directive.include file="layout/updateForm.jspxf" />
-                                        </div>
-                                    </div>
-                                </div>
-                            </c:otherwise>
-                        </c:choose>
+                            </div>
+                        </div>
 
                     </div>
                 </main>

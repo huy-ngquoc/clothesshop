@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.product.controller;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,6 +15,7 @@ import vn.uit.clothesshop.product.presentation.form.ProductVariantCreationForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateImageForm;
 import vn.uit.clothesshop.product.presentation.form.ProductVariantUpdateInfoForm;
 import vn.uit.clothesshop.product.service.ProductVariantService;
+import vn.uit.clothesshop.shared.constant.ModelAttributeConstant;
 
 @Controller
 @RequestMapping("/admin/product-variant")
@@ -29,10 +31,10 @@ public class ProductVariantController {
     public String getProductVariantDetail(
             final Model model,
             @PathVariable final long id) {
-        final var responseDto = productVariantService.findDetailById(id).orElse(null);
+        final var viewModel = productVariantService.findDetailById(id).orElse(null);
 
-        model.addAttribute("id", id);
-        model.addAttribute("responseDto", responseDto);
+        model.addAttribute(ModelAttributeConstant.ID, id);
+        model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModel);
 
         return "admin/productvariant/detail";
     }
@@ -40,13 +42,12 @@ public class ProductVariantController {
     @GetMapping("/create")
     public String getAddVariantPage(
             final Model model,
-            @RequestParam long productId) {
-        final var viewModel = this.productVariantService.getCreationInfo(productId).orElse(null);
+            @RequestParam final long productId) {
+        final var viewModelAndForm = this.productVariantService.findCreationByProductId(productId).orElse(null);
 
-        model.addAttribute("productId", productId);
-
-        if (viewModel != null) {
-            model.addAttribute("requestDto", viewModel.getForm());
+        if (viewModelAndForm != null) {
+            model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModelAndForm.getFirst());
+            model.addAttribute(ModelAttributeConstant.FORM, viewModelAndForm.getSecond());
         }
 
         return "admin/productvariant/create";
@@ -55,14 +56,16 @@ public class ProductVariantController {
     @PostMapping("/create")
     public String addVariant(
             final Model model,
-            @RequestParam long productId,
-            @ModelAttribute("requestDto") @Valid final ProductVariantCreationForm requestDto,
+            @RequestParam final long productId,
+            @ModelAttribute(ModelAttributeConstant.FORM) @Valid @NonNull final ProductVariantCreationForm form,
             final BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            final var viewModel = this.productVariantService.findCreationViewModelByProductId(productId).orElse(null);
+            model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModel);
             return "admin/productvariant/create";
         }
 
-        final var productVariantId = productVariantService.create(productId, requestDto);
+        final var productVariantId = productVariantService.create(productId, form);
         return "redirect:/admin/product-variant/" + productVariantId;
     }
 
@@ -70,12 +73,11 @@ public class ProductVariantController {
     public String getUpdateVariantPage(
             final Model model,
             @PathVariable final long id) {
-        final var viewModel = this.productVariantService.getUpdateInfoById(id).orElse(null);
+        final var viewModelAndForm = this.productVariantService.findInfoUpdateById(id).orElse(null);
 
-        if (viewModel != null) {
-            model.addAttribute("productId", viewModel.getProductId());
-            model.addAttribute("image", viewModel.getImageFilePath());
-            model.addAttribute("requestDto", viewModel.getForm());
+        if (viewModelAndForm != null) {
+            model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModelAndForm.getFirst());
+            model.addAttribute(ModelAttributeConstant.FORM, viewModelAndForm.getSecond());
         }
 
         return "admin/productvariant/updateinfo";
@@ -85,13 +87,15 @@ public class ProductVariantController {
     public String updateVariantInfo(
             final Model model,
             @PathVariable final long id,
-            @Valid @ModelAttribute("requestDto") ProductVariantUpdateInfoForm requestDto,
+            @ModelAttribute(ModelAttributeConstant.FORM) @Valid @NonNull final ProductVariantUpdateInfoForm form,
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
+            final var viewModel = this.productVariantService.findInfoUpdateViewModelById(id).orElse(null);
+            model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModel);
             return "admin/productvariant/updateinfo";
         }
 
-        productVariantService.updateInfoById(id, requestDto);
+        productVariantService.updateInfoById(id, form);
         return "redirect:/admin/product-variant/" + id;
     }
 
@@ -99,12 +103,12 @@ public class ProductVariantController {
     public String getUpdateProductVariantImagePage(
             final Model model,
             @PathVariable final long id) {
-        final var viewModel = this.productVariantService.getUpdateInfoById(id).orElse(null);
+        final var viewModelAndForm = this.productVariantService.findImageUpdateById(id).orElse(null);
 
-        if (viewModel != null) {
-            model.addAttribute("productId", viewModel.getProductId());
-            model.addAttribute("image", viewModel.getImageFilePath());
-            model.addAttribute("requestDto", viewModel.getForm());
+        model.addAttribute(ModelAttributeConstant.ID, id);
+        if (viewModelAndForm != null) {
+            model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModelAndForm.getFirst());
+            model.addAttribute(ModelAttributeConstant.FORM, viewModelAndForm.getSecond());
         }
         return "admin/productvariant/updateimage";
     }
@@ -113,18 +117,23 @@ public class ProductVariantController {
     public String updateProductVariantImage(
             final Model model,
             @PathVariable final long id,
-            @ModelAttribute("requestDto") final ProductVariantUpdateImageForm requestDto) {
-        productVariantService.updateImageById(id, requestDto);
+            @ModelAttribute(ModelAttributeConstant.FORM) @Valid @NonNull final ProductVariantUpdateImageForm form) {
+        productVariantService.updateImageById(id, form);
         return "redirect:/admin/product-variant/" + id;
     }
 
     @GetMapping("/delete/{id}")
-    public String getDeleteProductVariantPage(final Model model,
+    public String getDeleteProductVariantPage(
+            final Model model,
             @PathVariable final long id) {
-        if (!this.productVariantService.existsById(id)) {
+        final var viewModel = this.productVariantService.findDeletionViewModelById(id).orElse(null);
+        if (viewModel == null) {
             return "redirect:/admin/product";
         }
-        model.addAttribute("id", id);
+
+        model.addAttribute(ModelAttributeConstant.ID, id);
+        model.addAttribute(ModelAttributeConstant.VIEW_MODEL, viewModel);
+
         return "admin/productvariant/delete";
 
     }

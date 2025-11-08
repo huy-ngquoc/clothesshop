@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0"
+  xmlns:jsp="http://java.sun.com/JSP/Page"
+  xmlns:c="http://java.sun.com/jsp/jstl/core"
+  xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+  <!-- Attributes -->
+    <jsp:directive.attribute name="firstNameField"   required="true"  type="java.lang.String"/>
+   <jsp:directive.attribute name="lastNameField"   required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="label"    required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="page"     required="true"  type="org.springframework.data.domain.Page"/>
+  <jsp:directive.attribute name="baseUrl"  required="true"  type="java.lang.String"/>
+  <!-- CSV các query muốn giữ lại: "q,role,status" -->
+  <jsp:directive.attribute name="preserve" required="false" type="java.lang.String"/>
+
+  <!-- Xác định trạng thái hiện tại từ paramValues.sort -->
+  <c:set var="hasAsc"  value="false"/>
+  <c:set var="hasDesc" value="false"/>
+  <c:forEach var="s" items="${paramValues.sort}">
+    <c:if test="${s == lastNameField.concat(',asc') or s == firstNameField.concat(',asc')}">
+      <c:set var="hasAsc" value="true"/>
+    </c:if>
+    <c:if test="${s == lastNameField.concat(',desc') or s == firstNameField.concat(',desc')}">
+      <c:set var="hasDesc" value="true"/>
+    </c:if>
+  </c:forEach>
+
+  <!-- curDir = asc nếu cả hai đều asc; desc nếu cả hai đều desc; còn lại none -->
+  <c:choose>
+    <c:when test="${hasAsc and not hasDesc}">
+      <c:set var="curDir" value="asc"/>
+    </c:when>
+    <c:when test="${hasDesc and not hasAsc}">
+      <c:set var="curDir" value="desc"/>
+    </c:when>
+    <c:otherwise>
+      <c:set var="curDir" value="none"/>
+    </c:otherwise>
+  </c:choose>
+
+  <!-- Tính trạng thái kế tiếp: none -> asc -> desc -> none -->
+  <c:choose>
+    <c:when test="${curDir == 'none'}">
+      <c:set var="nextDir" value="asc"/>
+    </c:when>
+    <c:when test="${curDir == 'asc'}">
+      <c:set var="nextDir" value="desc"/>
+    </c:when>
+    <c:otherwise>
+      <c:set var="nextDir" value="none"/>
+    </c:otherwise>
+  </c:choose>
+
+  <!-- URL khi có sort (asc/desc): gửi 2 tham số sort -->
+  <c:url var="sortedUrl" value="${baseUrl}">
+    <c:param name="page" value="0"/>
+    <c:param name="size" value="${page.getSize()}"/>
+    <c:param name="sort" value="${firstNameField},${nextDir}"/>
+    <c:param name="sort" value="${lastNameField},${nextDir}"/>
+    <c:if test="${not empty preserve}">
+      <c:forEach var="n" items="${fn:split(preserve, ',')}">
+        <c:if test="${not empty param[n]}">
+          <c:param name="${n}" value="${param[n]}"/>
+        </c:if>
+      </c:forEach>
+    </c:if>
+  </c:url>
+
+  <!-- URL khi trở về 'none' (xóa sort cho cột này, giữ filter khác) -->
+  <c:url var="clearedUrl" value="${baseUrl}">
+    <c:param name="page" value="0"/>
+    <c:param name="size" value="${page.getSize()}"/>
+    <c:if test="${not empty preserve}">
+      <c:forEach var="n" items="${fn:split(preserve, ',')}">
+        <c:if test="${not empty param[n]}">
+          <c:param name="${n}" value="${param[n]}"/>
+        </c:if>
+      </c:forEach>
+    </c:if>
+  </c:url>
+
+  <!-- Link: nếu nextDir == none thì href = clearedUrl, ngược lại dùng sortedUrl -->
+  <a href="${fn:escapeXml(nextDir == 'none' ? clearedUrl : sortedUrl)}">
+    <jsp:text>${label} </jsp:text>
+    <!-- Icon trạng thái hiện tại -->
+    <c:choose>
+      <c:when test="${curDir == 'asc'}">&#8593;</c:when>   <!-- ↑ -->
+      <c:when test="${curDir == 'desc'}">&#8595;</c:when>  <!-- ↓ -->
+      <c:otherwise>&#8597;</c:otherwise>                   <!-- ↕ -->
+    </c:choose>
+  </a>
+</jsp:root>

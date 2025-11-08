@@ -7,7 +7,7 @@
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
     <form:form method="post" action="/admin/user/update/avatar/${id}" enctype="multipart/form-data"
-        modelAttribute="requestDto">
+        modelAttribute="form">
         <div class="row g-3 mb-3">
             <div class="col-md-6 col-12">
                 <label class="form-label" for="inputId">ID:</label>
@@ -25,10 +25,11 @@
                     type="file" path="avatarFile" accept="image/*" />
             </div>
         </div>
-        <div id="avatarFilePreviewWrapper" class="row g-3 mb-3" style="${empty avatarFilePath ? 'display:none;' : ''}">
+        <div id="avatarFilePreviewWrapper" class="row g-3 mb-3"
+            style="${empty viewModel.avatarFilePath ? 'display:none;' : ''}">
             <div class="col-12">
                 <img id="avatarFilePreview" style="max-width:100%; max-height:300px; height:auto; width:auto;"
-                    src="${not empty avatarFilePath ? '/img/'.concat(avatarFilePath) : ''}" alt="" />
+                    src="${not empty viewModel.avatarFilePath ? '/img/'.concat(avatarFilePath) : ''}" alt="" />
 
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
                     crossorigin="anonymous"></script>
@@ -47,7 +48,7 @@
         </div>
         <div class="d-flex gap-3 mb-3">
             <button type="submit" class="btn btn-warning">Update</button>
-            <c:if test="${not empty avatarFilePath}">
+            <c:if test="${not empty viewModel.avatarFilePath}">
                 <a class="btn btn-danger" href="/admin/user/update/avatar/delete/${id}">Delete</a>
             </c:if>
             <a class="btn btn-success" href="/admin/user/update/info/${id}">Back</a>

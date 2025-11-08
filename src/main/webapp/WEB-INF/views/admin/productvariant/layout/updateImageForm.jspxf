@@ -6,55 +6,59 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/product-variant/update/image/${id}" enctype="multipart/form-data"
-        modelAttribute="requestDto">
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <form:label class="form-label" for="inputImageFile" path="imageFile">Ảnh mới:</form:label>
-                <form:input id="inputImageFile" class="form-control" type="file" path="imageFile" accept="image/*"
-                    required="true" />
+    <c:choose>
+        <c:when test="${(not empty form) and (not empty viewModel)}">
+            <form:form method="post" action="/admin/product-variant/update/image/${id}" enctype="multipart/form-data"
+                modelAttribute="form">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <form:label class="form-label" for="inputImageFile" path="imageFile">Image:</form:label>
+                        <form:input id="inputImageFile" class="form-control" type="file" path="imageFile"
+                            accept="image/*" required="true" />
+                    </div>
+                </div>
+
+                <div id="imageFilePreviewWrapper" class="row g-3 mb-3"
+                    style="${empty viewModel.imageFilePath ? 'display:none;' : ''}">
+                    <div class="col-12 text-center">
+                        <img id="imageFilePreview"
+                            src="${not empty image ? '/img/'.concat(viewModel.imageFilePath) : ''}"
+                            style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+                    </div>
+                </div>
+
+                <div class="d-flex gap-3 mb-3">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                    <a class="btn btn-success" href="/admin/product-variant/update/info/${id}">Back</a>
+                </div>
+            </form:form>
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+            <script>
+                $(function () {
+                    $("#inputImageFile").on("change", function (e) {
+                        const f = e.target.files[0];
+                        if (!f) return;
+                        const url = URL.createObjectURL(f);
+                        $("#imageFilePreview").attr("src", url);
+                        $("#imageFilePreviewWrapper").show();
+                    });
+                });
+            </script>
+        </c:when>
+
+        <c:otherwise>
+            <p class="alert alert-danger">Product Variant not existed!</p>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputIdNotFound">ID:</label>
+                    <input id="inputIdNotFound" class="form-control" type="text" value="${id}" readonly="true" />
+                </div>
             </div>
-        </div>
-
-        <div id="avatarFilePreviewWrapper" class="row g-3 mb-3" style="${empty image ? 'display:none;' : ''}">
-            <div class="col-12 text-center">
-                <img id="avatarFilePreview" src="${not empty image ? '/img/'.concat(image) : ''}"
-                    style="max-width:100%; max-height:300px; height:auto; width:auto;" />
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/product">Back to product list</a>
             </div>
-        </div>
-
-        <div class="d-flex gap-3 mb-3">
-            <button type="submit" class="btn btn-warning">Cập nhật ảnh</button>
-            <a class="btn btn-success" href="/admin/product-variant/update/info/${id}">Quay lại</a>
-        </div>
-    </form:form>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script>
-        $(function () {
-            $("#inputImageFile").on("change", function (e) {
-                const f = e.target.files[0];
-                if (!f) return;
-                const url = URL.createObjectURL(f);
-                $("#avatarFilePreview").attr("src", url);
-                $("#avatarFilePreviewWrapper").show();
-            });
-        });
-    </script>
-
-
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous"></script>
-    <script>
-        $(function () {
-            $("#inputImageFile").on("change", function (e) {
-                const f = e.target.files[0];
-                if (!f) return;
-                const url = URL.createObjectURL(f);
-                $("#avatarFilePreview").attr("src", url);
-                $("#avatarFilePreviewWrapper").show();
-            });
-        });
-    </script>
+        </c:otherwise>
+    </c:choose>
 
 </jsp:root>

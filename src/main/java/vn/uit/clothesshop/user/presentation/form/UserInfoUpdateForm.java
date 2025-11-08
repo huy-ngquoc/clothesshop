@@ -7,7 +7,7 @@ import jakarta.validation.constraints.Size;
 import vn.uit.clothesshop.user.domain.User;
 import vn.uit.clothesshop.user.domain.User.Role;
 
-public class UserUpdateInfoRequestDto {
+public class UserInfoUpdateForm {
     @NotBlank
     @Size(min = User.MIN_LENGTH_FIRST_NAME, max = User.MAX_LENGTH_FIRST_NAME)
     private String firstName = "";
@@ -28,7 +28,7 @@ public class UserUpdateInfoRequestDto {
     @NotNull
     private Role role = Role.USER;
 
-    public UserUpdateInfoRequestDto(
+    public UserInfoUpdateForm(
             final String firstName,
             final String lastName,
             final String email,

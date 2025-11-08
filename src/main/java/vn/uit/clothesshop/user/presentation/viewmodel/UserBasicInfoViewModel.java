@@ -2,13 +2,13 @@ package vn.uit.clothesshop.user.presentation.viewmodel;
 
 import vn.uit.clothesshop.user.domain.User.Role;
 
-public final class UserBasicInfoResponseDto {
+public final class UserBasicInfoViewModel {
     private final long id;
     private final String username;
     private final String fullName;
     private final Role role;
 
-    public UserBasicInfoResponseDto(
+    public UserBasicInfoViewModel(
             final long id,
             final String username,
             final String fullName,

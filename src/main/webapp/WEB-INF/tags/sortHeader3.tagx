@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root version="2.0"
+          xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="http://java.sun.com/jsp/jstl/core"
+          xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+  <!-- Attributes -->
+  <jsp:directive.attribute name="field"   required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="label"   required="true"  type="java.lang.String"/>
+  <jsp:directive.attribute name="page"    required="true"  type="org.springframework.data.domain.Page"/>
+  <jsp:directive.attribute name="baseUrl" required="true"  type="java.lang.String"/>
+  <!-- CSV tên các query muốn giữ lại (vd: "q,role") -->
+  <jsp:directive.attribute name="preserve" required="false" type="java.lang.String"/>
+
+  <!-- Trạng thái hiện tại -->
+  <c:set var="currentSort" value="${param.sort}"/>
+  <c:set var="isCurrent"   value="${not empty currentSort and fn:startsWith(currentSort, field.concat(','))}"/>
+  <c:set var="curDir"      value="${isCurrent ? fn:split(currentSort, ',')[1] : 'none'}"/>
+
+  <!-- Tính trạng thái kế tiếp: none -> asc -> desc -> none -->
+  <c:choose>
+    <c:when test="${curDir == 'none'}">
+      <c:set var="nextDir" value="asc"/>
+    </c:when>
+    <c:when test="${curDir == 'asc'}">
+      <c:set var="nextDir" value="desc"/>
+    </c:when>
+    <c:otherwise>
+      <!-- curDir == 'desc' -->
+      <c:set var="nextDir" value="none"/>
+    </c:otherwise>
+  </c:choose>
+
+  <!-- URL khi có sort (asc/desc) -->
+  <c:url var="sortedUrl" value="${baseUrl}">
+    <c:param name="page" value="0"/>
+    <c:param name="size" value="${page.getSize()}"/>
+    <c:param name="sort" value="${field},${nextDir}"/>
+    <c:if test="${not empty preserve}">
+      <c:forEach var="name" items="${fn:split(preserve, ',')}">
+        <c:if test="${not empty param[name]}">
+          <c:param name="${name}" value="${param[name]}"/>
+        </c:if>
+      </c:forEach>
+    </c:if>
+  </c:url>
+
+  <!-- URL khi trở về 'none' (xóa sort) -->
+  <c:url var="clearedUrl" value="${baseUrl}">
+    <c:param name="page" value="0"/>
+    <c:param name="size" value="${page.getSize()}"/>
+    <c:if test="${not empty preserve}">
+      <c:forEach var="name" items="${fn:split(preserve, ',')}">
+        <c:if test="${not empty param[name]}">
+          <c:param name="${name}" value="${param[name]}"/>
+        </c:if>
+      </c:forEach>
+    </c:if>
+  </c:url>
+
+  <!-- Chọn href theo nextDir -->
+  <a href="${fn:escapeXml(nextDir == 'none' ? clearedUrl : sortedUrl)}">
+    <jsp:text>${label} </jsp:text>
+    <!-- Icon trạng thái hiện tại -->
+    <c:choose>
+      <c:when test="${curDir == 'asc' and isCurrent}">&#8593;</c:when>   <!-- ↑ -->
+      <c:when test="${curDir == 'desc' and isCurrent}">&#8595;</c:when>  <!-- ↓ -->
+      <c:otherwise>&#8597;</c:otherwise>                                  <!-- ↕ (none) -->
+    </c:choose>
+  </a>
+</jsp:root>

@@ -31,8 +31,13 @@
                             <li class="breadcrumb-item">
                                 <a href="/admin/product">Product</a>
                             </li>
+                            <li class="breadcrumb-item">
+                                <a href="/admin/product/${viewModel.productId}">
+                                    Product detail
+                                </a>
+                            </li>
                             <li class="breadcrumb-item active">
-                                Update product variant image
+                                Update variant image
                             </li>
                         </ol>
 
