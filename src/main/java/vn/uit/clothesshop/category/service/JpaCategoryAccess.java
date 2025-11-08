@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
-import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.category.domain.Category;
 import vn.uit.clothesshop.category.domain.CategoryAccess;
 import vn.uit.clothesshop.category.repository.CategoryRepository;
@@ -20,7 +20,6 @@ import vn.uit.clothesshop.category.repository.CategoryRepository;
 @Service
 @Transactional(readOnly = true)
 @Validated
-@Slf4j
 class JpaCategoryAccess implements CategoryAccess {
 
     private final CategoryRepository repository;
@@ -31,8 +30,10 @@ class JpaCategoryAccess implements CategoryAccess {
     }
 
     @Override
-    public Page<Category> findAll(@NonNull final Pageable pageable) {
-        return this.repository.findAll(pageable);
+    public Page<Category> findAll(
+            @Nullable final Specification<Category> spec,
+            @NonNull final Pageable pageable) {
+        return this.repository.findAll(spec, pageable);
     }
 
     @Override

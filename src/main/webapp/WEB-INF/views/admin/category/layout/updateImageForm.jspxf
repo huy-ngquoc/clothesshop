@@ -6,52 +6,73 @@
     <jsp:directive.page contentType="application/xhtml+xml" />
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
-    <form:form method="post" action="/admin/category/update/image/${id}" enctype="multipart/form-data"
-        modelAttribute="requestDto">
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <label class="form-label" for="inputId">ID:</label>
-                <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
-            </div>
-        </div>
-        <div class="row g-3 mb-3">
-            <div class="col-md-6 col-12">
-                <c:set var="errorImageFile">
-                    <form:errors cssClass="invalid-feedback" path="imageFile" />
-                </c:set>
+    <c:choose>
+        <c:when test="${(not empty viewModel) and (not empty form)}">
+            <form:form method="post" action="/admin/category/update/image/${id}" enctype="multipart/form-data"
+                modelAttribute="form">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <label class="form-label" for="inputId">ID:</label>
+                        <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                    </div>
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6 col-12">
+                        <c:set var="errorImageFile">
+                            <form:errors cssClass="invalid-feedback" path="imageFile" />
+                        </c:set>
 
-                <form:label class="form-label" for="inputImageFile" path="imageFile">Image:</form:label>
-                <form:input id="inputImageFile" class="form-control ${not empty errorImageFile ? 'is-invalid' : ''}"
-                    type="file" path="imageFile" accept="image/*" />
-            </div>
-        </div>
-        <div id="imageFilePreviewWrapper" class="row g-3 mb-3" style="${empty imageFilePath ? 'display:none;' : ''}">
-            <div class="col-12">
-                <img id="imageFilePreview" style="max-width:100%; max-height:300px; height:auto; width:auto;"
-                    src="${not empty imageFilePath ? '/img/'.concat(imageFilePath) : ''}" alt="" />
+                        <form:label class="form-label" for="inputImageFile" path="imageFile">Image:</form:label>
+                        <form:input id="inputImageFile"
+                            class="form-control ${not empty errorImageFile ? 'is-invalid' : ''}" type="file"
+                            path="imageFile" accept="image/*" />
+                    </div>
+                </div>
+                <div id="imageFilePreviewWrapper" class="row g-3 mb-3"
+                    style="${empty viewModel.imageFilePath ? 'display:none;' : ''}">
+                    <div class="col-12">
+                        <img id="imageFilePreview" style="max-width:100%; max-height:300px; height:auto; width:auto;"
+                            src="${not empty viewModel.imageFilePath ? '/img/'.concat(viewModel.imageFilePath) : ''}"
+                            alt="" />
 
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
-                    crossorigin="anonymous"></script>
-                <script>
-                    $(function () {
-                        $("#inputAvatarFile").on("change", function (e) {
-                            const f = e.target.files[0];
-                            if (!f) return;
-                            const url = URL.createObjectURL(f);
-                            $("#imageFilePreview").attr("src", url);
-                            $("#imageFilePreviewWrapper").show();
-                        });
-                    });
-                </script>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
+                            crossorigin="anonymous"></script>
+                        <script>
+                            $(function () {
+                                $("#inputAvatarFile").on("change", function (e) {
+                                    const f = e.target.files[0];
+                                    if (!f) return;
+                                    const url = URL.createObjectURL(f);
+                                    $("#imageFilePreview").attr("src", url);
+                                    $("#imageFilePreviewWrapper").show();
+                                });
+                            });
+                        </script>
+                    </div>
+                </div>
+                <div class="d-flex gap-3 mb-3">
+                    <button type="submit" class="btn btn-warning">Update</button>
+                    <c:if test="${not empty viewModel.imageFilePath}">
+                        <a class="btn btn-danger" href="/admin/category/update/image/delete/${id}">Delete</a>
+                    </c:if>
+                    <a class="btn btn-success" href="/admin/category/update/info/${id}">Back</a>
+                </div>
+            </form:form>
+        </c:when>
+
+        <c:otherwise>
+            <p class="alert alert-danger">Category not found!</p>
+            <div class="row g-3 mb-3">
+                <div class="col-md-6 col-12">
+                    <label class="form-label" for="inputId">ID:</label>
+                    <input id="inputId" class="form-control" type="text" value="${id}" readonly="true" />
+                </div>
             </div>
-        </div>
-        <div class="d-flex gap-3 mb-3">
-            <button type="submit" class="btn btn-warning">Update</button>
-            <c:if test="${not empty imageFilePath}">
-                <a class="btn btn-danger" href="/admin/category/update/image/delete/${id}">Delete</a>
-            </c:if>
-            <a class="btn btn-success" href="/admin/category/update/info/${id}">Back</a>
-        </div>
-    </form:form>
+            <div class="d-flex gap-3 mb-3">
+                <a class="btn btn-primary" href="/admin/category">Back</a>
+            </div>
+        </c:otherwise>
+    </c:choose>
+
 
 </jsp:root>
