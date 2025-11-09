@@ -185,4 +185,9 @@ class JpaUserService implements UserService {
     public void deleteById(final long id) {
         this.repository.deleteById(id);
     }
+
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return this.repository.findByEmail(email);
+    }
 }

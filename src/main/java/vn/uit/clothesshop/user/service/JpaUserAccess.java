@@ -29,4 +29,9 @@ class JpaUserAccess implements UserAccess {
         return this.repository.findByUsername(username);
     }
 
+    @Override
+    public Optional<User> findByEmail(String email) {
+        return this.repository.findByEmail(email);
+    }
+
 }

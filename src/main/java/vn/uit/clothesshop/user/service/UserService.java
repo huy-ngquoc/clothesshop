@@ -64,4 +64,6 @@ public interface UserService {
     Optional<UserDeletionViewModel> findDeletionViewModelById(final long id);
 
     void deleteById(final long id);
+
+    Optional<User> findByEmail(String email);
 }

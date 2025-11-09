@@ -6,4 +6,6 @@ public interface UserAccess {
     Optional<User> findById(final long id);
 
     Optional<User> findByUsername(final String username);
+
+    Optional<User> findByEmail(final String email);
 }

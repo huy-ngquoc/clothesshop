@@ -7,4 +7,11 @@ public enum ETarget {
     THIN,
     MALE,
     FEMALE,
+    RECTANGLE,
+    TRIANGLE,
+    APPLE,
+    OLD,
+    MIDDLE_AGE,
+    YOUNG,
+    NORMAL
 }

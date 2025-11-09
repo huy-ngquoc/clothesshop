@@ -209,11 +209,11 @@ public class Product {
         this.id = id;
     }
 
-    void setCreatedAt(final Instant createdAt) {
+    public void setCreatedAt(final Instant createdAt) {
         this.createdAt = createdAt;
     }
 
-    void setUpdatedAt(final Instant updatedAt) {
+    public void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 

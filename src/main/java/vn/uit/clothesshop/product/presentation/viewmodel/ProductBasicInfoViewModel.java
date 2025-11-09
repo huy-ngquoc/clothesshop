@@ -4,7 +4,7 @@ public final class ProductBasicInfoViewModel {
     private final long id;
     private final String name;
     private final String shortDesc;
-
+    
     public ProductBasicInfoViewModel(
             final long id,
             final String name,
