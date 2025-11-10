@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import vn.uit.clothesshop.user.repository.UserRepository;
+import vn.uit.clothesshop.feature.user.infra.jpa.repository.UserRepository;
 
 @Component
 public class EmailExistValidator implements ConstraintValidator<EmailExist, String> {

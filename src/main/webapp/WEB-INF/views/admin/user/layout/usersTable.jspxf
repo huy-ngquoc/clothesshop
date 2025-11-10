@@ -73,17 +73,20 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="align-middle">
+                    <tbody>
                         <c:forEach var="viewModel" items="${page.content}">
-                            <tr>
+                            <tr class="align-middle">
                                 <td>${viewModel.id}</td>
                                 <td>${viewModel.username}</td>
                                 <td>${viewModel.fullName}</td>
                                 <td>${viewModel.role}</td>
-                                <td class="d-flex justify-content-center align-items-center gap-2">
-                                    <a class="btn btn-success" href="/admin/user/${viewModel.id}">View</a>
-                                    <a class="btn btn-warning" href="/admin/user/update/info/${viewModel.id}">Update</a>
-                                    <a class="btn btn-danger" href="/admin/user/delete/${viewModel.id}">Delete</a>
+                                <td class="text-center">
+                                    <div class="d-md-inline-flex gap-2">
+                                        <a class="btn btn-success" href="/admin/user/${viewModel.id}">View</a>
+                                        <a class="btn btn-warning"
+                                            href="/admin/user/update/info/${viewModel.id}">Update</a>
+                                        <a class="btn btn-danger" href="/admin/user/delete/${viewModel.id}">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                         </c:forEach>

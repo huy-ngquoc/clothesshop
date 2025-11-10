@@ -85,28 +85,30 @@
                                     <th>Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="align-middle">
+                            <tbody>
                                 <c:forEach var="variantViewModel" items="${viewModel.variantPage.getContent()}">
-                                    <tr>
+                                    <tr class="align-middle">
                                         <td>${variantViewModel.id}</td>
                                         <td>${variantViewModel.color}</td>
                                         <td>${variantViewModel.size}</td>
                                         <td>${variantViewModel.stockQuantity}</td>
                                         <td>${variantViewModel.priceCents}</td>
                                         <td>${variantViewModel.weightGrams}</td>
-                                        <td class="d-flex justify-content-center align-items-center gap-2">
-                                            <a class="btn btn-success"
-                                                href="/admin/product-variant/${variantViewModel.id}">
-                                                View
-                                            </a>
-                                            <a class="btn btn-warning"
-                                                href="/admin/product-variant/update/info/${variantViewModel.id}">
-                                                Update
-                                            </a>
-                                            <a class="btn btn-danger"
-                                                href="/admin/product-variant/delete/${variantViewModel.id}">
-                                                Delete
-                                            </a>
+                                        <td class="text-center">
+                                            <div class="d-inline-flex gap-2">
+                                                <a class="btn btn-success"
+                                                    href="/admin/product-variant/${variantViewModel.id}">
+                                                    View
+                                                </a>
+                                                <a class="btn btn-warning"
+                                                    href="/admin/product-variant/update/info/${variantViewModel.id}">
+                                                    Update
+                                                </a>
+                                                <a class="btn btn-danger"
+                                                    href="/admin/product-variant/delete/${variantViewModel.id}">
+                                                    Delete
+                                                </a>
+                                            </div>
                                         </td>
                                     </tr>
                                 </c:forEach>

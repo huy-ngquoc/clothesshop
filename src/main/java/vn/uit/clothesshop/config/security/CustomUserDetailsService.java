@@ -8,15 +8,15 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import vn.uit.clothesshop.feature.user.domain.User;
+import vn.uit.clothesshop.feature.user.domain.port.UserReadPort;
 import vn.uit.clothesshop.shared.util.Message;
-import vn.uit.clothesshop.user.domain.User;
-import vn.uit.clothesshop.user.domain.UserAccess;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserAccess userService;
+    private final UserReadPort userService;
 
-    public CustomUserDetailsService(final UserAccess userService) {
+    public CustomUserDetailsService(final UserReadPort userService) {
         this.userService = userService;
     }
 

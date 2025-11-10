@@ -66,16 +66,20 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="align-middle">
+                    <tbody>
                         <c:forEach var="viewModel" items="${page.content}">
-                            <tr>
+                            <tr class="align-middle">
                                 <td>${viewModel.id}</td>
                                 <td>${viewModel.name}</td>
                                 <td>${viewModel.shortDesc}</td>
-                                <td class="d-md-flex justify-content-center align-items-center gap-2">
-                                    <a class="btn btn-success" href="/admin/product/${viewModel.id}">View</a>
-                                    <a class="btn btn-warning" href="/admin/product/update/${viewModel.id}">Update</a>
-                                    <a class="btn btn-danger" href="/admin/product/delete/${viewModel.id}">Delete</a>
+                                <td class="text-center">
+                                    <div class="d-inline-flex gap-2">
+                                        <a class="btn btn-success" href="/admin/product/${viewModel.id}">View</a>
+                                        <a class="btn btn-warning"
+                                            href="/admin/product/update/${viewModel.id}">Update</a>
+                                        <a class="btn btn-danger"
+                                            href="/admin/product/delete/${viewModel.id}">Delete</a>
+                                    </div>
                                 </td>
                             </tr>
                         </c:forEach>
