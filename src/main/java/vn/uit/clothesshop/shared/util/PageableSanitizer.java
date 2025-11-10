@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.lang.NonNull;
 
-import vn.uit.clothesshop.shared.constraint.PagingConstraint;
+import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 
 public final class PageableSanitizer {
 
