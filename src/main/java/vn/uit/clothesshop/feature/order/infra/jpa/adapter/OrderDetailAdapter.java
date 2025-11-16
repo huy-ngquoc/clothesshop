@@ -49,6 +49,11 @@ public class OrderDetailAdapter implements OrderDetailReadPort, OrderDetailWrite
     public boolean existsById(OrderDetailId id) {
        return orderDetailRepo.existsById(id);
     } 
+
+    @Override
+    public List<OrderDetail> findByOrderId(long orderId) {
+        return orderDetailRepo.findByOrder_Id(orderId);
+    }
     
     
 }

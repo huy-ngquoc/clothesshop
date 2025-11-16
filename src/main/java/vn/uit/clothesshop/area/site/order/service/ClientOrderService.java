@@ -10,7 +10,7 @@ import vn.uit.clothesshop.feature.user.domain.User;
 
 public interface ClientOrderService {
     public Order createOrderFromCart(long userId, OrderRequestInfo orderRequestInfo);
-    public Order createSingleOrder(SingleOrderRequest request);
-    public Order cancelOrder(long orderId);
-    public Order confirmReceiveOrder(long orderId);
+    public Order createSingleOrder(long userId,SingleOrderRequest request);
+    public Order cancelOrder(long orderId, long userId);
+    public Order confirmReceiveOrder(long orderId, long userId);
 }

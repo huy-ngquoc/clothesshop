@@ -97,4 +97,9 @@ class JpaProductVariantAdapter implements ProductVariantReadPort, ProductVariant
     public void delete(@NonNull ProductVariant variant) {
         this.repo.delete(variant);
     }
+
+    @Override
+    public List<ProductVariant> saveAll(List<ProductVariant> listVariants) {
+        return repo.saveAll(listVariants);
+    }
 }

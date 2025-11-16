@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.feature.product.domain.port;
 
+import java.util.List;
+
 import org.springframework.lang.NonNull;
 
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
@@ -11,4 +13,6 @@ public interface ProductVariantWritePort {
     void deleteById(final long id);
 
     void delete(@NonNull final ProductVariant variant);
+
+    public List<ProductVariant> saveAll(List<ProductVariant> listVariants);
 }

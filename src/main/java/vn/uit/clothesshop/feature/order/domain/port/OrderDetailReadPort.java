@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.feature.order.domain.port;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -24,5 +25,6 @@ public interface OrderDetailReadPort {
     Optional<OrderDetail> findById(final OrderDetailId id);
 
     boolean existsById(final OrderDetailId id);
+    public List<OrderDetail> findByOrderId(long orderId);
 }
 
