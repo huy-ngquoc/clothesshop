@@ -31,6 +31,7 @@ import vn.uit.clothesshop.area.admin.product.service.ProductAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductVariantAdminService;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.site.cart.presentation.request.CartRequest;
+import vn.uit.clothesshop.area.site.homepage.service.ProductClientService;
 import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductSpecification;
 import vn.uit.clothesshop.feature.user.domain.User;
@@ -52,14 +53,18 @@ public class HomepageController {
 
     private final UserRepository userRepo;
 
+    private final ProductClientService productClientService;
+
     public HomepageController(
             final ProductAdminService productService,
             final ProductVariantAdminService productVariantService,
-            final CategoryAdminService categoryService, final UserRepository userRepo) {
+            final CategoryAdminService categoryService, final UserRepository userRepo,
+            final ProductClientService productClientService) {
         this.productService = productService;
         this.productVariantService = productVariantService;
         this.categoryService = categoryService;
         this.userRepo = userRepo;
+        this.productClientService = productClientService;
     }
 
     @GetMapping("/")
@@ -68,9 +73,7 @@ public class HomepageController {
 
         final var productSort = Sort.by(Sort.Order.desc(Product.Fields.createdAt));
         final var productPageRequest = PageRequest.of(0, 4, productSort);
-        final var productList = this.productService
-                .findAllForHomepage(null, productPageRequest)
-                .getContent();
+        final var productList = this.productClientService.findAllBasic(null, productPageRequest);
 
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("productList", productList);
@@ -108,9 +111,9 @@ public class HomepageController {
                 .and(ProductSpecification.anyColors(colors))
                 .and(ProductSpecification.anySizes(sizes));
 
-        final var result = this.productService.findAllBasic(spec, safePageable);
+        final var result = this.productClientService.findAllBasic(spec, safePageable);
 
-        model.addAttribute("products", result.getContent());
+        model.addAttribute("products", result);
         model.addAttribute("currentPage", result.getNumber());
         model.addAttribute("totalPages", result.getTotalPages());
         model.addAttribute("sizeCounts", productVariantService.countProductVariantBySize());
