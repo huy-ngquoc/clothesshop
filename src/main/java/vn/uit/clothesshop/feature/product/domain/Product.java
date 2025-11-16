@@ -136,7 +136,9 @@ public class Product {
     public void setSold(final int sold) {
         this.sold = sold;
     }
-
+    public Set<ProductVariant> getVariants() {
+        return this.variants;
+    }
     public long getCategoryId() {
         return this.category.getId();
     }
