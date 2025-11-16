@@ -90,7 +90,7 @@
                 </div>
 
                 <div class="row g-4">
-                    <c:forEach var="product" items="${productList}">
+                    <c:forEach var="product" items="${productList.content}">
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="card h-100 shadow-sm">
                                 <img src="/img/${product.imageFilePath}" class="card-img-top" alt="Minimalist Tee"
