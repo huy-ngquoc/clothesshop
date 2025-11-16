@@ -14,6 +14,7 @@ import vn.uit.clothesshop.feature.cart.domain.Cart;
 import vn.uit.clothesshop.feature.cart.domain.port.CartPort;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
+import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
 import vn.uit.clothesshop.feature.order.domain.port.OrderDetailWritePort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
@@ -50,6 +51,7 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
        order.setAddress(orderRequestInfo.getAddress());
        order.setPhoneNumber(orderRequestInfo.getPhoneNumber());
        order.setUser(user);
+       order.setStatus(EOrderStatus.PROGRESSING);
        orderWritePort.save(order);
        List<OrderDetail> orderDetails= new ArrayList<>();
        for(Cart cart: listCarts) {
