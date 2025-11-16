@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.feature.cart.domain.Cart;
 import vn.uit.clothesshop.feature.cart.domain.id.CartId;
+import vn.uit.clothesshop.feature.cart.domain.port.CartPort;
 import vn.uit.clothesshop.feature.cart.infra.jpa.repository.CartRepository;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductVariantRepository;
 import vn.uit.clothesshop.feature.user.domain.User;
 
 @Service
-public class CartAdapter {
+public class CartAdapter implements CartPort {
     private final CartRepository cartDetailRepo;
     private final ProductVariantRepository productVariantRepo;
 
@@ -79,5 +80,15 @@ public class CartAdapter {
             cartDetail.setAmount(amount);
             cartDetailRepo.save(cartDetail);
         }
+    }
+
+    @Override
+    public List<Cart> getCartsByUserId(long userId) {
+        return cartDetailRepo.findByUser_Id(userId);
+    }
+
+    @Override
+    public void deleteAll(List<Cart> carts) {
+        cartDetailRepo.deleteAll(carts);
     }
 }
