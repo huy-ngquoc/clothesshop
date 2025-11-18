@@ -286,4 +286,5 @@ function listenToCartChange() {
         // ===== Init =====
         attachQtyEvents();
         logicFroChooseVariant();
+        document.getElementById("test").innerHTML="Alo";
  

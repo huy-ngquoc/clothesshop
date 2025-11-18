@@ -33,6 +33,7 @@ import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.site.cart.presentation.request.CartRequest;
 import vn.uit.clothesshop.area.site.homepage.service.ProductClientService;
 import vn.uit.clothesshop.feature.product.domain.Product;
+import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductSpecification;
 import vn.uit.clothesshop.feature.user.domain.User;
 import vn.uit.clothesshop.feature.user.infra.jpa.repository.UserRepository;
@@ -152,11 +153,11 @@ public class HomepageController {
             final Model model,
             @PathVariable long id,
             @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
-        ProductAdminDetailInfoViewModel responseDto = productService.findDetailById(id, pageable).orElse(null);
+        Product responseDto = productService.findById(id).orElse(null);
         model.addAttribute("responseDto", responseDto);
         Set<String> sizeSet = new HashSet<>();
         Set<String> colorSet = new HashSet<>();
-        for (ProductVariantAdminBasicInfoViewModel pvBasicInfo : responseDto.getVariantPage().toList()) {
+        for (ProductVariant pvBasicInfo : responseDto.getVariants()) {
             sizeSet.add(pvBasicInfo.getSize());
             colorSet.add(pvBasicInfo.getColor());
         }
