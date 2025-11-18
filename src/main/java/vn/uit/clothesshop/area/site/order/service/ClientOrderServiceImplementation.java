@@ -71,7 +71,7 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
             if(cart.getAmount()>pv.getStockQuantity()) {
                 throw new OrderException("Invalid quantity stock");
             }
-            OrderDetail orderDetail = new OrderDetail(order, pv, cart.getAmount());
+            OrderDetail orderDetail = new OrderDetail(order, pv, cart.getAmount(), pv.getPriceCents());
             orderDetails.add(orderDetail);
             order.setProductPrice(order.getProductPrice()+pv.getPriceCents()*cart.getAmount());
        }
@@ -99,7 +99,7 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
        }
        order.setProductPrice(pv.getPriceCents()*request.getAmount());
        order=orderWritePort.save(order);
-       OrderDetail orderDetail = new OrderDetail(order, pv, request.getAmount());
+       OrderDetail orderDetail = new OrderDetail(order, pv, request.getAmount(), pv.getPriceCents());
        orderDetailWritePort.save(orderDetail);
        return order;
     }

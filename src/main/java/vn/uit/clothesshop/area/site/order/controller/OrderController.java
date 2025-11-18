@@ -52,14 +52,14 @@ public class OrderController {
         return "client/order/show";
     }
 
-    @PostMapping("/cart")
+    @PostMapping("/confirm/cart")
     public String confirmOrderFromCart(final Model model, @ModelAttribute("request_info") OrderRequestInfo requestInfo) {
         User user = userService.getUserFromAuth();
         if(user==null) {
             return "redirect:/login";
         }
         clientOrderService.createOrderFromCart(user.getId(), requestInfo);
-        return "";
+        return "redirect:/";
     }
 
     @PostMapping("/single_product/{productVariantId}/{amount}")

@@ -24,22 +24,29 @@ public class OrderDetail {
     private ProductVariant productVariant;
 
     private int amount = 0;
+    private int unitPrice;
 
     public OrderDetail(
             final Order order,
             final ProductVariant productVariant,
-            final int amount) {
+            final int amount, final int unitPrice) {
         this.id = new OrderDetailId(order.getId(), productVariant.getId());
         this.order = order;
         this.productVariant = productVariant;
         this.amount = amount;
+        this.unitPrice = unitPrice;
     }
     public ProductVariant getProductVariant() {
         return this.productVariant;
     }
-    OrderDetail() {
+    public OrderDetail() {
     }
-
+    public int getUnitPrice() {
+        return this.unitPrice;
+    } 
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
+    }
     public OrderDetailId getId() {
         return this.id;
     }
