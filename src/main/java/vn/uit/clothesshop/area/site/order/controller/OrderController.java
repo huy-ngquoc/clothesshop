@@ -128,7 +128,7 @@ public class OrderController {
         }
         Page<Order> orders = clientOrderService.getOrders(user.getId(),pageNumber,10);
         model.addAttribute("orders", orders);
-        return "";
+        return "client/homepage/orderhistory";
     } 
 
     @GetMapping("/detail/{orderId}")
