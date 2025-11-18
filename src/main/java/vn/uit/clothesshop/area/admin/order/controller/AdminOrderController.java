@@ -51,7 +51,7 @@ public class AdminOrderController {
             return "redirect:/login";
         }
         adminOrderService.cancelOrder(user.getId(), orderId);
-        return "";
+        return "redirect:/admin/order/"+orderId;
     } 
 
     @PostMapping("/order/ship/{orderId}") 
@@ -61,7 +61,7 @@ public class AdminOrderController {
             return "redirect:/login";
         }
         adminOrderService.shipOrder(user.getId(), orderId);
-        return "";
+        return "redirect:/admin/order/"+orderId;
     }
 
 }
