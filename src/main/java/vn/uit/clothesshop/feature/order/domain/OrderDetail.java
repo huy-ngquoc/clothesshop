@@ -34,7 +34,9 @@ public class OrderDetail {
         this.productVariant = productVariant;
         this.amount = amount;
     }
-
+    public ProductVariant getProductVariant() {
+        return this.productVariant;
+    }
     OrderDetail() {
     }
 

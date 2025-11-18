@@ -120,6 +120,10 @@ public class ProductVariant implements Comparable<ProductVariant> {
         this.stockQuantity = stockQuantity;
     }
 
+    public Product getProduct() {
+        return this.product;
+    }
+
     public int getPriceCents() {
         return this.priceCents;
     }

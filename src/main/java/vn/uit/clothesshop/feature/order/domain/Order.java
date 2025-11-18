@@ -53,26 +53,41 @@ public class Order {
     @Column(nullable = false)
     private Instant updatedAt = Instant.now();
 
+    private String address;
+    private String phoneNumber;
     public Order(
             final EOrderStatus status,
             final long productPrice,
             final long shippingFee,
             final long total,
-            final User user) {
+            final User user, final String address, String phoneNumber) {
         this.status = status;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
         this.total = total;
         this.user = user;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
     }
 
-    Order() {
+    public Order() {
     }
 
     public long getId() {
         return id;
     }
-
+    public String getAddress() {
+        return this.address;
+    } 
+    public String getPhoneNumber() {
+        return this.phoneNumber;
+    } 
+    public void setAddress(String address) {
+        this.address = address;
+    } 
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber= phoneNumber;
+    }
     public EOrderStatus getStatus() {
         return status;
     }
