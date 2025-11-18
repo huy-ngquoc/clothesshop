@@ -46,10 +46,10 @@ public class OrderController {
             return "redirect:/login";
         }
         List<Cart> carts = cartRepository.findByUser_Id(user.getId());
-        model.addAttribute("list_items", carts);
+        model.addAttribute("cartItems", carts);
         OrderRequestInfo requestInfo = new OrderRequestInfo();
         model.addAttribute("request_info", requestInfo);
-        return "";
+        return "client/order/show";
     }
 
     @PostMapping("/cart")

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core" version="2.0">
+    
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Order Information | Aurora Apparel</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <link href="/client/css/order.css" rel="stylesheet"/>
+        
+    </head>
+
+    <body>
+        <nav class="navbar navbar-expand-lg bg-white border-bottom sticky-top" aria-label="Main navigation">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="#" title="Aurora Apparel">Aurora Apparel</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMain"
+                    aria-controls="navMain" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMain">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Shop</a></li>
+                    </ul>
+                    <c:if test="${not empty user}">
+                        <div class="dropdown me-3">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="${user.avatarFileName != null ? '/img/avatars/' + user.avatarFileName : '/img/default-avatar.png'}"
+                                    alt="User Avatar" width="40" height="40" class="rounded-circle" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                                <li class="px-3 py-2">
+                                    <span class="fw-semibold d-block">${user.fullName}</span>
+                                    <small class="text-muted">${user.email}</small>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider" />
+                                </li>
+                                <li><a class="dropdown-item text-danger" href="/auth/logout">Log out</a></li>
+                            </ul>
+                        </div>
+                    </c:if>
+                    <a class="btn btn-outline-dark" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container main-content">
+            <h1 class="display-6 fw-bold mb-1">Checkout</h1>
+            <p class="text-secondary mb-4">Please enter your shipping details to complete the order.</p>
+            
+            <div class="row g-4">
+                
+                <div class="col-lg-8">
+                    <div class="card p-4 shadow-sm">
+                        <h2 class="h4 mb-4">1. Shipping Information</h2>
+                        
+                        <form action="/place-order" method="POST">
+                            
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fullName" name="fullName" required="required" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="address" class="form-label">Shipping Address <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="address" name="address" placeholder="Street, Ward, District, City" required="required" />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="phoneNumber" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required="required" pattern="[0-9]{10,11}" title="Phone number must be 10 or 11 digits."/>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label for="notes" class="form-label">Order Notes (Optional)</label>
+                                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                            </div>
+                            
+                            <hr class="my-4" />
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-dark btn-lg">Place Order &amp; Pay</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="filter-card p-3">
+                        <h2 class="h5 fw-bold mb-3">2. Order Summary</h2>
+                        
+                        <div class="mb-3">
+                            <c:if test="${not empty cartItems}">
+                                <c:forEach var="item" items="${cartItems}">
+                                    <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
+                                        <img src="/img/${item.imageFilePath}" alt="${item.productName}" class="cart-item-image me-3" />
+                                        
+                                        <div class="flex-grow-1">
+                                            <span class="d-block fw-semibold small">${item.productName}</span>
+                                            <span class="d-block text-muted small">Qty: ${item.quantity} x ${item.unitPrice} VND</span>
+                                        </div>
+                                        
+                                        <span class="fw-semibold small">
+                                            ${item.quantity * item.unitPrice} VND
+                                        </span>
+                                    </div>
+                                    <c:set var="subtotal" value="${subtotal + (item.quantity * item.unitPrice)}" />
+                                </c:forEach>
+                            </c:if>
+                        </div>
+                        
+                        <ul class="list-unstyled small mb-3 pt-2 border-top">
+                            <li>Subtotal: <span class="float-end fw-semibold">${subtotal} VND</span></li>
+                            
+                            <c:set var="shippingFee" value="30000" />
+                            <li>Shipping Fee: <span class="float-end">${shippingFee} VND</span></li>
+                        </ul>
+                        
+                        <c:set var="finalTotal" value="${subtotal + shippingFee}" />
+                        <div class="d-flex justify-content-between fw-bold text-dark h5 pt-2 border-top">
+                            <span>TOTAL:</span>
+                            <span>${finalTotal} VND</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <footer class="py-5 border-top">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-12 col-md-6">
+                        <h3 class="h6">Aurora Apparel</h3>
+                        <p class="text-secondary mb-0">Modern pieces that move with you.</p>
+                    </div>
+                    <div class="col-12 col-md-6 text-md-end">
+                        <p class="small text-secondary mb-0">© <span id="year">2025</span> Aurora Apparel. All rights
+                            reserved.</p>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+
+    </html>
+
+</jsp:root>
