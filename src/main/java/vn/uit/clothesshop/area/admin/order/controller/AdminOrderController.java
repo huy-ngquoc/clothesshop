@@ -28,7 +28,7 @@ public class AdminOrderController {
     public String getOrderPage(final Model model, @RequestParam(defaultValue="0") int pageNumber) {
         Page<Order> orders = adminOrderService.getOrder(pageNumber, 10);
         model.addAttribute("orders", orders);
-        return "";
+        return "admin/order/show";
     }
 
     @GetMapping("/order/{orderId}")
