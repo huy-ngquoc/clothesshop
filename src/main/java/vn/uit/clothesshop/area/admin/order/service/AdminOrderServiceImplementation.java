@@ -36,6 +36,7 @@ public class AdminOrderServiceImplementation implements AdminOrderService {
     private final OrderDetailReadPort orderDetailReadPort;
     private final ProductVariantWritePort productVariantWritePort;
     private final ProductWritePort productWritePort;
+    
     public AdminOrderServiceImplementation(UserReadPort userReadPort, OrderReadPort orderReadPort, OrderWritePort orderWritePort,
     OrderDetailReadPort orderDetailReadPort,ProductVariantWritePort productVariantWritePort, ProductWritePort productWritePort
     ) {
@@ -102,6 +103,10 @@ public class AdminOrderServiceImplementation implements AdminOrderService {
     @Override
     public Order getOrderById(long orderId) {
        return orderReadPort.findById(orderId).orElseThrow(()->new OrderException("Order not found"));
+    }
+    @Override
+    public List<OrderDetail> getOrderDetails(long orderId) {
+        return orderDetailReadPort.findByOrderId(orderId);
     }
     
 }

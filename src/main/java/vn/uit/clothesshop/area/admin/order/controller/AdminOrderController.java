@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.area.admin.order.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.uit.clothesshop.area.admin.order.service.AdminOrderService;
 import vn.uit.clothesshop.feature.order.domain.Order;
+import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 import vn.uit.clothesshop.feature.user.domain.User;
 import vn.uit.clothesshop.feature.user.service.UserService;
 
@@ -35,7 +38,9 @@ public class AdminOrderController {
     public String getSingleOrder(final Model model, @PathVariable long orderId) {
         Order order = adminOrderService.getOrderById(orderId);
         model.addAttribute("order", order);
-        return "";
+        List<OrderDetail> listDetails = adminOrderService.getOrderDetails(orderId);
+        model.addAttribute("order_details",listDetails);
+        return "admin/order/detail";
     } 
 
     @PostMapping("/order/cancel/{orderId}")
