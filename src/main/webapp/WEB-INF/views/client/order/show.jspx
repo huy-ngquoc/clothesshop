@@ -87,7 +87,7 @@
                             <hr class="my-4" />
                             
                             <div class="d-grid">
-                                <button type="submit" class="btn btn-dark btn-lg">Place Order &amp; Pay</button>
+                                <button type="submit" class="btn btn-dark btn-lg">Place Order and Pay</button>
                             </div>
                         </form>
                     </div>
@@ -101,18 +101,18 @@
                             <c:if test="${not empty cartItems}">
                                 <c:forEach var="item" items="${cartItems}">
                                     <div class="d-flex align-items-center mb-3 pb-2 border-bottom">
-                                        <img src="/img/${item.imageFilePath}" alt="${item.productName}" class="cart-item-image me-3" />
+                                        <img src="/img/productvariant/${item.productVariant.image}" alt="${item.productVariant.name}" class="cart-item-image me-3" />
                                         
                                         <div class="flex-grow-1">
-                                            <span class="d-block fw-semibold small">${item.productName}</span>
-                                            <span class="d-block text-muted small">Qty: ${item.quantity} x ${item.unitPrice} VND</span>
+                                            <span class="d-block fw-semibold small">${item.productVariant.name}</span>
+                                            <span class="d-block text-muted small">Qty: ${item.productVariant.stockQuantity} x ${item.productVariant.priceCents} VND</span>
                                         </div>
                                         
                                         <span class="fw-semibold small">
-                                            ${item.quantity * item.unitPrice} VND
+                                            ${item.productVariant.stockQuantity * item.productVariant.priceCents} VND
                                         </span>
                                     </div>
-                                    <c:set var="subtotal" value="${subtotal + (item.quantity * item.unitPrice)}" />
+                                    <c:set var="subtotal" value="${subtotal + (item.productVariant.stockQuantity * item.productVariant.priceCents)}" />
                                 </c:forEach>
                             </c:if>
                         </div>
