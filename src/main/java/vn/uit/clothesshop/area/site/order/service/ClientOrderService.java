@@ -15,6 +15,6 @@ public interface ClientOrderService {
     public Order createSingleOrder(long userId,SingleOrderRequest request);
     public Order cancelOrder(long orderId, long userId);
     public Order confirmReceiveOrder(long orderId, long userId);
-    public Page<Order> getOrders(long userId);
+    public Page<Order> getOrders(long userId, int pageNumber, int size);
     public Order findOrderById(long userId, long orderId);
 }

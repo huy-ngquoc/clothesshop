@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -172,15 +174,19 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
     }
 
     @Override
-    public Page<Order> getOrders(long userId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getOrders'");
+    public Page<Order> getOrders(long userId, int pageNumber, int size) {
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return orderReadPort.findAllByUserId(userId, pageable);
     }
 
     @Override
     public Order findOrderById(long userId, long orderId) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'findOrderById'");
+        Order order = orderReadPort.findById(orderId).orElseThrow(()->new OrderException("Order not found"));
+        if(order.getUserId()!=userId) {
+            throw new OrderException("You can not access this order");
+        }
+        return order;
+        
     }
     
 }

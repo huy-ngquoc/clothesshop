@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
+import org.springframework.data.domain.Page;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.area.shared.exception.OrderException;
@@ -20,6 +22,7 @@ import vn.uit.clothesshop.area.site.order.presentation.SingleOrderRequest;
 import vn.uit.clothesshop.area.site.order.service.ClientOrderService;
 import vn.uit.clothesshop.feature.cart.domain.Cart;
 import vn.uit.clothesshop.feature.cart.infra.jpa.repository.CartRepository;
+import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.feature.user.domain.User;
@@ -114,6 +117,28 @@ public class OrderController {
         catch(OrderException o) {
             return "";
         }
+        return "";
+    }
+
+    @GetMapping("/history")
+    public String getOrderHistory(final Model model, @RequestParam(defaultValue="0") int pageNumber) {
+        User user = userService.getUserFromAuth();
+        if(user==null) {
+            return "redirect:/login";
+        }
+        Page<Order> orders = clientOrderService.getOrders(user.getId(),pageNumber,10);
+        model.addAttribute("orders", orders);
+        return "";
+    } 
+
+    @GetMapping("/detail/{orderId}")
+    public String getOrderDetail(final Model model, @PathVariable long orderId) {
+        User user = userService.getUserFromAuth();
+        if(user==null) {
+            return "redirect:/login";
+        }
+        Order order = clientOrderService.findOrderById(user.getId(), orderId);
+        model.addAttribute("order",order);
         return "";
     }
 
