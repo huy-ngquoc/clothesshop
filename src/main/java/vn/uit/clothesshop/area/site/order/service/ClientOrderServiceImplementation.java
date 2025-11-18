@@ -112,12 +112,13 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
     public Order cancelOrder(long orderId, long userId) {
         Order order = orderReadPort.findById(orderId).orElseThrow(()->new NotFoundException("Order not found"));
         if(order.getUserId()!=userId) {
+           
             throw new OrderException("You can not cancel this order");
         } 
-        if(order.getStatus()!=EOrderStatus.PROGRESSING||order.getStatus()!=EOrderStatus.SHIPPING) {
+        if(order.getStatus()!=EOrderStatus.PROGRESSING&&order.getStatus()!=EOrderStatus.SHIPPING) {
             throw new OrderException("You can not cancel this order");
         }
-        order.setStatus(EOrderStatus.CANCELED);
+        
         if(order.getStatus()==EOrderStatus.SHIPPING) {
             List<OrderDetail> listDetails = orderDetailReadPort.findByOrderId(orderId);
             List<ProductVariant> listProductVariants=  new ArrayList<>();
@@ -137,12 +138,13 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
             productVariantWritePort.saveAll(listProductVariants);
 
         }
+        order.setStatus(EOrderStatus.CANCELED);
         return orderWritePort.save(order);
 
     }
 
     @Override
-    
+    @Transactional
     public Order confirmReceiveOrder(long orderId, long userId) {
         Order order = orderReadPort.findById(orderId).orElseThrow(()->new NotFoundException("Order not found"));
         if(order.getUserId()!=userId) {
@@ -187,6 +189,15 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
         }
         return order;
         
+    }
+
+    @Override
+    public List<OrderDetail> findDetailsByOrderId(long userId, long orderId) {
+        List<OrderDetail> res= orderDetailReadPort.findByOrderId(orderId);
+        if(res.get(0).getOrder().getUserId()!=userId) {
+            throw new OrderException("You can not access this order");
+        } 
+        return res;
     }
     
 }

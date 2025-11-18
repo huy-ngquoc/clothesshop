@@ -76,4 +76,7 @@ public class OrderDetail {
     public void setAmount(final int amount) {
         this.amount = amount;
     }
+    public Order getOrder() {
+        return this.order;
+    }
 }

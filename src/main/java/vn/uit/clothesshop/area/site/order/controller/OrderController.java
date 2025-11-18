@@ -23,6 +23,7 @@ import vn.uit.clothesshop.area.site.order.service.ClientOrderService;
 import vn.uit.clothesshop.feature.cart.domain.Cart;
 import vn.uit.clothesshop.feature.cart.infra.jpa.repository.CartRepository;
 import vn.uit.clothesshop.feature.order.domain.Order;
+import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.feature.user.domain.User;
@@ -98,12 +99,13 @@ public class OrderController {
             return "redirect:/login";
         }
         try {
-            clientOrderService.cancelOrder(user.getId(), orderId);
+            clientOrderService.cancelOrder( orderId, user.getId());
         }
         catch(OrderException o) {
-            return "";
+            o.printStackTrace();
+            return "redirect:/order/detail/"+orderId;
         } 
-        return "";
+        return "redirect:/order/detail/"+orderId;
     }
     @PostMapping("/received_order/{orderId}")
     public String receivedOrder(final Model model, @PathVariable long orderId) {
@@ -112,12 +114,13 @@ public class OrderController {
             return "redirect:/login";
         }
         try {
-            clientOrderService.confirmReceiveOrder(user.getId(), orderId);
+            clientOrderService.confirmReceiveOrder( orderId, user.getId());
         } 
         catch(OrderException o) {
-            return "";
+            o.printStackTrace();
+            return "redirect:/order/detail/"+orderId;
         }
-        return "";
+        return "redirect:/order/detail/"+orderId;
     }
 
     @GetMapping("/history")
@@ -139,7 +142,9 @@ public class OrderController {
         }
         Order order = clientOrderService.findOrderById(user.getId(), orderId);
         model.addAttribute("order",order);
-        return "";
+        List<OrderDetail> listDetails = clientOrderService.findDetailsByOrderId(user.getId(), orderId);
+        model.addAttribute("order_details", listDetails);
+        return "client/homepage/orderdetail";
     }
 
 }
