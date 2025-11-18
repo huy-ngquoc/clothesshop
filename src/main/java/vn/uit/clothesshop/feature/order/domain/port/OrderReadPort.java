@@ -22,4 +22,6 @@ public interface OrderReadPort {
     Optional<Order> findById(final long id);
 
     boolean existsById(final long id);
+    public Page<Order> findAllByUserId(long userId, Pageable pageable);
+    public Order findOrderDetailOfUser(long userId, long orderId);
 }

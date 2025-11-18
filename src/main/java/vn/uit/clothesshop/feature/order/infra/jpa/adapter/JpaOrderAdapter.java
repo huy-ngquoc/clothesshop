@@ -10,6 +10,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import vn.uit.clothesshop.area.shared.exception.OrderException;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
@@ -61,5 +62,19 @@ class JpaOrderAdapter implements OrderReadPort, OrderWritePort {
     @Override
     public void delete(@NonNull Order order) {
         this.repo.delete(order);
+    }
+
+    @Override
+    public Page<Order> findAllByUserId(long userId, Pageable pageable) {
+        return this.repo.findByUser_Id(userId, pageable);
+    }
+
+    @Override
+    public Order findOrderDetailOfUser(long userId, long orderId) {
+       Order order = this.repo.findById(orderId).orElseThrow(()->new OrderException("Order not found"));
+       if(order.getUserId()!=userId) {
+        throw new OrderException("You can not access this order");
+       }
+       return order;
     }
 }

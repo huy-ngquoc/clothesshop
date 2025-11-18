@@ -253,11 +253,12 @@ var PRODUCT = {
                 });
             });
         }
+         let productVariant =0;
         function logicFroChooseVariant() {
     console.log("Function called");
   const checkboxes = document.querySelectorAll(".variant-checkbox");
   const hiddenInput = document.getElementById("selectedVariant");
-
+ 
   checkboxes.forEach(cb => {
     cb.addEventListener("change", function() {
       if (this.checked) {
@@ -269,6 +270,7 @@ var PRODUCT = {
         
         const elementId = cb.id;
         const variantId = parseInt(elementId.substring(7));
+        productVariant=variantId;
         const variantInput = document.getElementById("pvId");
         variantInput.value = variantId;
 
@@ -286,5 +288,14 @@ function listenToCartChange() {
         // ===== Init =====
         attachQtyEvents();
         logicFroChooseVariant();
-        document.getElementById("test").innerHTML="Alo";
+        document.getElementById("btnBuyNow").addEventListener("click",()=>{
+            if(productVariant==0) {
+                alert("Please select variant");
+                return;
+            }
+            else {
+                console.log(productVariant);
+                window.location.href="http://localhost:8080/order/single_product/"+productVariant+"/1";
+            }
+        })
  

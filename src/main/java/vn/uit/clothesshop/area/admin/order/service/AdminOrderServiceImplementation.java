@@ -1,8 +1,12 @@
 package vn.uit.clothesshop.area.admin.order.service;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -87,6 +91,17 @@ public class AdminOrderServiceImplementation implements AdminOrderService {
         }
         order.setStatus(EOrderStatus.CANCELED);
         return orderWritePort.save(order);
+    }
+    @Override
+    public Page<Order> getOrder(int pageNumber, int size) {
+       Pageable pageable =PageRequest.of(pageNumber, size);
+       return orderReadPort.findAll(null, pageable);
+
+
+    }
+    @Override
+    public Order getOrderById(long orderId) {
+       return orderReadPort.findById(orderId).orElseThrow(()->new OrderException("Order not found"));
     }
     
 }

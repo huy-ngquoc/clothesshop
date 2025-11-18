@@ -3,6 +3,7 @@ package vn.uit.clothesshop.area.site.order.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
@@ -168,6 +169,18 @@ public class ClientOrderServiceImplementation implements ClientOrderService {
         return orderWritePort.save(order);
 
 
+    }
+
+    @Override
+    public Page<Order> getOrders(long userId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getOrders'");
+    }
+
+    @Override
+    public Order findOrderById(long userId, long orderId) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'findOrderById'");
     }
     
 }

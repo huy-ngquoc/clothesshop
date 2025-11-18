@@ -2,6 +2,8 @@ package vn.uit.clothesshop.area.site.order.service;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import vn.uit.clothesshop.area.site.order.presentation.OrderRequestInfo;
 import vn.uit.clothesshop.area.site.order.presentation.SingleOrderRequest;
 import vn.uit.clothesshop.feature.cart.domain.Cart;
@@ -13,4 +15,6 @@ public interface ClientOrderService {
     public Order createSingleOrder(long userId,SingleOrderRequest request);
     public Order cancelOrder(long orderId, long userId);
     public Order confirmReceiveOrder(long orderId, long userId);
+    public Page<Order> getOrders(long userId);
+    public Order findOrderById(long userId, long orderId);
 }

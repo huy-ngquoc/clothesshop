@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.area.site.order.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Authentication;
@@ -62,7 +63,7 @@ public class OrderController {
         return "redirect:/";
     }
 
-    @PostMapping("/single_product/{productVariantId}/{amount}")
+    @GetMapping("/single_product/{productVariantId}/{amount}")
     public String getSingleOrderPage(final Model model, @PathVariable long productVariantId, @PathVariable int amount) {
         User user = userService.getUserFromAuth();
         if(user==null) {
@@ -70,11 +71,12 @@ public class OrderController {
         }
         
         ProductVariant pv = productVariantReadPort.findById(productVariantId).orElseThrow(()->new NotFoundException("Product variant not found"));
-        model.addAttribute("product_variant", pv);
-        model.addAttribute("amount", amount);
+        List<Cart> listTempCarts = new ArrayList<>();
+        listTempCarts.add(new Cart(user, pv, amount));
+        model.addAttribute("cartItems", listTempCarts);
         SingleOrderRequest request = new SingleOrderRequest("", "", productVariantId, amount);
         model.addAttribute("request_info", request);
-        return "";
+        return "client/order/show";
     }
     @PostMapping("/single_product_confirm")
     public String confirmSingleOrderPage(final Model model,@ModelAttribute("request_info") SingleOrderRequest request) {
