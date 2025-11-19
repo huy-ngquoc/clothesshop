@@ -20,7 +20,7 @@
                     <li class="list-group-item">Create at: ${order.createdAt}</li>
                     <li class="list-group-item">Address: ${order.address}</li>
                     <li class="list-group-item">Phone number: ${order.phoneNumber}</li>
-                    
+                    <li class="list-group-item">Email: ${order.user.email}</li>
                 </ol>
                 <c:choose>
                 <c:when test="${order.status == 'PROGRESSING'}">
