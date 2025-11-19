@@ -26,5 +26,6 @@ public interface OrderDetailReadPort {
 
     boolean existsById(final OrderDetailId id);
     public List<OrderDetail> findByOrderId(long orderId);
+    public List<OrderDetail> findByOrderIdIn(List<Long> orderIds);
 }
 

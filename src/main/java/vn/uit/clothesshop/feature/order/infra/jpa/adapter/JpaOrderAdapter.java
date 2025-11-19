@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.feature.order.infra.jpa.adapter;
 
+import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -12,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import vn.uit.clothesshop.area.shared.exception.OrderException;
 import vn.uit.clothesshop.feature.order.domain.Order;
+import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
 import vn.uit.clothesshop.feature.order.infra.jpa.repository.OrderRepository;
@@ -76,5 +79,10 @@ class JpaOrderAdapter implements OrderReadPort, OrderWritePort {
         throw new OrderException("You can not access this order");
        }
        return order;
+    }
+
+    @Override
+    public List<Order> findByStatusAndCreatedAtBetween(EOrderStatus status, Instant from, Instant to) {
+       return this.repo.findByStatusAndCreatedAtBetween(status, from, to);
     }
 }

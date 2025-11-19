@@ -54,6 +54,11 @@ public class OrderDetailAdapter implements OrderDetailReadPort, OrderDetailWrite
     public List<OrderDetail> findByOrderId(long orderId) {
         return orderDetailRepo.findByOrder_Id(orderId);
     }
+
+    @Override
+    public List<OrderDetail> findByOrderIdIn(List<Long> orderIds) {
+        return this.orderDetailRepo.findByOrder_IdIn(orderIds);
+    }
     
     
 }

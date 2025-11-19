@@ -14,4 +14,5 @@ import vn.uit.clothesshop.feature.order.domain.id.OrderDetailId;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, OrderDetailId>, JpaSpecificationExecutor<OrderDetail> {
     public List<OrderDetail> findByOrder_Id(long orderId);
+    public List<OrderDetail> findByOrder_IdIn(List<Long> orderIds);
 }
