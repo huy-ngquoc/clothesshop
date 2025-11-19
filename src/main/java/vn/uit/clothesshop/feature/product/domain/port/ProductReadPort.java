@@ -39,7 +39,7 @@ public interface ProductReadPort {
     @NonNull
     default Map<Long, Product> findMapById(@NonNull Iterable<Long> ids) {
         final var products = this.findAllById(ids);
-        return products.stream()
-                .collect(Collectors.toMap(Product::getId, Function.identity()));
+        return products.stream().collect(
+                Collectors.toMap(Product::getId, Function.identity()));
     }
 }

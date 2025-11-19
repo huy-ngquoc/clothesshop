@@ -4,6 +4,8 @@ import java.time.Instant;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import org.springframework.security.core.GrantedAuthority;
+
 import jakarta.annotation.Nullable;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -26,9 +28,15 @@ import vn.uit.clothesshop.config.security.SecurityConfig;
 @FieldNameConstants
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
-    public enum Role {
+    public enum Role implements GrantedAuthority {
         USER,
         ADMIN,
+        ;
+
+        @Override
+        public final String getAuthority() {
+            return "ROLE_" + this.name();
+        }
     }
 
     public static final int MIN_LENGTH_USERNAME = 2;

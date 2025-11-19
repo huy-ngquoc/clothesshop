@@ -68,6 +68,7 @@ public class Order {
         this.user = user;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.total = this.shippingFee+this.productPrice;
     }
 
     public Order() {

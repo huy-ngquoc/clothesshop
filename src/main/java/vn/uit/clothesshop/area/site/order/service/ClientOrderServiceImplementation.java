@@ -4,7 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,8 +85,7 @@ class ClientOrderServiceImplementation implements ClientOrderService {
             if (cart.getAmount() > pv.getStockQuantity()) {
                 throw new OrderException("Invalid quantity stock");
             }
-
-            final var orderDetail = new OrderDetail(order, pv, pv.getPriceCents(), cart.getAmount());
+            OrderDetail orderDetail = new OrderDetail(order, pv, cart.getAmount(), pv.getPriceCents());
             orderDetails.add(orderDetail);
             order.setProductPrice(order.getProductPrice() + pv.getPriceCents() * cart.getAmount());
         }
@@ -111,13 +114,10 @@ class ClientOrderServiceImplementation implements ClientOrderService {
         if (pv.getStockQuantity() < request.getAmount()) {
             throw new OrderException("Not enough product");
         }
-
         order.setProductPrice(pv.getPriceCents() * request.getAmount());
         order = orderWritePort.save(order);
-
-        final var orderDetail = new OrderDetail(order, pv, pv.getPriceCents(), request.getAmount());
+        OrderDetail orderDetail = new OrderDetail(order, pv, request.getAmount(), pv.getPriceCents());
         orderDetailWritePort.save(orderDetail);
-
         return order;
     }
 
@@ -126,9 +126,9 @@ class ClientOrderServiceImplementation implements ClientOrderService {
     public void cancelOrder(long orderId, long userId) {
         Order order = orderReadPort.findById(orderId).orElseThrow(() -> new NotFoundException("Order not found"));
         if (order.getUserId() != userId) {
+
             throw new OrderException("You can not cancel this order");
         }
-
         if ((order.getStatus() == EOrderStatus.PROGRESSING) || (order.getStatus() == EOrderStatus.SHIPPING)) {
             throw new OrderException("You can not cancel this order");
         }
@@ -231,13 +231,31 @@ class ClientOrderServiceImplementation implements ClientOrderService {
                 this.productVariantWritePort.save(productVariant);
                 this.productWritePort.save(product);
             }
-
             ++page;
             orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
         }
 
         order.setStatus(EOrderStatus.RECEIVED);
         orderWritePort.save(order);
+    }
+
+    @Override
+    public Page<Order> getOrders(long userId, int pageNumber, int size) {
+        Pageable pageable = PageRequest.of(pageNumber, size);
+        return orderReadPort.findAllByUserId(userId, pageable);
+    }
+
+    @Override
+    public Order findOrderById(long orderId) {
+        Order order = orderReadPort.findById(orderId).orElseThrow(() -> new OrderException("Order not found"));
+        return order;
+    }
+
+    @Override
+    public Page<OrderDetail> findDetailsByOrderId(
+            long orderId,
+            @NonNull Pageable pageable) {
+        return orderDetailReadPort.findAllByOrderId(orderId, pageable);
     }
 
 }

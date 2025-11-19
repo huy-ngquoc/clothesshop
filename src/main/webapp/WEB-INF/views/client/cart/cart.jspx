@@ -233,7 +233,7 @@
                                 </div>
 
                                 <div class="d-grid mt-3">
-                                    <a id="checkoutBtn" class="btn btn-dark btn-lg" href="#checkout"
+                                    <a id="checkoutBtn" class="btn btn-dark btn-lg" href="/order/cart"
                                         role="button">Proceed
                                         to Checkout</a>
                                 </div>

@@ -43,7 +43,7 @@ public interface ProductAdminService {
             @NonNull final Pageable pageable) {
         return this.findDetailById(id, null, pageable);
     }
-
+    public Optional<Product> findById(long id);
     Optional<ProductAdminDetailInfoViewModel> findDetailById(
             final long id,
             @Nullable final Specification<ProductVariant> spec,

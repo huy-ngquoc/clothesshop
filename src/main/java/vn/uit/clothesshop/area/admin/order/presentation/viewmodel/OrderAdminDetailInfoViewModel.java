@@ -1,5 +1,7 @@
 package vn.uit.clothesshop.area.admin.order.presentation.viewmodel;
 
+import java.time.Instant;
+
 import org.springframework.data.domain.Page;
 
 import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
@@ -9,18 +11,29 @@ public final class OrderAdminDetailInfoViewModel {
     private final long productPrice;
     private final long shippingFee;
     private final long total;
+    private final String address;
+    private final String phoneNumber;
+    private final Instant createdAt;
+    private final Instant updatedAt;
     private final Page<OrderDetailAdminViewModel> details;
 
     public OrderAdminDetailInfoViewModel(
             EOrderStatus status,
             long productPrice,
             long shippingFee,
-            long total,
+            String address,
+            String phoneNumber,
+            Instant createdAt,
+            Instant updatedAt,
             Page<OrderDetailAdminViewModel> details) {
         this.status = status;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
-        this.total = total;
+        this.total = productPrice + shippingFee;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
         this.details = details;
     }
 
@@ -38,6 +51,22 @@ public final class OrderAdminDetailInfoViewModel {
 
     public long getTotal() {
         return total;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
     public Page<OrderDetailAdminViewModel> getDetails() {

@@ -188,4 +188,9 @@ class DefaultProductAdminService implements ProductAdminService {
 
         this.productWritePort.delete(product);
     }
+
+    @Override
+    public Optional<Product> findById(long id) {
+        return productReadPort.findById(id);
+    }
 }

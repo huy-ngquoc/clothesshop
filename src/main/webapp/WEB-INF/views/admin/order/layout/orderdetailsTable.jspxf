@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<jsp:root version="2.0" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions" xmlns:form="http://www.springframework.org/tags/form"
+    xmlns:x="urn:jsptagdir:/WEB-INF/tags">
+
+    <jsp:directive.page contentType="application/xhtml+xml" />
+    <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
+
+    <c:choose>
+        <c:when test="${not viewModel.details.isEmpty()}">
+            <div class="mt-sm-5 mt-1">
+                <div class="row">
+                    <div class="col-12 mx-auto">
+                        <div class="d-md-flex justify-content-start align-items-center gap-5">
+                            <h2 class="mb-0">Order details table</h2>
+
+                        </div>
+                    </div>
+                </div>
+                <hr />
+
+                <div class="row">
+                    <div class="col-12 mx-auto">
+                        <table class="table table-responsive table-bordered table-hover">
+                            <thead class="text-center align-middle">
+                                <tr>
+                                    <th>
+                                        Product Variant Id
+                                    </th>
+                                    <th>
+                                        Product Variant Name
+                                    </th>
+                                    <th>
+                                        Unit Price
+                                    </th>
+                                    <th>
+                                        Amount
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <c:forEach var="detail" items="${viewModel.details.getContent()}">
+                                    <tr class="align-middle">
+                                        <td>${detail.getVariantId()}</td>
+                                        <td>${detail.getProductName()}</td>
+                                        <td>${detail.getUnitPrice()} VND</td>
+                                        <td>${detail.getAmount()}</td>
+                                    </tr>
+                                </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </c:when>
+        <!-- Nếu không có variant -->
+        <c:otherwise>
+            <p class="alert alert-warning">This product has no variants yet.</p>
+        </c:otherwise>
+    </c:choose>
+
+</jsp:root>

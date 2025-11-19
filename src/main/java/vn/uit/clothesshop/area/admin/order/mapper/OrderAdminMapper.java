@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminBasicInfoViewModel;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminDetailInfoViewModel;
+import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 import vn.uit.clothesshop.feature.product.domain.Product;
@@ -27,7 +28,9 @@ public class OrderAdminMapper {
                 order.getProductPrice(),
                 order.getShippingFee(),
                 order.getTotal(),
-                order.getStatus());
+                order.getStatus(),
+                order.getCreatedAt(),
+                order.getUpdatedAt());
     }
 
     @NonNull
@@ -39,7 +42,15 @@ public class OrderAdminMapper {
         final var detailViewModels = orderDetailsPage
                 .map(detail -> {
                     final var variant = variantMap.get(detail.getProductVariantId());
+                    if (variant == null) {
+                        throw new NotFoundException("Product variant not found");
+                    }
+
                     final var product = productMap.get(variant.getProductId());
+                    if (product == null) {
+                        throw new NotFoundException("Product not found");
+                    }
+
                     return this.orderDetailAdminMapper.toViewModel(detail, variant, product);
                 });
 
@@ -47,7 +58,10 @@ public class OrderAdminMapper {
                 order.getStatus(),
                 order.getProductPrice(),
                 order.getShippingFee(),
-                order.getTotal(),
+                order.getAddress(),
+                order.getPhoneNumber(),
+                order.getCreatedAt(),
+                order.getUpdatedAt(),
                 detailViewModels);
     }
 }

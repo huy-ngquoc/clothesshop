@@ -21,6 +21,12 @@ public interface OrderAdminService {
             @Nullable final Specification<Order> spec,
             @NonNull final Pageable pageable);
 
+    default OrderAdminDetailInfoViewModel findDetailById(
+            final long id,
+            @NonNull Pageable pageable) {
+        return this.findDetailById(id, null, pageable);
+    }
+
     OrderAdminDetailInfoViewModel findDetailById(
             final long id,
             @Nullable Specification<OrderDetail> spec,

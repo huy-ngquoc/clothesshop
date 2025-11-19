@@ -56,10 +56,10 @@
                         <img id="mainImage" src="/img/productvariant/${responseDto.image}"
                             class="img-fluid rounded gallery-main w-100" alt="Product main image" />
                         <div class="row g-2 mt-2">
-                            <c:forEach var="variant" items="${responseDto.variantList}">
+                            <c:forEach var="variant" items="${responseDto.variants}">
                                 <div class="col-3">
-                                    <img data-img="/img/productvariant/${variant.imageFilePath}"
-                                        class="img-fluid rounded thumb w-100" src="/img/${variant.imageFilePath}"
+                                    <img data-img="/img/productvariant/${variant.image}"
+                                        class="img-fluid rounded thumb w-100" src="/img/productvariant/${variant.image}"
                                         alt="Thumbnail 1" />
                                 </div>
                             </c:forEach>
@@ -84,7 +84,7 @@
 
                         <!-- Color -->
                         <div class="mb-3">
-                            <c:forEach var="variant" items="${responseDto.variantList}">
+                            <c:forEach var="variant" items="${responseDto.variants}">
                                 <div class="variant-item ">
                                     <label>
                                         <input type="checkbox" class="variant-checkbox" data-color="${variant.color}"
@@ -136,7 +136,7 @@
                                 </ul>
                             </div>
                             <div class="col-12 col-md-6">
-                                <h2 class="h6">Shipping &amp; Returns</h2>
+                                <h2 class="h6">Shipping and Returns</h2>
                                 <p class="text-secondary mb-0">Free shipping over $75. Easy 30-day returns.</p>
                             </div>
                         </div>
