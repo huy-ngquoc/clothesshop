@@ -19,6 +19,8 @@ public class OrderDetailAdminMapper {
                 product.getName(),
                 productVariant.getId(),
                 productVariant.getColor(),
-                productVariant.getSize());
+                productVariant.getSize(),
+                orderDetail.getUnitPrice(),
+                orderDetail.getAmount());
     }
 }

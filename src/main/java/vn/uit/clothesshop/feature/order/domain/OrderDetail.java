@@ -37,6 +37,7 @@ public class OrderDetail {
         this.productVariant = productVariant;
         this.unitPrice = unitPrice;
         this.amount = amount;
+        this.unitPrice = unitPrice;
     }
 
     OrderDetail() {
@@ -82,5 +83,9 @@ public class OrderDetail {
 
     public void setUnitPrice(int unitPrice) {
         this.unitPrice = unitPrice;
+    }
+
+    public Order getOrder() {
+        return this.order;
     }
 }
