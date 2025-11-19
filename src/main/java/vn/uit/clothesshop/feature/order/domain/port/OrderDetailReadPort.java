@@ -9,7 +9,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 
-import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 import vn.uit.clothesshop.feature.order.domain.id.OrderDetailId;
 
@@ -22,9 +21,18 @@ public interface OrderDetailReadPort {
             @Nullable final Specification<OrderDetail> spec,
             @NonNull final Pageable pageable);
 
-    Optional<OrderDetail> findById(final OrderDetailId id);
+    Optional<OrderDetail> findById(@NonNull final OrderDetailId id);
 
-    boolean existsById(final OrderDetailId id);
-    public List<OrderDetail> findByOrderId(long orderId);
+    boolean existsById(@NonNull final OrderDetailId id);
+
+    default Page<OrderDetail> findAllByOrderId(
+            long orderId,
+            @NonNull Pageable pageable) {
+        return this.findAllByOrderId(orderId, null, pageable);
+    }
+
+    Page<OrderDetail> findAllByOrderId(
+            long orderId,
+            @Nullable Specification<OrderDetail> spec,
+            @NonNull Pageable pageable);
 }
-

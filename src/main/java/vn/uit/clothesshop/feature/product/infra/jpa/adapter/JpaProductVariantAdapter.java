@@ -29,7 +29,6 @@ class JpaProductVariantAdapter implements ProductVariantReadPort, ProductVariant
     }
 
     @Override
-    @Transactional(readOnly = true)
     @NonNull
     public Page<ProductVariant> findAll(
             @Nullable Specification<ProductVariant> spec,
@@ -38,43 +37,42 @@ class JpaProductVariantAdapter implements ProductVariantReadPort, ProductVariant
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @NonNull
+    public List<ProductVariant> findAllById(@NonNull final Iterable<Long> ids) {
+        return this.repo.findAllById(ids);
+    }
+
+    @Override
     public Optional<ProductVariant> findById(final long id) {
         return this.repo.findById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ProductPriceBound findPriceBoundByProductId(long productId) {
         return this.repo.findPriceBoundByProductId(productId);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ProductVariantColorCount> countGroupedByColor() {
         return this.repo.countGroupedByColor();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<ProductVariantSizeCount> countGroupedBySize() {
         return this.repo.countGroupedBySize();
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Long> getProductIdByColor(List<String> listColor) {
         return this.repo.findByColorIn(listColor);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Long> getProductIdBySize(List<String> listSize) {
         return this.repo.findBySizeIn(listSize);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public Optional<Long> findProductIdById(final long id) {
         return this.repo.findProductIdById(id);
     }

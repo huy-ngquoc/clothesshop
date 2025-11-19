@@ -28,8 +28,8 @@ public class ProductVariant implements Comparable<ProductVariant> {
     private Product product = new Product();
 
     @NotBlank
-    @Size(max = MAX_LENGTH_COLOR)
     private String color = "";
+    @Size(max = MAX_LENGTH_COLOR)
 
     @NotBlank
     @Size(max = MAX_LENGTH_SIZE)

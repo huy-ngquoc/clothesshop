@@ -23,21 +23,27 @@ public class OrderDetail {
     @MapsId(OrderDetailId.Fields.productVariantId)
     private ProductVariant productVariant;
 
+    private int unitPrice = 0;
+
     private int amount = 0;
 
     public OrderDetail(
             final Order order,
             final ProductVariant productVariant,
+            final int unitPrice,
             final int amount) {
         this.id = new OrderDetailId(order.getId(), productVariant.getId());
         this.order = order;
         this.productVariant = productVariant;
+        this.unitPrice = unitPrice;
         this.amount = amount;
     }
+
+    OrderDetail() {
+    }
+
     public ProductVariant getProductVariant() {
         return this.productVariant;
-    }
-    OrderDetail() {
     }
 
     public OrderDetailId getId() {
@@ -68,5 +74,13 @@ public class OrderDetail {
 
     public void setAmount(final int amount) {
         this.amount = amount;
+    }
+
+    public int getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
     }
 }
