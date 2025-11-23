@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.feature.order.infra.jpa.adapter;
 
+import java.time.Instant;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -10,10 +11,10 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import vn.uit.clothesshop.area.shared.exception.OrderException;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
+import vn.uit.clothesshop.feature.order.infra.jpa.projection.OrderTotalStatistic;
 import vn.uit.clothesshop.feature.order.infra.jpa.repository.OrderRepository;
 
 @Repository
@@ -51,6 +52,19 @@ class JpaOrderAdapter implements OrderReadPort, OrderWritePort {
         return this.repo.existsByIdAndUser_Id(id, userId);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Order> findAllByUserId(long userId, Pageable pageable) {
+        return this.repo.findByUser_Id(userId, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public OrderTotalStatistic getTotalStatistic(
+            @Nullable Specification<Order> spec) {
+        return this.repo.getTotalStatistic(spec);
+    }
+
     @Transactional
     @Override
     @NonNull
@@ -70,17 +84,4 @@ class JpaOrderAdapter implements OrderReadPort, OrderWritePort {
         this.repo.delete(order);
     }
 
-    @Override
-    public Page<Order> findAllByUserId(long userId, Pageable pageable) {
-        return this.repo.findByUser_Id(userId, pageable);
-    }
-
-    @Override
-    public Order findOrderDetailOfUser(long userId, long orderId) {
-        Order order = this.repo.findById(orderId).orElseThrow(() -> new OrderException("Order not found"));
-        if (order.getUserId() != userId) {
-            throw new OrderException("You can not access this order");
-        }
-        return order;
-    }
 }

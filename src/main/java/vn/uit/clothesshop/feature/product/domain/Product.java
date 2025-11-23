@@ -120,6 +120,9 @@ public class Product {
     public int getQuantity() {
         return this.quantity;
     }
+    public Category getCategory() {
+        return this.category;
+    }
 
     public void setQuantity(final int quantity) {
         this.quantity = quantity;

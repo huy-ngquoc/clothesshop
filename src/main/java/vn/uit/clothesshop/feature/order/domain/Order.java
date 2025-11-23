@@ -136,6 +136,9 @@ public class Order {
     public void setUser(final User user) {
         this.user = user;
     }
+    public User getUser() {
+        return this.user;
+    }
 
     void setId(final long id) {
         this.id = id;
