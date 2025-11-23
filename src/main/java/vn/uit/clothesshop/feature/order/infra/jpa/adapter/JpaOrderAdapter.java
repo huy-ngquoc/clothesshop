@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
-import vn.uit.clothesshop.feature.order.infra.jpa.projection.OrderTotalStatistic;
 import vn.uit.clothesshop.feature.order.infra.jpa.repository.OrderRepository;
 
 @Repository
@@ -60,9 +59,10 @@ class JpaOrderAdapter implements OrderReadPort, OrderWritePort {
 
     @Transactional(readOnly = true)
     @Override
-    public OrderTotalStatistic getTotalStatistic(
-            @Nullable Specification<Order> spec) {
-        return this.repo.getTotalStatistic(spec);
+    public long countByCreatedAtBetween(
+            @NonNull final Instant from,
+            @NonNull final Instant to) {
+        return this.repo.countByCreatedAtBetween(from, to);
     }
 
     @Transactional

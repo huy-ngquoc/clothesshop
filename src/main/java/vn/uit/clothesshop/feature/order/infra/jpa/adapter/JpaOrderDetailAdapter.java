@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.feature.order.infra.jpa.adapter;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -47,25 +48,6 @@ class JpaOrderDetailAdapter implements OrderDetailReadPort, OrderDetailWritePort
         return repo.existsById(id);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public Page<OrderDetail> findAllByOrderId(
-            long orderId,
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable) {
-        return repo.findAllByOrderId(
-                orderId, spec, pageable);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public Page<OrderDetail> findAllByOrderId(
-            @NonNull final Iterable<Long> orderIds,
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable) {
-        return this.repo.findAllByOrderId(orderIds, spec, pageable);
-    }
-
     @Transactional
     @Override
     @NonNull
@@ -99,17 +81,30 @@ class JpaOrderDetailAdapter implements OrderDetailReadPort, OrderDetailWritePort
 
     @Transactional(readOnly = true)
     @Override
-    public Page<OrderStatisticByProduct> getStatisticByProduct(
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable) {
-        return this.repo.getStatisticByProduct(spec, pageable);
+    public long getTotalProductPriceByOrderCreatedAtBetween(
+            @NonNull final Instant instantFrom,
+            @NonNull final Instant instantTo) {
+        return this.repo.getTotalProductPriceByOrderCreatedAtBetween(instantFrom, instantTo);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public Page<OrderStatisticByCategory> getStatisticByCategory(@Nullable Specification<OrderDetail> spec,
+    public Page<OrderStatisticByProduct> getStatisticByProductAndOrderByCreatedAtBetween(
+            @NonNull final Instant instantFrom,
+            @NonNull final Instant instantTo,
             @NonNull Pageable pageable) {
-        return this.repo.getStatisticByCategory(spec, pageable);
+        return this.repo.getStatisticByProductAndOrderByCreatedAtBetween(
+                instantFrom, instantTo, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<OrderStatisticByCategory> getStatisticByCategoryAndOrderByCreatedAtBetween(
+            @NonNull final Instant instantFrom,
+            @NonNull final Instant instantTo,
+            @NonNull Pageable pageable) {
+        return this.repo.getStatisticByCategoryAndOrderByCreatedAtBetween(
+                instantFrom, instantTo, pageable);
     }
 
 }

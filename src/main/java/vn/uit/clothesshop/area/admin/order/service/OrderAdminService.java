@@ -9,7 +9,6 @@ import org.springframework.lang.Nullable;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminBasicInfoViewModel;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminDetailInfoViewModel;
 import vn.uit.clothesshop.feature.order.domain.Order;
-import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 
 public interface OrderAdminService {
     default Page<OrderAdminBasicInfoViewModel> findAllBasic(
@@ -21,15 +20,8 @@ public interface OrderAdminService {
             @Nullable final Specification<Order> spec,
             @NonNull final Pageable pageable);
 
-    default OrderAdminDetailInfoViewModel findDetailById(
-            final long id,
-            @NonNull Pageable pageable) {
-        return this.findDetailById(id, null, pageable);
-    }
-
     OrderAdminDetailInfoViewModel findDetailById(
             final long id,
-            @Nullable Specification<OrderDetail> spec,
             @NonNull Pageable pageable);
 
     void shipOrder(long orderId);

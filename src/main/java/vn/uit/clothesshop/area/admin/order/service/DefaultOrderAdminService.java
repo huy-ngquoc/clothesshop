@@ -24,6 +24,7 @@ import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
 import vn.uit.clothesshop.feature.order.domain.port.OrderDetailReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
+import vn.uit.clothesshop.feature.order.infra.jpa.spec.OrderDetailSpecification;
 import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
@@ -75,14 +76,14 @@ public class DefaultOrderAdminService implements OrderAdminService {
     @Override
     public OrderAdminDetailInfoViewModel findDetailById(
             long id,
-            @Nullable Specification<OrderDetail> spec,
             @NonNull Pageable pageable) {
         final var order = this.orderReadPort.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order not found"));
 
         final var productPrice = this.orderDetailReadPort.getProductPriceByOrderId(order.getId());
 
-        final var orderDetailsPage = this.orderDetailReadPort.findAllByOrderId(id, spec, pageable);
+        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(id);
+        final var orderDetailsPage = this.orderDetailReadPort.findAll(orderDetailSpec, pageable);
         final var variantIds = orderDetailsPage.stream()
                 .map(OrderDetail::getProductVariantId)
                 .collect(Collectors.toSet());
@@ -112,7 +113,8 @@ public class DefaultOrderAdminService implements OrderAdminService {
         var page = 0;
         var size = PagingConstraint.MAX_SIZE;
 
-        var orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(orderId);
+        var orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         final var totalOrderDetails = (int) Math.min(orderDetailPage.getTotalElements(), Integer.MAX_VALUE);
 
         final var variantMap = HashMap.<Long, ProductVariant>newHashMap(totalOrderDetails);
@@ -158,7 +160,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
             }
 
             ++page;
-            orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+            orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         }
     }
 

@@ -15,6 +15,18 @@ public final class OrderDetailSpecification {
     private OrderDetailSpecification() {
     }
 
+    public static Specification<OrderDetail> orderIdEquals(
+            final long orderId) {
+        return (final Root<OrderDetail> root,
+                final CriteriaQuery<?> _,
+                final CriteriaBuilder criteriaBuilder) -> {
+            final var orderIdPath = root.<Order>get(OrderDetail.Fields.order)
+                    .<Long>get(Order.Fields.id);
+
+            return criteriaBuilder.equal(orderIdPath, orderId);
+        };
+    }
+
     public static Specification<OrderDetail> orderCreatedBetween(
             @Nullable final Instant from,
             @Nullable final Instant to) {

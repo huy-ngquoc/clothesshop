@@ -3,7 +3,7 @@ package vn.uit.clothesshop.feature.order.infra.jpa.projection;
 public interface OrderStatisticByCategory {
     long getCategoryId();
 
-    long getCategoryName();
+    String getCategoryName();
 
     long getAmount();
 

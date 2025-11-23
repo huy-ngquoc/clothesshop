@@ -25,6 +25,7 @@ import vn.uit.clothesshop.feature.order.domain.port.OrderDetailReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderDetailWritePort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
+import vn.uit.clothesshop.feature.order.infra.jpa.spec.OrderDetailSpecification;
 import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
@@ -133,7 +134,8 @@ class ClientOrderServiceImplementation implements ClientOrderService {
         var page = 0;
         var size = PagingConstraint.MAX_SIZE;
 
-        var orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(orderId);
+        var orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         final var totalOrderDetails = (int) Math.min(orderDetailPage.getTotalElements(), Integer.MAX_VALUE);
 
         final var variantMap = HashMap.<Long, ProductVariant>newHashMap(totalOrderDetails);
@@ -171,7 +173,7 @@ class ClientOrderServiceImplementation implements ClientOrderService {
             }
 
             ++page;
-            orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+            orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         }
 
         order.setStatus(EOrderStatus.CANCELED);
@@ -192,7 +194,8 @@ class ClientOrderServiceImplementation implements ClientOrderService {
         var page = 0;
         var size = PagingConstraint.MAX_SIZE;
 
-        var orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(orderId);
+        var orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         final var totalOrderDetails = (int) Math.min(orderDetailPage.getTotalElements(), Integer.MAX_VALUE);
 
         final var variantMap = HashMap.<Long, ProductVariant>newHashMap(totalOrderDetails);
@@ -229,7 +232,7 @@ class ClientOrderServiceImplementation implements ClientOrderService {
                 this.productWritePort.save(product);
             }
             ++page;
-            orderDetailPage = orderDetailReadPort.findAllByOrderId(orderId, PageRequest.of(page, size));
+            orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
         }
 
         order.setStatus(EOrderStatus.RECEIVED);
@@ -252,7 +255,8 @@ class ClientOrderServiceImplementation implements ClientOrderService {
     public Page<OrderDetail> findDetailsByOrderId(
             long orderId,
             @NonNull Pageable pageable) {
-        return orderDetailReadPort.findAllByOrderId(orderId, pageable);
+        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(orderId);
+        return orderDetailReadPort.findAll(orderDetailSpec, pageable);
     }
 
 }

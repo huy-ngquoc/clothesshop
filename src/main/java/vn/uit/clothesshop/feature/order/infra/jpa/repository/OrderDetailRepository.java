@@ -1,14 +1,13 @@
 package vn.uit.clothesshop.feature.order.infra.jpa.repository;
 
+import java.time.Instant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
@@ -22,7 +21,7 @@ public interface OrderDetailRepository extends
         JpaSpecificationExecutor<OrderDetail> {
 
     @Query("""
-            SELECT SUM(od.priceCents * od.amount)
+            SELECT COALESCE(SUM(od.unitPrice * od.amount), 0)
             FROM OrderDetail od
             JOIN od.order o
             WHERE o.id = :orderId
@@ -30,55 +29,64 @@ public interface OrderDetailRepository extends
     long getProductPriceByOrderId(@Param("orderId") long orderId);
 
     @Query("""
-            SELECT od
+            SELECT COALESCE(UM(od.unitPrice * od.amount), 0)
             FROM OrderDetail od
-            WHERE od.order.id = :orderId
+            JOIN od.order o
+            WHERE o.createdAt BETWEEN :instantFrom AND :instantTo
             """)
-    Page<OrderDetail> findAllByOrderId(
-            @Param("orderId") long orderId,
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable);
+    long getTotalProductPriceByOrderCreatedAtBetween(
+            @Param("instantFrom") @NonNull final Instant instantFrom,
+            @Param("instantTo") @NonNull final Instant instantTo);
 
-    @Query("""
-            SELECT od
-            FROM OrderDetail od
-            WHERE od.order.id IN :orderIds
-                """)
-    Page<OrderDetail> findAllByOrderId(
-            @Param("orderIds") Iterable<Long> orderIds,
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable);
-
-    @Query("""
+    @Query(value = """
             SELECT
                 p.id AS productId,
                 p.name AS productName,
-                SUM (od.amount) AS amount,
-                SUM (od.priceCents * od.amount) AS totalPrice
+                COALESCE(SUM(od.amount), 0) AS amount,
+                COALESCE(SUM(od.unitPrice * od.amount), 0) AS totalPrice
             FROM OrderDetail od
             JOIN od.order o
             JOIN od.productVariant pv
             JOIN pv.product p
+            WHERE o.createdAt BETWEEN :instantFrom AND :instantTo
             GROUP BY p.id, p.name
+            """, countQuery = """
+            SELECT COUNT(DISTINCT p.id)
+            FROM OrderDetail od
+            JOIN od.productVariant pv
+            JOIN pv.product p
+            JOIN od.order o
+            WHERE o.createdAt BETWEEN :instantFrom AND :instantTo
             """)
-    Page<OrderStatisticByProduct> getStatisticByProduct(
-            @Nullable Specification<OrderDetail> spec,
-            @NonNull Pageable pageable);
+    Page<OrderStatisticByProduct> getStatisticByProductAndOrderByCreatedAtBetween(
+            @Param("instantFrom") @NonNull final Instant instantFrom,
+            @Param("instantTo") @NonNull final Instant instantTo,
+            Pageable pageable);
 
-    @Query("""
+    @Query(value = """
             SELECT
                 c.id AS categoryId,
                 c.name AS categoryName,
-                SUM (od.amount) AS amount,
-                SUM (od.priceCents * od.amount) AS totalPrice
+                COALESCE(SUM(od.amount), 0) AS amount,
+                COALESCE(SUM(od.unitPrice * od.amount), 0) AS totalPrice
             FROM OrderDetail od
             JOIN od.order o
             JOIN od.productVariant pv
             JOIN pv.product p
             JOIN p.category c
+            WHERE o.createdAt BETWEEN :instantFrom AND :instantTo
             GROUP BY c.id, c.name
+            """, countQuery = """
+            SELECT COUNT(DISTINCT c.id)
+            FROM OrderDetail od
+            JOIN od.productVariant pv
+            JOIN pv.product p
+            JOIN p.category c
+            JOIN od.order o
+            WHERE o.createdAt BETWEEN :instantFrom AND :instantTo
             """)
-    Page<OrderStatisticByCategory> getStatisticByCategory(
-            @Nullable Specification<OrderDetail> spec,
+    Page<OrderStatisticByCategory> getStatisticByCategoryAndOrderByCreatedAtBetween(
+            @Param("instantFrom") @NonNull final Instant instantFrom,
+            @Param("instantTo") @NonNull final Instant instantTo,
             @NonNull Pageable pageable);
 }
