@@ -3,6 +3,7 @@ package vn.uit.clothesshop.feature.product.domain;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
@@ -95,7 +96,7 @@ public class Product {
 
     @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = ProductVariant.Fields.product)
     @NotNull
-    private Set<@NotNull ProductVariant> variants = Collections.emptySet();
+    private List<@NotNull ProductVariant> variants = Collections.emptyList();
 
     public Product(
             final String name,
@@ -120,6 +121,7 @@ public class Product {
     public int getQuantity() {
         return this.quantity;
     }
+
     public Category getCategory() {
         return this.category;
     }
@@ -139,9 +141,11 @@ public class Product {
     public void setSold(final int sold) {
         this.sold = sold;
     }
-    public Set<ProductVariant> getVariants() {
+
+    public List<ProductVariant> getVariants() {
         return this.variants;
     }
+
     public long getCategoryId() {
         return this.category.getId();
     }
@@ -220,9 +224,5 @@ public class Product {
 
     public void setUpdatedAt(final Instant updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    void setVariants(@NotNull final Set<@NotNull ProductVariant> variants) {
-        this.variants = Set.copyOf(variants);
     }
 }

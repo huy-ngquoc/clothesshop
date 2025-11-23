@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import jakarta.annotation.Nullable;
-import lombok.extern.slf4j.Slf4j;
 import vn.uit.clothesshop.area.admin.product.mapper.ProductAdminMapper;
 import vn.uit.clothesshop.area.admin.product.presentation.form.ProductAdminCreationForm;
 import vn.uit.clothesshop.area.admin.product.presentation.form.ProductAdminInfoUpdateForm;
@@ -22,7 +21,6 @@ import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
-import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductVariantSpecification;
 
 import org.springframework.data.domain.Page;

@@ -8,7 +8,7 @@
     <jsp:output doctype-root-element="html" doctype-public="" doctype-system="" />
 
     <c:choose>
-        <c:when test="${not empty order_details}">
+        <c:when test="${not viewModel.details.isEmpty()}">
             <div class="mt-sm-5 mt-1">
                 <div class="row">
                     <div class="col-12 mx-auto">
@@ -26,7 +26,7 @@
                             <thead class="text-center align-middle">
                                 <tr>
                                     <th>
-                                       Product Variant Id
+                                        Product Variant Id
                                     </th>
                                     <th>
                                         Product Variant Name
@@ -35,20 +35,17 @@
                                         Unit Price
                                     </th>
                                     <th>
-                                       Amount
+                                        Amount
                                     </th>
-                                    
-                                    
                                 </tr>
                             </thead>
                             <tbody>
-                                <c:forEach var="orderDetail" items="${order_details}">
+                                <c:forEach var="detail" items="${viewModel.details.getContent()}">
                                     <tr class="align-middle">
-                                        <td>${orderDetail.productVariant.id}</td>
-                                        <td>${orderDetail.productVariant.product.name}</td>
-                                        <td>${orderDetail.unitPrice} VND</td>
-                                        <td>${orderDetail.amount}</td>
-                                        
+                                        <td>${detail.getVariantId()}</td>
+                                        <td>${detail.getProductName()}</td>
+                                        <td>${detail.getUnitPrice()} VND</td>
+                                        <td>${detail.getAmount()}</td>
                                     </tr>
                                 </c:forEach>
                             </tbody>
@@ -56,8 +53,8 @@
                     </div>
                 </div>
 
-             </div>   
-             </c:when>
+            </div>
+        </c:when>
         <!-- Nếu không có variant -->
         <c:otherwise>
             <p class="alert alert-warning">This product has no variants yet.</p>

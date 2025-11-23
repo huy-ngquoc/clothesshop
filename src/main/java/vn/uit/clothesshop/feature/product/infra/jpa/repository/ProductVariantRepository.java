@@ -65,7 +65,8 @@ public interface ProductVariantRepository
             WHERE pv.product.id IN :productIds
             """)
     @NotNull
-    List<@NotNull ProductVariant> findByProductIdIn(@Param("productIds") List<Long> productIds);
+    List<@NotNull ProductVariant> findAllByProductIdIn(
+            @Param("productIds") Iterable<Long> productIds);
 
     @Query("""
             SELECT MIN(pv.priceCents) AS min,

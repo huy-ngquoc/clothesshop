@@ -1,38 +1,41 @@
 package vn.uit.clothesshop.area.admin.statistic.model;
 
-import java.util.Map;
+import org.springframework.data.domain.Page;
+
+import vn.uit.clothesshop.feature.order.infra.jpa.projection.OrderStatisticByCategory;
+import vn.uit.clothesshop.feature.order.infra.jpa.projection.OrderStatisticByProduct;
 
 public class CompositeStatisticModel {
-    private Map<String, StatisticModel> statisticByProduct;
-    private Map<String, StatisticModel> statisticByCategory;
-    private int totalIncome;
-    private int totalOrders;
-    public CompositeStatisticModel() {
+    private final Page<OrderStatisticByProduct> statisticByProduct;
+    private final Page<OrderStatisticByCategory> statisticByCategory;
+    private final long totalIncome;
+    private final long totalOrders;
 
-    } 
-    public CompositeStatisticModel(Map<String, StatisticModel> statisticByProduct, Map<String, StatisticModel> statisticByCategory, int totalIncome, int totalOrders) {
-        this.statisticByCategory = statisticByCategory;
+    public CompositeStatisticModel(
+            final Page<OrderStatisticByProduct> statisticByProduct,
+            final Page<OrderStatisticByCategory> statisticByCategory,
+            final long totalIncome,
+            final long totalOrders) {
         this.statisticByProduct = statisticByProduct;
+        this.statisticByCategory = statisticByCategory;
         this.totalIncome = totalIncome;
         this.totalOrders = totalOrders;
-    } 
-    public Map<String,StatisticModel> getStatisticByProduct() {
-        return this.statisticByProduct;
-    } 
-    public Map<String, StatisticModel> getStatisticByCategory() {
-        return this.statisticByCategory;
-    } 
-    public int getTotalIncome() {
-        return this.totalIncome;
-    } 
-    public int getTotalOrders() {
-        return this.totalOrders;
-    } 
-    public void setStatisticByProduct(Map<String, StatisticModel> statisticByProduct) {
-        this.statisticByProduct= statisticByProduct;
-    }  
-    public void setStatisticByCategory(Map<String, StatisticModel> statisticByCategory) {
-        this.statisticByCategory = statisticByCategory;
-    } 
-    
+    }
+
+    public Page<OrderStatisticByProduct> getStatisticByProduct() {
+        return statisticByProduct;
+    }
+
+    public Page<OrderStatisticByCategory> getStatisticByCategory() {
+        return statisticByCategory;
+    }
+
+    public long getTotalIncome() {
+        return totalIncome;
+    }
+
+    public long getTotalOrders() {
+        return totalOrders;
+    }
+
 }

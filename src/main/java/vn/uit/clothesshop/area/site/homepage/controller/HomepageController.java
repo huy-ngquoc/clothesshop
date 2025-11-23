@@ -103,7 +103,7 @@ public class HomepageController {
         org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
         user = userRepo.findByEmail(u.getUsername()).orElse(null);
         model.addAttribute("user", user);
-        final var safePageable = this.sanitizePageable(pageable);
+        final var safePageable = HomepageController.sanitizePageable(pageable);
 
         final var spec = ProductSpecification
                 .nameLike(q)
@@ -124,16 +124,17 @@ public class HomepageController {
     }
 
     private static final Pageable sanitizePageable(@NotNull final Pageable pageable) {
-        var mapped = Sort.by(
-                pageable.getSort().stream().map((final var order) -> {
-                    final var property = order.getProperty();
+        final var sortList = pageable.getSort().stream().map((final var order) -> {
+            final var property = order.getProperty();
 
-                    if (!ALLOWED_SORT.contains(property)) {
-                        return null;
-                    }
+            if (!ALLOWED_SORT.contains(property)) {
+                return null;
+            }
 
-                    return new Sort.Order(order.getDirection(), property);
-                }).filter(Objects::nonNull).toList());
+            return new Sort.Order(order.getDirection(), property);
+        }).filter(Objects::nonNull).toList();
+
+        var mapped = Sort.by(sortList);
 
         if (mapped.isUnsorted()) {
             mapped = Sort.by(Sort.Order.asc(Product.Fields.id));

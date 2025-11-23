@@ -33,7 +33,7 @@ public class Payment {
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(nullable = false, unique = true)
-    private Order order = new Order();
+    private Order order;
 
     private String currency = "";
 

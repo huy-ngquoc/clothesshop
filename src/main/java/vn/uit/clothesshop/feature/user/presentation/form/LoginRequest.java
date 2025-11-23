@@ -1,28 +1,27 @@
 package vn.uit.clothesshop.feature.user.presentation.form;
 
-public class LoginRequest {
-    private String email;
-    private String password;
+public final class LoginRequest {
+    private String username = "";
+    private String password = "";
 
     public LoginRequest() {
-
     }
 
     public LoginRequest(String email, String password) {
-        this.email = email;
+        this.username = email;
         this.password = password;
     }
 
-    public String getEmail() {
-        return this.email;
+    public String getUsername() {
+        return this.username;
     }
 
     public String getPassword() {
         return this.password;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public void setPassword(String password) {

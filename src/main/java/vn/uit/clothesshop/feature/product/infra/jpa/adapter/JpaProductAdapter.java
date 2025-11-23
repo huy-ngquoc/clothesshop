@@ -1,5 +1,6 @@
 package vn.uit.clothesshop.feature.product.infra.jpa.adapter;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -29,7 +30,6 @@ class JpaProductAdapter implements ProductReadPort, ProductWritePort {
     }
 
     @Override
-    @Transactional(readOnly = true)
     @NonNull
     public Page<Product> findAll(
             @Nullable final Specification<Product> spec,
@@ -38,26 +38,28 @@ class JpaProductAdapter implements ProductReadPort, ProductWritePort {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @NonNull
+    public List<Product> findAllById(@NonNull final Iterable<Long> ids) {
+        return this.productRepo.findAllById(ids);
+    }
+
+    @Override
     public Optional<Product> findById(final long id) {
         return this.productRepo.findById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     @NonNull
     public Product getReferenceById(final long id) {
         return this.productRepo.getReferenceById(id);
     }
 
     @Override
-    @Transactional(readOnly = true)
     public boolean existsById(final long id) {
         return this.productRepo.existsById(id);
     }
 
     @Override
-    @Transactional
     public Product save(@NonNull final Product product) {
         return this.productRepo.save(product);
     }

@@ -17,36 +17,36 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(OrderDetailId.Fields.orderId)
-    private Order order = new Order();
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(OrderDetailId.Fields.productVariantId)
     private ProductVariant productVariant;
 
+    private int unitPrice = 0;
+
     private int amount = 0;
-    private int unitPrice;
 
     public OrderDetail(
             final Order order,
             final ProductVariant productVariant,
-            final int amount, final int unitPrice) {
+            final int unitPrice,
+            final int amount) {
         this.id = new OrderDetailId(order.getId(), productVariant.getId());
         this.order = order;
         this.productVariant = productVariant;
+        this.unitPrice = unitPrice;
         this.amount = amount;
         this.unitPrice = unitPrice;
     }
+
+    OrderDetail() {
+    }
+
     public ProductVariant getProductVariant() {
         return this.productVariant;
     }
-    public OrderDetail() {
-    }
-    public int getUnitPrice() {
-        return this.unitPrice;
-    } 
-    public void setUnitPrice(int unitPrice) {
-        this.unitPrice = unitPrice;
-    }
+
     public OrderDetailId getId() {
         return this.id;
     }
@@ -76,6 +76,15 @@ public class OrderDetail {
     public void setAmount(final int amount) {
         this.amount = amount;
     }
+
+    public int getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(int unitPrice) {
+        this.unitPrice = unitPrice;
+    }
+
     public Order getOrder() {
         return this.order;
     }

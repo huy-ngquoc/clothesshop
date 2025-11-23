@@ -10,6 +10,7 @@ import vn.uit.clothesshop.area.admin.statistic.service.StatisticService;
 @RequestMapping("/admin/statistic")
 public class StatisticController {
     private final StatisticService statisticService;
+
     public StatisticController(StatisticService statisticService) {
         this.statisticService = statisticService;
     }
