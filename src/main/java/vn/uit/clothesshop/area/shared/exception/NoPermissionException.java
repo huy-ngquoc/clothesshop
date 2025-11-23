@@ -1,4 +1,4 @@
-package vn.uit.clothesshop.area.shared.exception.advice;
+package vn.uit.clothesshop.area.shared.exception;
 
 public class NoPermissionException extends RuntimeException {
     public NoPermissionException(String message) {
