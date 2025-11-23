@@ -1,11 +1,8 @@
 package vn.uit.clothesshop.area.admin.user.controller;
 
-import java.util.Objects;
 import java.util.Set;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Controller;

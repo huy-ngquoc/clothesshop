@@ -73,7 +73,6 @@ class ClientOrderServiceImplementation implements ClientOrderService {
         final var user = userReadPort.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
         var order = new Order();
         order.setShippingFee(10000);
-        order.setProductPrice(0);
         order.setAddress(orderRequestInfo.getAddress());
         order.setPhoneNumber(orderRequestInfo.getPhoneNumber());
         order.setUser(user);
@@ -87,7 +86,6 @@ class ClientOrderServiceImplementation implements ClientOrderService {
             }
             OrderDetail orderDetail = new OrderDetail(order, pv, cart.getAmount(), pv.getPriceCents());
             orderDetails.add(orderDetail);
-            order.setProductPrice(order.getProductPrice() + pv.getPriceCents() * cart.getAmount());
         }
 
         orderDetailWritePort.saveAll(orderDetails);
@@ -114,7 +112,6 @@ class ClientOrderServiceImplementation implements ClientOrderService {
         if (pv.getStockQuantity() < request.getAmount()) {
             throw new OrderException("Not enough product");
         }
-        order.setProductPrice(pv.getPriceCents() * request.getAmount());
         order = orderWritePort.save(order);
         OrderDetail orderDetail = new OrderDetail(order, pv, request.getAmount(), pv.getPriceCents());
         orderDetailWritePort.save(orderDetail);

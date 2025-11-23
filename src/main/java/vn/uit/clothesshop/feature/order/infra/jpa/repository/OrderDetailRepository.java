@@ -1,7 +1,5 @@
 package vn.uit.clothesshop.feature.order.infra.jpa.repository;
 
-import java.time.Instant;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,6 +20,14 @@ import vn.uit.clothesshop.feature.order.infra.jpa.projection.OrderStatisticByPro
 public interface OrderDetailRepository extends
         JpaRepository<OrderDetail, OrderDetailId>,
         JpaSpecificationExecutor<OrderDetail> {
+
+    @Query("""
+            SELECT SUM(od.priceCents * od.amount)
+            FROM OrderDetail od
+            JOIN od.order o
+            WHERE o.id = :orderId
+            """)
+    long getProductPriceByOrderId(@Param("orderId") long orderId);
 
     @Query("""
             SELECT od
@@ -51,7 +57,7 @@ public interface OrderDetailRepository extends
                 SUM (od.priceCents * od.amount) AS totalPrice
             FROM OrderDetail od
             JOIN od.order o
-            JOIN od.productVariants pv
+            JOIN od.productVariant pv
             JOIN pv.product p
             GROUP BY p.id, p.name
             """)

@@ -10,7 +10,6 @@ public final class OrderAdminDetailInfoViewModel {
     private final EOrderStatus status;
     private final long productPrice;
     private final long shippingFee;
-    private final long total;
     private final String address;
     private final String phoneNumber;
     private final Instant createdAt;
@@ -29,7 +28,6 @@ public final class OrderAdminDetailInfoViewModel {
         this.status = status;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
-        this.total = productPrice + shippingFee;
         this.address = address;
         this.phoneNumber = phoneNumber;
         this.createdAt = createdAt;
@@ -47,10 +45,6 @@ public final class OrderAdminDetailInfoViewModel {
 
     public long getShippingFee() {
         return shippingFee;
-    }
-
-    public long getTotal() {
-        return total;
     }
 
     public String getAddress() {

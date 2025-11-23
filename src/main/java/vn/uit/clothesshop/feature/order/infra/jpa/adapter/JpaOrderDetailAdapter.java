@@ -91,6 +91,13 @@ class JpaOrderDetailAdapter implements OrderDetailReadPort, OrderDetailWritePort
         repo.saveAll(orderDetails);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public long getProductPriceByOrderId(final long orderId) {
+        return this.repo.getProductPriceByOrderId(orderId);
+    }
+
+    @Transactional(readOnly = true)
     @Override
     public Page<OrderStatisticByProduct> getStatisticByProduct(
             @Nullable Specification<OrderDetail> spec,
@@ -98,6 +105,7 @@ class JpaOrderDetailAdapter implements OrderDetailReadPort, OrderDetailWritePort
         return this.repo.getStatisticByProduct(spec, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public Page<OrderStatisticByCategory> getStatisticByCategory(@Nullable Specification<OrderDetail> spec,
             @NonNull Pageable pageable) {

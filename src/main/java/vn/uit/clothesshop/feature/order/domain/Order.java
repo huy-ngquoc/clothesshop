@@ -34,11 +34,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EOrderStatus status = EOrderStatus.PROGRESSING;
 
-    private long productPrice = 0;
-
     private long shippingFee = 0;
-
-    private long total = 0;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user = new User();
@@ -54,21 +50,20 @@ public class Order {
     private Instant updatedAt = Instant.now();
 
     private String address;
+
     private String phoneNumber;
+
     public Order(
             final EOrderStatus status,
-            final long productPrice,
             final long shippingFee,
-            final long total,
-            final User user, final String address, String phoneNumber) {
+            final User user,
+            final String address,
+            String phoneNumber) {
         this.status = status;
-        this.productPrice = productPrice;
         this.shippingFee = shippingFee;
-        this.total = total;
         this.user = user;
         this.address = address;
         this.phoneNumber = phoneNumber;
-        this.total = this.shippingFee+this.productPrice;
     }
 
     public Order() {
@@ -77,18 +72,23 @@ public class Order {
     public long getId() {
         return id;
     }
+
     public String getAddress() {
         return this.address;
-    } 
+    }
+
     public String getPhoneNumber() {
         return this.phoneNumber;
-    } 
+    }
+
     public void setAddress(String address) {
         this.address = address;
-    } 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber= phoneNumber;
     }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public EOrderStatus getStatus() {
         return status;
     }
@@ -105,28 +105,12 @@ public class Order {
         return updatedAt;
     }
 
-    public long getProductPrice() {
-        return productPrice;
-    }
-
-    public void setProductPrice(final long productPrice) {
-        this.productPrice = productPrice;
-    }
-
     public long getShippingFee() {
         return shippingFee;
     }
 
     public void setShippingFee(final long shippingFee) {
         this.shippingFee = shippingFee;
-    }
-
-    public long getTotal() {
-        return total;
-    }
-
-    public void setTotal(final long total) {
-        this.total = total;
     }
 
     public long getUserId() {
@@ -136,6 +120,7 @@ public class Order {
     public void setUser(final User user) {
         this.user = user;
     }
+
     public User getUser() {
         return this.user;
     }

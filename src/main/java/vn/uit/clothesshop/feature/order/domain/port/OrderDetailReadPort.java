@@ -48,6 +48,8 @@ public interface OrderDetailReadPort {
 
     boolean existsById(@NonNull final OrderDetailId id);
 
+    long getProductPriceByOrderId(final long orderId);
+
     default Page<OrderStatisticByProduct> getStatisticByProduct(
             @NonNull Pageable pageable) {
         return this.getStatisticByProduct(null, pageable);

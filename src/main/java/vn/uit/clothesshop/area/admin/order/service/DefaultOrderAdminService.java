@@ -66,7 +66,10 @@ public class DefaultOrderAdminService implements OrderAdminService {
             @Nullable Specification<Order> spec,
             @NonNull Pageable pageable) {
         return this.orderReadPort.findAll(spec, pageable)
-                .map(this.mapper::toBasicInfo);
+                .map((final Order order) -> {
+                    final var productPrice = this.orderDetailReadPort.getProductPriceByOrderId(order.getId());
+                    return this.mapper.toBasicInfo(order, productPrice);
+                });
     }
 
     @Override
@@ -76,6 +79,8 @@ public class DefaultOrderAdminService implements OrderAdminService {
             @NonNull Pageable pageable) {
         final var order = this.orderReadPort.findById(id)
                 .orElseThrow(() -> new NotFoundException("Order not found"));
+
+        final var productPrice = this.orderDetailReadPort.getProductPriceByOrderId(order.getId());
 
         final var orderDetailsPage = this.orderDetailReadPort.findAllByOrderId(id, spec, pageable);
         final var variantIds = orderDetailsPage.stream()
@@ -88,7 +93,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
                 .collect(Collectors.toSet());
 
         final var productMap = this.productReadPort.findMapById(productIds);
-        return this.mapper.toDetailInfo(order, orderDetailsPage, variantMap, productMap);
+        return this.mapper.toDetailInfo(order, productPrice, orderDetailsPage, variantMap, productMap);
     }
 
     @Override
