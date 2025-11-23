@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.stereotype.Service;
+
 import vn.uit.clothesshop.area.admin.statistic.model.CompositeStatisticModel;
 import vn.uit.clothesshop.area.admin.statistic.model.StatisticModel;
 import vn.uit.clothesshop.feature.category.domain.port.CategoryReadPort;
@@ -17,7 +19,7 @@ import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.util.TimeConverter;
-
+@Service
 public class StatisticServiceImplementation implements StatisticService {
     private final OrderReadPort orderReadPort;
     private final OrderDetailReadPort orderDetailReadPort;
