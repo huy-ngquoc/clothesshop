@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -21,5 +22,15 @@ public class TimeConverter {
         ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
         return zonedDateTime.toInstant();
+    }
+    public static LocalDate[] getStartAndEndOfMonth(int month, int year){
+        LocalDate[] res= new LocalDate[2];
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        res[0]=firstDay;
+        YearMonth yearMonth = YearMonth.of(year, month);
+        LocalDate lastDay = yearMonth.atEndOfMonth();
+        res[1]= lastDay;
+        return res;
+        
     }
 }

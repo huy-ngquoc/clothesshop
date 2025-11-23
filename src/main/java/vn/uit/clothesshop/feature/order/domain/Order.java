@@ -1,11 +1,14 @@
 package vn.uit.clothesshop.feature.order.domain;
 
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
@@ -16,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.experimental.FieldNameConstants;
@@ -34,10 +38,22 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private EOrderStatus status = EOrderStatus.PROGRESSING;
 
-    private long shippingFee = 0;
-
     @ManyToOne(fetch = FetchType.LAZY)
     private User user = new User();
+
+    private String address;
+
+    private String phoneNumber;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = OrderDetail.Fields.order)
+    @NotNull
+    private List<@NotNull OrderDetail> details = Collections.emptyList();
+
+    private long productPrice = 0;
+
+    private long shippingFee = 0;
+
+    private long totalPrice = 0;
 
     @CreatedDate
     @NotNull
@@ -49,24 +65,24 @@ public class Order {
     @Column(nullable = false)
     private Instant updatedAt = Instant.now();
 
-    private String address;
-
-    private String phoneNumber;
-
     public Order(
             final EOrderStatus status,
-            final long shippingFee,
             final User user,
             final String address,
-            String phoneNumber) {
+            String phoneNumber,
+            final long productPrice,
+            final long shippingFee,
+            final long totalPrice) {
         this.status = status;
-        this.shippingFee = shippingFee;
         this.user = user;
         this.address = address;
         this.phoneNumber = phoneNumber;
+        this.productPrice = productPrice;
+        this.shippingFee = shippingFee;
+        this.totalPrice = totalPrice;
     }
 
-    public Order() {
+    Order() {
     }
 
     public long getId() {
@@ -97,22 +113,6 @@ public class Order {
         this.status = status;
     }
 
-    public Instant getCreatedAt() {
-        return createdAt;
-    }
-
-    public Instant getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public long getShippingFee() {
-        return shippingFee;
-    }
-
-    public void setShippingFee(final long shippingFee) {
-        this.shippingFee = shippingFee;
-    }
-
     public long getUserId() {
         return user.getId();
     }
@@ -123,6 +123,38 @@ public class Order {
 
     public User getUser() {
         return this.user;
+    }
+
+    public long getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(long productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public long getShippingFee() {
+        return shippingFee;
+    }
+
+    public void setShippingFee(final long shippingFee) {
+        this.shippingFee = shippingFee;
+    }
+
+    public long getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(long totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
     }
 
     void setId(final long id) {

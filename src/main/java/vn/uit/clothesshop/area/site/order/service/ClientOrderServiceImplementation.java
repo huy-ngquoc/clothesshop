@@ -1,14 +1,10 @@
 package vn.uit.clothesshop.area.site.order.service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.NonNull;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +13,7 @@ import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.area.shared.exception.OrderException;
 import vn.uit.clothesshop.area.site.order.presentation.OrderRequestInfo;
 import vn.uit.clothesshop.area.site.order.presentation.SingleOrderRequest;
+import vn.uit.clothesshop.feature.cart.domain.Cart;
 import vn.uit.clothesshop.feature.cart.domain.port.CartPort;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
@@ -71,28 +68,43 @@ class ClientOrderServiceImplementation implements ClientOrderService {
     @Transactional
     public Order createOrderFromCart(long userId, OrderRequestInfo orderRequestInfo) {
         final var listCarts = cartPort.getCartsByUserId(userId);
-        final var user = userReadPort.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-        var order = new Order();
-        order.setShippingFee(10000);
-        order.setAddress(orderRequestInfo.getAddress());
-        order.setPhoneNumber(orderRequestInfo.getPhoneNumber());
-        order.setUser(user);
-        order.setStatus(EOrderStatus.PROGRESSING);
-        order = orderWritePort.save(order);
-        List<OrderDetail> orderDetails = new ArrayList<>();
+
+        long totalProductPrice = 0;
         for (final var cart : listCarts) {
             final var pv = cart.getProductVariant();
             if (cart.getAmount() > pv.getStockQuantity()) {
                 throw new OrderException("Invalid quantity stock");
             }
-            OrderDetail orderDetail = new OrderDetail(order, pv, cart.getAmount(), pv.getPriceCents());
-            orderDetails.add(orderDetail);
+
+            totalProductPrice += pv.getPriceCents() * cart.getAmount();
         }
 
+        final var user = userReadPort.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
+
+        final var order = new Order(
+                EOrderStatus.PROGRESSING,
+                user,
+                orderRequestInfo.getAddress(),
+                orderRequestInfo.getPhoneNumber(),
+                totalProductPrice,
+                10_000,
+                totalProductPrice + 10_000);
+        final var savedOrder = this.orderWritePort.save(order);
+
+        final var orderDetails = listCarts.stream()
+                .map((Cart cart) -> {
+                    var pv = cart.getProductVariant();
+                    return new OrderDetail(
+                            savedOrder,
+                            pv,
+                            cart.getAmount(),
+                            pv.getPriceCents());
+                })
+                .toList();
         orderDetailWritePort.saveAll(orderDetails);
         cartPort.deleteAll(listCarts);
 
-        return order;
+        return savedOrder;
 
     }
 
@@ -100,23 +112,33 @@ class ClientOrderServiceImplementation implements ClientOrderService {
     @Transactional
     public Order createSingleOrder(long userId, SingleOrderRequest request) {
         final var user = userReadPort.findById(userId).orElseThrow(() -> new NotFoundException("User not found"));
-        var order = new Order();
-        order.setShippingFee(10000);
-
-        order.setAddress(request.getAddress());
-        order.setPhoneNumber(request.getPhoneNumber());
-        order.setUser(user);
-        order.setStatus(EOrderStatus.PROGRESSING);
 
         ProductVariant pv = productVariantReadPort.findById(request.getProductVariantId())
                 .orElseThrow(() -> new NotFoundException("Product variant not found"));
         if (pv.getStockQuantity() < request.getAmount()) {
             throw new OrderException("Not enough product");
         }
-        order = orderWritePort.save(order);
-        OrderDetail orderDetail = new OrderDetail(order, pv, request.getAmount(), pv.getPriceCents());
+
+        final var productPrice = pv.getPriceCents() * request.getAmount();
+        final var order = new Order(
+                EOrderStatus.PROGRESSING,
+                user,
+                request.getAddress(),
+                request.getPhoneNumber(),
+                productPrice,
+                10_000,
+                productPrice + 10_000);
+
+        final var orderDetail = new OrderDetail(
+                order,
+                pv,
+                request.getAmount(),
+                pv.getPriceCents());
+
+        final var savedOrder = orderWritePort.save(order);
         orderDetailWritePort.save(orderDetail);
-        return order;
+
+        return savedOrder;
     }
 
     @Override

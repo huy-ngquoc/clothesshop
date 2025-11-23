@@ -17,7 +17,7 @@ public class OrderDetail {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(OrderDetailId.Fields.orderId)
-    private Order order = new Order();
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId(OrderDetailId.Fields.productVariantId)

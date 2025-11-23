@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.Nullable;
 import vn.uit.clothesshop.feature.product.domain.Product;
-import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;

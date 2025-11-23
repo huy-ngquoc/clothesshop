@@ -23,10 +23,10 @@ public class OrderAdminMapper {
 
     @NonNull
     public OrderAdminBasicInfoViewModel toBasicInfo(
-            @NonNull final Order order, final long productPrice) {
+            @NonNull final Order order) {
         return new OrderAdminBasicInfoViewModel(
                 order.getId(),
-                productPrice,
+                order.getProductPrice(),
                 order.getShippingFee(),
                 order.getStatus(),
                 order.getCreatedAt(),
@@ -36,7 +36,6 @@ public class OrderAdminMapper {
     @NonNull
     public OrderAdminDetailInfoViewModel toDetailInfo(
             @NonNull final Order order,
-            final long productPrice,
             @NonNull final Page<OrderDetail> orderDetailsPage,
             @NonNull final Map<Long, ProductVariant> variantMap,
             @NonNull final Map<Long, Product> productMap) {
@@ -57,7 +56,7 @@ public class OrderAdminMapper {
 
         return new OrderAdminDetailInfoViewModel(
                 order.getStatus(),
-                productPrice,
+                order.getProductPrice(),
                 order.getShippingFee(),
                 order.getAddress(),
                 order.getPhoneNumber(),
