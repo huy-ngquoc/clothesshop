@@ -33,6 +33,13 @@ public interface ProductVariantReadPort {
     @NonNull
     List<ProductVariant> findAllById(@NonNull final Iterable<Long> ids);
 
+    @NonNull
+    default Map<Long, ProductVariant> findMapById(@NonNull Iterable<Long> ids) {
+        final var variants = this.findAllById(ids);
+        return variants.stream()
+                .collect(Collectors.toMap(ProductVariant::getId, Function.identity()));
+    }
+
     Optional<ProductVariant> findById(final long id);
 
     ProductPriceBound findPriceBoundByProductId(final long productId);
@@ -46,11 +53,4 @@ public interface ProductVariantReadPort {
     List<Long> getProductIdBySize(final List<String> listSize);
 
     Optional<Long> findProductIdById(final long id);
-
-    @NonNull
-    default Map<Long, ProductVariant> findMapById(@NonNull Iterable<Long> ids) {
-        final var variants = this.findAllById(ids);
-        return variants.stream()
-                .collect(Collectors.toMap(ProductVariant::getId, Function.identity()));
-    }
 }

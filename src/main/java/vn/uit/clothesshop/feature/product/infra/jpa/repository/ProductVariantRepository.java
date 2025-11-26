@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
 import jakarta.validation.constraints.NotNull;
 import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
@@ -15,6 +17,7 @@ import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductPriceBound
 import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductVariantColorCount;
 import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductVariantSizeCount;
 
+@Repository
 public interface ProductVariantRepository
         extends JpaRepository<ProductVariant, Long>, JpaSpecificationExecutor<ProductVariant> {
     @NotNull

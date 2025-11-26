@@ -25,11 +25,11 @@ public class ProductVariant implements Comparable<ProductVariant> {
 
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
-    private Product product = new Product();
+    private Product product;
 
     @NotBlank
-    private String color = "";
     @Size(max = MAX_LENGTH_COLOR)
+    private String color = "";
 
     @NotBlank
     @Size(max = MAX_LENGTH_SIZE)
@@ -45,7 +45,7 @@ public class ProductVariant implements Comparable<ProductVariant> {
     private int weightGrams = 0;
 
     @Nullable
-    private String image = "";
+    private String image = null;
 
     @PositiveOrZero
     private int sold = 0;
@@ -147,5 +147,9 @@ public class ProductVariant implements Comparable<ProductVariant> {
 
     public String getName() {
         return this.product.getName();
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

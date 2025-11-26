@@ -1,7 +1,10 @@
 package vn.uit.clothesshop.feature.product.infra.jpa.adapter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +19,7 @@ import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductVariantRepository;
+import vn.uit.clothesshop.shared.util.HibernateUtils;
 
 @Repository
 class JpaProductAdapter implements ProductReadPort, ProductWritePort {
@@ -41,6 +45,16 @@ class JpaProductAdapter implements ProductReadPort, ProductWritePort {
     @NonNull
     public List<Product> findAllById(@NonNull final Iterable<Long> ids) {
         return this.productRepo.findAllById(ids);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    @NonNull
+    public Map<Long, Product> findMapById(@NonNull Iterable<Long> ids) {
+        final var products = this.findAllById(ids);
+        return products.stream()
+                .map(HibernateUtils::unproxy)
+                .collect(Collectors.toMap(Product::getId, Function.identity()));
     }
 
     @Override

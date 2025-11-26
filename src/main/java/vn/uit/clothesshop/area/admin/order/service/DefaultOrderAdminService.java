@@ -31,6 +31,7 @@ import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantWritePort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
+import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;
 
 @Service
 public class DefaultOrderAdminService implements OrderAdminService {
@@ -51,6 +52,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
             ProductVariantWritePort productVariantWritePort,
             ProductReadPort productReadPort,
             ProductWritePort productWritePort,
+            ProductRepository productRepository,
             OrderAdminMapper mapper) {
         this.orderReadPort = orderReadPort;
         this.orderWritePort = orderWritePort;
@@ -84,7 +86,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
 
         final var variantMap = this.productVariantReadPort.findMapById(variantIds);
         final var productIds = variantMap.values().stream()
-                .map(ProductVariant::getId)
+                .map(ProductVariant::getProductId)
                 .collect(Collectors.toSet());
 
         final var productMap = this.productReadPort.findMapById(productIds);

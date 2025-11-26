@@ -1,7 +1,10 @@
 package vn.uit.clothesshop.feature.product.infra.jpa.adapter;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +21,7 @@ import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductPriceBound
 import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductVariantColorCount;
 import vn.uit.clothesshop.feature.product.infra.jpa.projection.ProductVariantSizeCount;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductVariantRepository;
+import vn.uit.clothesshop.shared.util.HibernateUtils;
 
 @Repository
 class JpaProductVariantAdapter implements ProductVariantReadPort, ProductVariantWritePort {
@@ -36,10 +40,21 @@ class JpaProductVariantAdapter implements ProductVariantReadPort, ProductVariant
         return this.repo.findAll(spec, pageable);
     }
 
+    @Transactional(readOnly = true)
     @Override
     @NonNull
     public List<ProductVariant> findAllById(@NonNull final Iterable<Long> ids) {
         return this.repo.findAllById(ids);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    @NonNull
+    public Map<Long, ProductVariant> findMapById(@NonNull Iterable<Long> ids) {
+        final var products = this.findAllById(ids);
+        return products.stream()
+                .map(HibernateUtils::unproxy)
+                .collect(Collectors.toMap(ProductVariant::getId, Function.identity()));
     }
 
     @Override
