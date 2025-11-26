@@ -16,6 +16,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import vn.uit.clothesshop.feature.user.domain.User.Role;
 
 public class SuccessHandler implements AuthenticationSuccessHandler {
     private RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
@@ -36,13 +37,13 @@ public class SuccessHandler implements AuthenticationSuccessHandler {
     }
 
     public String determineTargetURL(final Authentication authentication) {
-        Map<String, String> roleTargetUrlMap = new HashMap<>();
-        roleTargetUrlMap.put("ROLE_USER", "/");
-        roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
+        Map<Role, String> roleTargetUrlMap = new HashMap<>();
+        roleTargetUrlMap.put(Role.USER, "/");
+        roleTargetUrlMap.put(Role.ADMIN, "/admin");
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {
-            if (roleTargetUrlMap.containsKey(grantedAuthority.toString())) {
-                return roleTargetUrlMap.get(grantedAuthority.toString());
+            if (roleTargetUrlMap.containsKey(grantedAuthority)) {
+                return roleTargetUrlMap.get(grantedAuthority);
             }
         }
         throw new IllegalStateException();
