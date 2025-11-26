@@ -59,7 +59,7 @@
                                 <td>${viewModel.id}</td>
                                 <td>${viewModel.productPrice}</td>
                                 <td>${viewModel.shippingFee}</td>
-                                <td>${viewModel.total} VND</td>
+                                <td>${viewModel.totalPrice} VND</td>
                                 <td class="text-center">${viewModel.status}</td>
                                 <td class="text-center">
                                     <span class="date-time" data-value="${viewModel.createdAt.toEpochMilli()}">
