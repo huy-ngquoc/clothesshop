@@ -30,16 +30,17 @@ public interface ProductReadPort {
     @NonNull
     List<Product> findAllById(@NonNull final Iterable<Long> ids);
 
-    Optional<Product> findById(final long id);
-
-    Product getReferenceById(final long id);
-
-    boolean existsById(final long id);
-
     @NonNull
     default Map<Long, Product> findMapById(@NonNull Iterable<Long> ids) {
         final var products = this.findAllById(ids);
         return products.stream().collect(
                 Collectors.toMap(Product::getId, Function.identity()));
     }
+
+    Optional<Product> findById(final long id);
+
+    Product getReferenceById(final long id);
+
+    boolean existsById(final long id);
+
 }

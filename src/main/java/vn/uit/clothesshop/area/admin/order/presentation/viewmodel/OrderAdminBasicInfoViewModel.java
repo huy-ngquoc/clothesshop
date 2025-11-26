@@ -8,6 +8,7 @@ public final class OrderAdminBasicInfoViewModel {
     private final long id;
     private final long productPrice;
     private final long shippingFee;
+    private final long totalPrice;
     private final EOrderStatus status;
     private final Instant createdAt;
     private final Instant updatedAt;
@@ -16,12 +17,14 @@ public final class OrderAdminBasicInfoViewModel {
             long id,
             long productPrice,
             long shippingFee,
+            long totalPrice,
             EOrderStatus status,
             Instant createdAt,
             Instant updatedAt) {
         this.id = id;
         this.productPrice = productPrice;
         this.shippingFee = shippingFee;
+        this.totalPrice = totalPrice;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -39,6 +42,10 @@ public final class OrderAdminBasicInfoViewModel {
         return shippingFee;
     }
 
+    public long getTotalPrice() {
+        return totalPrice;
+    }
+
     public EOrderStatus getStatus() {
         return status;
     }
@@ -50,4 +57,5 @@ public final class OrderAdminBasicInfoViewModel {
     public Instant getUpdatedAt() {
         return updatedAt;
     }
+
 }

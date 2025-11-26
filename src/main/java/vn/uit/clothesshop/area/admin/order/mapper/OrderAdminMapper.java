@@ -28,6 +28,7 @@ public class OrderAdminMapper {
                 order.getId(),
                 order.getProductPrice(),
                 order.getShippingFee(),
+                order.getTotalPrice(),
                 order.getStatus(),
                 order.getCreatedAt(),
                 order.getUpdatedAt());
@@ -58,6 +59,7 @@ public class OrderAdminMapper {
                 order.getStatus(),
                 order.getProductPrice(),
                 order.getShippingFee(),
+                order.getTotalPrice(),
                 order.getAddress(),
                 order.getPhoneNumber(),
                 order.getCreatedAt(),

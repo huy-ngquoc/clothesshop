@@ -14,7 +14,7 @@
                 </div>
                 <ol class="list-group list-group-flush">
                     <li class="list-group-item">ID: ${id}</li>
-                    <li class="list-group-item">Total value: ${viewModel.getTotal()} VND</li>
+                    <li class="list-group-item">Total value: ${viewModel.getTotalPrice()} VND</li>
                     <li class="list-group-item">Product value: ${viewModel.getProductPrice()} VND</li>
                     <li class="list-group-item">Shipping Fee: ${viewModel.getShippingFee()} VND</li>
                     <li class="list-group-item">Address: ${viewModel.getAddress()}</li>
@@ -28,10 +28,10 @@
                     <c:when test="${viewModel.getStatus() == 'PROGRESSING'}">
                         <div class="card-footer d-flex gap-2 justify-content-start">
 
-                            <form:form action="http://localhost:8080/admin/order/ship/${order.id}" method="post">
+                            <form:form action="http://localhost:8080/admin/order/ship/${id}" method="post">
                                 <button class="btn btn-success">Ship to user</button>
                             </form:form>
-                            <form:form action="http://localhost:8080/admin/order/cancel/${order.id}" method="post">
+                            <form:form action="http://localhost:8080/admin/order/cancel/${id}" method="post">
                                 <button class="btn btn-danger">Cancel order</button>
                             </form:form>
                         </div>
