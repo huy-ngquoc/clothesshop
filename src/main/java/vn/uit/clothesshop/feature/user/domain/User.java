@@ -18,6 +18,7 @@ import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.FieldNameConstants;
@@ -30,8 +31,7 @@ import vn.uit.clothesshop.config.security.SecurityConfig;
 public class User {
     public enum Role implements GrantedAuthority {
         USER,
-        ADMIN,
-        ;
+        ADMIN,;
 
         @Override
         public final String getAuthority() {
@@ -39,6 +39,7 @@ public class User {
         }
     }
 
+    public static final String USERNAME_REG_EXP = "^[a-zA-Z0-9._]+$";
     public static final int MIN_LENGTH_USERNAME = 2;
     public static final int MAX_LENGTH_USERNAME = 50;
     public static final int MIN_LENGTH_FIRST_NAME = 3;
@@ -58,6 +59,7 @@ public class User {
 
     @NotBlank
     @Size(min = MIN_LENGTH_USERNAME, max = MAX_LENGTH_USERNAME)
+    @Pattern(regexp = USERNAME_REG_EXP)
     private String username = "";
 
     @NotBlank

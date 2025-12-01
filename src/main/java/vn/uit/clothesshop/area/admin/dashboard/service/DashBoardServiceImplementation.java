@@ -1,13 +1,11 @@
 package vn.uit.clothesshop.area.admin.dashboard.service;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.infra.jpa.projection.DailyIncomeStatistic;
@@ -36,6 +34,5 @@ public class DashBoardServiceImplementation implements DashBoardService {
 
         return this.orderReadPort.getIncomeByDateRange(instantFrom, instantTo, EOrderStatus.RECEIVED);
     }
-    
-    
+
 }

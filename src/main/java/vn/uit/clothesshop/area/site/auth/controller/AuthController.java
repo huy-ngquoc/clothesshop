@@ -1,9 +1,14 @@
 package vn.uit.clothesshop.area.site.auth.controller;
 
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseCookie;
+import java.io.IOException;
+import java.util.Collection;
+
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,12 +16,13 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import vn.uit.clothesshop.area.shared.auth.JwtTokenProvider;
+import vn.uit.clothesshop.area.shared.util.CookieUtil;
+import vn.uit.clothesshop.feature.user.domain.User.Role;
 import vn.uit.clothesshop.feature.user.presentation.form.LoginRequest;
 import vn.uit.clothesshop.feature.user.presentation.form.RegisterDto;
 
@@ -32,6 +38,11 @@ public class AuthController {
 
     @GetMapping("/register")
     public String getRegisterPage(final Model model) {
+        final var redirectUrl = AuthController.getRedirectUrlIfLoggedIn();
+        if (redirectUrl != null) {
+            return redirectUrl;
+        }
+
         final RegisterDto registerDto = new RegisterDto();
         model.addAttribute("registerDto", registerDto);
         return "client/homepage/register";
@@ -53,6 +64,11 @@ public class AuthController {
 
     @GetMapping("/login")
     public String getLoginPage(final Model model) {
+        final var redirectUrl = AuthController.getRedirectUrlIfLoggedIn();
+        if (redirectUrl != null) {
+            return redirectUrl;
+        }
+
         LoginRequest loginRequest = new LoginRequest();
         model.addAttribute("loginForm", loginRequest);
         return "client/homepage/login";
@@ -61,66 +77,62 @@ public class AuthController {
     @PostMapping("/login")
     public String login(
             final Model model,
-            @RequestBody @Valid final LoginRequest form,
-            final HttpServletResponse response) {
-        final var auth = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword()));
-        if (auth == null) {
-            model.addAttribute("error", "Wrong account or password");
+            @ModelAttribute("loginForm") @Valid final LoginRequest form,
+            final BindingResult bindingResult,
+            final HttpServletResponse response) throws IOException {
+        if (bindingResult.hasErrors()) {
             return "client/homepage/login";
         }
 
-        final var user = (UserDetails) auth.getPrincipal();
-        final var username = user.getUsername();
-        final var accessToken = JwtTokenProvider.generateAccessToken(username, user.getAuthorities());
-        final var refreshToken = JwtTokenProvider.generateRefreshToken(username);
+        try {
+            final var auth = authManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword()));
 
-        final var accessCookie = ResponseCookie.from("ACCESS_TOKEN", accessToken)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(JwtTokenProvider.ACCESS_TOKEN_DURATION.toSeconds())
-                .sameSite("Lax")
-                .build();
+            final var user = (UserDetails) auth.getPrincipal();
+            final var username = user.getUsername();
 
-        final var refreshCookie = ResponseCookie.from("REFRESH_TOKEN", refreshToken)
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(JwtTokenProvider.REFRESH_TOKEN_DURATION.toSeconds())
-                .sameSite("Lax")
-                .build();
+            // Tạo token
+            final var accessToken = JwtTokenProvider.generateAccessToken(username, user.getAuthorities());
+            final var refreshToken = JwtTokenProvider.generateRefreshToken(username);
+            CookieUtil.addAuthCookies(response, accessToken, refreshToken);
 
-        response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+            return determineRedirectUrl(user.getAuthorities());
 
-        return "redirect:/";
+        } catch (AuthenticationException e) {
+            model.addAttribute("error", "Invalid credential");
+            return "client/homepage/login";
+        }
     }
 
     @GetMapping("/logout")
     public String logout(
             final Model model,
-            @RequestBody @Valid final LoginRequest form,
             final HttpServletResponse response) {
-        final var deleteAccessCookie = ResponseCookie.from("ACCESS_TOKEN", "")
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Lax")
-                .build();
-
-        final var deleteRefreshCookie = ResponseCookie.from("REFRESH_TOKEN", "")
-                .httpOnly(true)
-                .secure(false)
-                .path("/")
-                .maxAge(0)
-                .sameSite("Lax")
-                .build();
-
-        response.addHeader(HttpHeaders.SET_COOKIE, deleteAccessCookie.toString());
-        response.addHeader(HttpHeaders.SET_COOKIE, deleteRefreshCookie.toString());
+        CookieUtil.clearAuthCookies(response);
 
         return "redirect:/";
+    }
+
+    private static String getRedirectUrlIfLoggedIn() {
+        final var auth = SecurityContextHolder.getContext().getAuthentication();
+
+        if ((auth == null) || (!auth.isAuthenticated()) || (auth instanceof AnonymousAuthenticationToken)) {
+            return null;
+        }
+
+        return determineRedirectUrl(auth.getAuthorities());
+    }
+
+    private static String determineRedirectUrl(Collection<? extends GrantedAuthority> authorities) {
+        var redirectUrl = "/";
+
+        final var isAdmin = authorities.stream()
+                .anyMatch(a -> a.getAuthority().equals(Role.ADMIN.getAuthority()));
+
+        if (isAdmin) {
+            redirectUrl = "/admin";
+        }
+
+        return "redirect:" + redirectUrl;
     }
 }
