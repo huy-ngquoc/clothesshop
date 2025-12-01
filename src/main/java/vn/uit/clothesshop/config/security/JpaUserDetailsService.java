@@ -10,16 +10,23 @@ import vn.uit.clothesshop.shared.util.Message;
 
 @Service
 public class JpaUserDetailsService implements UserDetailsService {
-    private final UserReadPort userService;
+    private final UserReadPort userReadPort;
 
-    public JpaUserDetailsService(final UserReadPort userService) {
-        this.userService = userService;
+    public JpaUserDetailsService(final UserReadPort userReadPort) {
+        this.userReadPort = userReadPort;
     }
 
     @Override
-    public UserPrincipal loadUserByUsername(final String username) throws UsernameNotFoundException {
-        final User user = userService.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException(Message.userNotFound));
+    public UserPrincipal loadUserByUsername(final String loginInput) throws UsernameNotFoundException {
+        User user = null;
+
+        if (loginInput.contains("@")) {
+            user = userReadPort.findByEmail(loginInput)
+                    .orElseThrow(() -> new UsernameNotFoundException(Message.userNotFound));
+        } else {
+            user = userReadPort.findByUsername(loginInput)
+                    .orElseThrow(() -> new UsernameNotFoundException(Message.userNotFound));
+        }
 
         return new UserPrincipal(
                 user.getId(),

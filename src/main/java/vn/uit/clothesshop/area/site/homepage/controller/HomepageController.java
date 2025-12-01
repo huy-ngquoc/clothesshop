@@ -2,7 +2,6 @@ package vn.uit.clothesshop.area.site.homepage.controller;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
 import org.springframework.stereotype.Controller;
@@ -25,8 +24,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import vn.uit.clothesshop.area.admin.category.service.CategoryAdminService;
-import vn.uit.clothesshop.area.admin.product.presentation.viewmodel.ProductAdminDetailInfoViewModel;
-import vn.uit.clothesshop.area.admin.product.presentation.viewmodel.ProductVariantAdminBasicInfoViewModel;
 import vn.uit.clothesshop.area.admin.product.service.ProductAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductVariantAdminService;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
@@ -37,6 +34,7 @@ import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductSpecification;
 import vn.uit.clothesshop.feature.user.domain.User;
 import vn.uit.clothesshop.feature.user.infra.jpa.repository.UserRepository;
+import vn.uit.clothesshop.shared.util.PageableSanitizer;
 
 @Controller
 public class HomepageController {
@@ -46,15 +44,17 @@ public class HomepageController {
             Product.Fields.maxPrice,
             Product.Fields.createdAt);
 
+    private static final PageableSanitizer pageableSanitizer;
+
     private final ProductAdminService productService;
-
     private final ProductVariantAdminService productVariantService;
-
     private final CategoryAdminService categoryService;
-
     private final UserRepository userRepo;
-
     private final ProductClientService productClientService;
+
+    static {
+        pageableSanitizer = new PageableSanitizer(ALLOWED_SORT, Product.Fields.id);
+    }
 
     public HomepageController(
             final ProductAdminService productService,
@@ -92,7 +92,7 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotNull Long> categoryIds,
             @RequestParam(required = false) @Nullable Set<@NotBlank String> colors,
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
-            @PageableDefault(size = 10) final Pageable pageable,
+            @PageableDefault(size = 10) @NonNull final Pageable pageable,
             final Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user;
@@ -103,10 +103,9 @@ public class HomepageController {
         org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
         user = userRepo.findByEmail(u.getUsername()).orElse(null);
         model.addAttribute("user", user);
-        final var safePageable = HomepageController.sanitizePageable(pageable);
+        final var safePageable = pageableSanitizer.sanitize(pageable);
 
-        final var spec = ProductSpecification
-                .nameLike(q)
+        final var spec = ProductSpecification.nameLike(q)
                 .and(ProductSpecification.priceBetween(fromPrice, toPrice))
                 .and(ProductSpecification.anyCategoryIds(categoryIds))
                 .and(ProductSpecification.anyColors(colors))
@@ -121,32 +120,6 @@ public class HomepageController {
         model.addAttribute("colorCounts", productVariantService.countProductVariantByColor());
 
         return "client/homepage/shop";
-    }
-
-    private static final Pageable sanitizePageable(@NotNull final Pageable pageable) {
-        final var sortList = pageable.getSort().stream().map((final var order) -> {
-            final var property = order.getProperty();
-
-            if (!ALLOWED_SORT.contains(property)) {
-                return null;
-            }
-
-            return new Sort.Order(order.getDirection(), property);
-        }).filter(Objects::nonNull).toList();
-
-        var mapped = Sort.by(sortList);
-
-        if (mapped.isUnsorted()) {
-            mapped = Sort.by(Sort.Order.asc(Product.Fields.id));
-        } else if (mapped.stream().noneMatch(o -> o.getProperty().equals(Product.Fields.id))) {
-            mapped = mapped.and(Sort.by(Sort.Order.asc(Product.Fields.id)));
-        } else {
-            // Sort is ready!
-        }
-
-        final var pageSize = Math.clamp(pageable.getPageSize(), 1, 100);
-
-        return PageRequest.of(pageable.getPageNumber(), pageSize, mapped);
     }
 
     @GetMapping("/product/detail/{id}")
