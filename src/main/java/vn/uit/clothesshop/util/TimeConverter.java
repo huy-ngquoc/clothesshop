@@ -4,7 +4,6 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -13,11 +12,13 @@ public class TimeConverter {
         LocalDateTime startTime = localDate.atStartOfDay();
         return getInstantFromLocalDateTime(startTime);
     }
+
     public static Instant getInstantFromEndLocalDate(LocalDate localDate) {
         LocalDateTime endTime = localDate.atTime(LocalTime.MAX);
         return getInstantFromLocalDateTime(endTime);
 
     }
+
     private static Instant getInstantFromLocalDateTime(LocalDateTime localDateTime) {
         ZoneId zoneId = ZoneId.systemDefault();
         ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId);
