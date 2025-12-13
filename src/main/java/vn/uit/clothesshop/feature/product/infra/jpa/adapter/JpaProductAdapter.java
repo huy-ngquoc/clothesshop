@@ -74,8 +74,15 @@ class JpaProductAdapter implements ProductReadPort, ProductWritePort {
     }
 
     @Override
+    @Transactional
     public Product save(@NonNull final Product product) {
         return this.productRepo.save(product);
+    }
+
+    @Override
+    @Transactional
+    public List<Product> saveAll(@NonNull Iterable<Product> products) {
+        return this.productRepo.saveAll(products);
     }
 
     @Override

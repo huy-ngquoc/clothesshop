@@ -12,12 +12,14 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import vn.uit.clothesshop.area.admin.order.mapper.OrderAdminMapper;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminBasicInfoViewModel;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminDetailInfoViewModel;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.area.shared.exception.OrderException;
+import vn.uit.clothesshop.area.shared.service.StockAdjustmentService;
 import vn.uit.clothesshop.feature.order.domain.Order;
 import vn.uit.clothesshop.feature.order.domain.OrderDetail;
 import vn.uit.clothesshop.feature.order.domain.enums.EOrderStatus;
@@ -34,6 +36,7 @@ import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;
 
 @Service
+@RequiredArgsConstructor
 public class DefaultOrderAdminService implements OrderAdminService {
     private final OrderReadPort orderReadPort;
     private final OrderWritePort orderWritePort;
@@ -43,26 +46,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
     private final ProductReadPort productReadPort;
     private final ProductWritePort productWritePort;
     private final OrderAdminMapper mapper;
-
-    public DefaultOrderAdminService(
-            OrderReadPort orderReadPort,
-            OrderWritePort orderWritePort,
-            OrderDetailReadPort orderDetailReadPort,
-            ProductVariantReadPort productVariantReadPort,
-            ProductVariantWritePort productVariantWritePort,
-            ProductReadPort productReadPort,
-            ProductWritePort productWritePort,
-            ProductRepository productRepository,
-            OrderAdminMapper mapper) {
-        this.orderReadPort = orderReadPort;
-        this.orderWritePort = orderWritePort;
-        this.orderDetailReadPort = orderDetailReadPort;
-        this.productVariantReadPort = productVariantReadPort;
-        this.productVariantWritePort = productVariantWritePort;
-        this.productReadPort = productReadPort;
-        this.productWritePort = productWritePort;
-        this.mapper = mapper;
-    }
+    private final StockAdjustmentService stockAdjustmentService;
 
     @Override
     public Page<OrderAdminBasicInfoViewModel> findAllBasic(
@@ -106,58 +90,20 @@ public class DefaultOrderAdminService implements OrderAdminService {
         order.setStatus(EOrderStatus.SHIPPING);
         orderWritePort.save(order);
 
-        var page = 0;
-        var size = PagingConstraint.MAX_SIZE;
-
-        final var orderDetailSpec = OrderDetailSpecification.orderIdEquals(orderId);
-        var orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
-        final var totalOrderDetails = (int) Math.min(orderDetailPage.getTotalElements(), Integer.MAX_VALUE);
-
-        final var variantMap = HashMap.<Long, ProductVariant>newHashMap(totalOrderDetails);
-        final var productMap = HashMap.<Long, Product>newHashMap(totalOrderDetails);
-
-        while (!orderDetailPage.isEmpty()) {
-            for (final var orderDetail : orderDetailPage.getContent()) {
-                final var productVariantId = orderDetail.getProductVariantId();
-                var productVariant = variantMap.get(productVariantId);
-
-                if (productVariant == null) {
-                    productVariant = this.productVariantReadPort.findById(productVariantId)
-                            .orElseThrow(() -> new NotFoundException("Product Variant not found"));
-                    variantMap.put(productVariantId, productVariant);
-                }
-
-                final var productId = productVariant.getProductId();
-                var product = productMap.get(productVariant.getProductId());
-
-                if (product == null) {
-                    product = this.productReadPort.findById(productId)
-                            .orElseThrow(() -> new NotFoundException("Product not found"));
-                    productMap.put(productId, product);
-                }
-
-                final var orderAmount = orderDetail.getAmount();
-
-                final var variantStockQuantity = productVariant.getStockQuantity();
-                if (variantStockQuantity < orderAmount) {
-                    throw new OrderException("Lack of variant stock");
-                }
-
-                final var productStockQuantity = product.getQuantity();
-                if (productStockQuantity < orderAmount) {
-                    throw new OrderException("Lack of product stock");
-                }
-
-                productVariant.setStockQuantity(variantStockQuantity - orderAmount);
-                product.setQuantity(productStockQuantity - orderAmount);
-
-                this.productVariantWritePort.save(productVariant);
-                this.productWritePort.save(product);
+        stockAdjustmentService.adjustStockForOrder(orderId, (variant, product, amount) -> {
+            int variantStock = variant.getStockQuantity();
+            if (variantStock < amount) {
+                throw new OrderException("Lack of variant stock");
             }
 
-            ++page;
-            orderDetailPage = orderDetailReadPort.findAll(orderDetailSpec, PageRequest.of(page, size));
-        }
+            int productStock = product.getQuantity();
+            if (productStock < amount) {
+                throw new OrderException("Lack of product stock");
+            }
+
+            variant.setStockQuantity(variantStock - amount);
+            product.setQuantity(productStock - amount);
+        });
     }
 
     @Override

@@ -1,10 +1,12 @@
 package vn.uit.clothesshop.area.shared.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.RequiredArgsConstructor;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.feature.order.domain.port.OrderDetailReadPort;
@@ -17,25 +19,13 @@ import vn.uit.clothesshop.feature.product.domain.port.ProductVariantWritePort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
 
 @Service
+@RequiredArgsConstructor
 public class StockAdjustmentService {
     private final OrderDetailReadPort orderDetailReadPort;
     private final ProductVariantReadPort productVariantReadPort;
     private final ProductReadPort productReadPort;
     private final ProductVariantWritePort productVariantWritePort;
     private final ProductWritePort productWritePort;
-
-    public StockAdjustmentService(
-            OrderDetailReadPort orderDetailReadPort,
-            ProductVariantReadPort productVariantReadPort,
-            ProductReadPort productReadPort,
-            ProductVariantWritePort productVariantWritePort,
-            ProductWritePort productWritePort) {
-        this.orderDetailReadPort = orderDetailReadPort;
-        this.productVariantReadPort = productVariantReadPort;
-        this.productReadPort = productReadPort;
-        this.productVariantWritePort = productVariantWritePort;
-        this.productWritePort = productWritePort;
-    }
 
     @Transactional
     public void adjustStockForOrder(long orderId, StockStrategy strategy) {
@@ -49,6 +39,9 @@ public class StockAdjustmentService {
         final var productMap = new HashMap<Long, Product>();
 
         while (!orderDetailPage.isEmpty()) {
+            final var variantsToUpdate = new ArrayList<ProductVariant>();
+            final var productsToUpdate = new ArrayList<Product>();
+
             for (final var orderDetail : orderDetailPage.getContent()) {
                 final var productVariantId = orderDetail.getProductVariantId();
 
@@ -62,8 +55,15 @@ public class StockAdjustmentService {
 
                 strategy.apply(productVariant, product, orderDetail.getAmount());
 
-                this.productVariantWritePort.save(productVariant);
-                this.productWritePort.save(product);
+                variantsToUpdate.add(productVariant);
+                productsToUpdate.add(product);
+            }
+
+            if (!variantsToUpdate.isEmpty()) {
+                this.productVariantWritePort.saveAll(variantsToUpdate);
+            }
+            if (!productsToUpdate.isEmpty()) {
+                this.productWritePort.saveAll(productsToUpdate);
             }
 
             ++page;
