@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import org.springframework.stereotype.Component;
+
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductVariantRepository;
 

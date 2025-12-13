@@ -5,6 +5,7 @@ import vn.uit.clothesshop.feature.product.domain.Product;
 
 public class ProductMapper {
     public static ProductClientBasicInfoViewModel getInfoFromProduct(Product p) {
-        return new ProductClientBasicInfoViewModel(p.getId(), p.getName(), p.getShortDesc(), p.getImage(), p.getMinPrice(), p.getMaxPrice(), p.getSold());
+        return new ProductClientBasicInfoViewModel(p.getId(), p.getName(), p.getShortDesc(), p.getImage(),
+                p.getMinPrice(), p.getMaxPrice(), p.getSold());
     }
 }

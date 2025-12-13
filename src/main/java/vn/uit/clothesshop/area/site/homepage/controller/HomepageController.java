@@ -1,6 +1,8 @@
 package vn.uit.clothesshop.area.site.homepage.controller;
 
+import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -93,15 +95,12 @@ public class HomepageController {
             @RequestParam(required = false) @Nullable Set<@NotBlank String> colors,
             @RequestParam(required = false) @Nullable Set<@NotBlank String> sizes,
             @PageableDefault(size = 10) @NonNull final Pageable pageable,
-            final Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-        Object principal = auth.getPrincipal();
-        if (auth instanceof AnonymousAuthenticationToken) {
+            final Model model, Authentication auth) {
+        if (auth == null) {
             return "redirect:/login";
         }
-        org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
-        user = userRepo.findByEmail(u.getUsername()).orElse(null);
+        String username = auth.getName();
+        User user = userRepo.findByEmail(username).orElse(null);
         model.addAttribute("user", user);
         final var safePageable = pageableSanitizer.sanitize(pageable);
 
