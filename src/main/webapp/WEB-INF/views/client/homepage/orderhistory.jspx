@@ -107,7 +107,7 @@
                                     </div>
                                     
                                     <p class="mb-1 small text-secondary">
-                                        Date: ${order.createdAt} | Total: <span class="fw-semibold">${order.total} VND</span>
+                                        Date: ${order.createdAt} | Total: <span class="fw-semibold">${order.totalPrice} VND</span>
                                     </p>
                                     
                                     

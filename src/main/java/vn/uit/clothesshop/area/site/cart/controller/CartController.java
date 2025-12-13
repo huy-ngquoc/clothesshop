@@ -2,9 +2,7 @@ package vn.uit.clothesshop.area.site.cart.controller;
 
 import java.util.List;
 
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import vn.uit.clothesshop.feature.user.domain.User;
 import vn.uit.clothesshop.feature.user.infra.jpa.repository.UserRepository;
 
 @Controller
+
 public class CartController {
     private final CartAdapter cartService;
     private final UserRepository userRepo;
@@ -30,30 +29,25 @@ public class CartController {
 
     @PostMapping("/add_to_cart")
     public String addProductVariantToCart(final Model model,
-            @ModelAttribute("cart_request") CartRequest request) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-        Object principal = auth.getPrincipal();
-        if (auth instanceof AnonymousAuthenticationToken) {
-            return "redirect:/login";
+            @ModelAttribute("cart_request") CartRequest request, Authentication auth) {
+        if(auth==null) {
+            return "redirect:/auth/login";
         }
-        org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
-        user = userRepo.findByEmail(u.getUsername()).orElse(null);
+        String username = auth.getName();
+        User user = userRepo.findByUsername(username).orElse(null);
         Cart cartDetail = cartService.addProductVariantToCart(user, request.getProductVariantId(),
                 request.getAmount());
         return "redirect:/";
     }
 
     @GetMapping("/cart")
-    public String getCartPage(final Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User user;
-        Object principal = auth.getPrincipal();
-        if (auth instanceof AnonymousAuthenticationToken) {
-            return "redirect:/login";
+    public String getCartPage(final Model model, Authentication auth) {
+
+        if(auth==null) {
+            return "redirect:/auth/login";
         }
-        org.springframework.security.core.userdetails.User u = (org.springframework.security.core.userdetails.User) principal;
-        user = userRepo.findByEmail(u.getUsername()).orElse(null);
+        String username = auth.getName();
+        User user = userRepo.findByUsername(username).orElse(null);
         List<Cart> listCartDetails = cartService.getCartOfUser(user);
         model.addAttribute("listCartDetails", listCartDetails);
         model.addAttribute("user", user);

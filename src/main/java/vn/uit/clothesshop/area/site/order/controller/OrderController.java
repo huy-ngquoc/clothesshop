@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.lang.NonNull;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -48,8 +49,8 @@ public class OrderController {
     }
 
     @GetMapping("/cart")
-    public String getOrderFromCartPage(final Model model) {
-        User user = userService.getUserFromAuth();
+    public String getOrderFromCartPage(final Model model, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -62,8 +63,8 @@ public class OrderController {
 
     @PostMapping("/confirm/cart")
     public String confirmOrderFromCart(final Model model,
-            @ModelAttribute("request_info") OrderRequestInfo requestInfo) {
-        User user = userService.getUserFromAuth();
+            @ModelAttribute("request_info") OrderRequestInfo requestInfo, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -72,8 +73,8 @@ public class OrderController {
     }
 
     @GetMapping("/single_product/{productVariantId}/{amount}")
-    public String getSingleOrderPage(final Model model, @PathVariable long productVariantId, @PathVariable int amount) {
-        User user = userService.getUserFromAuth();
+    public String getSingleOrderPage(final Model model, @PathVariable long productVariantId, @PathVariable int amount, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -90,8 +91,8 @@ public class OrderController {
 
     @PostMapping("/single_product_confirm")
     public String confirmSingleOrderPage(final Model model,
-            @ModelAttribute("request_info") SingleOrderRequest request) {
-        User user = userService.getUserFromAuth();
+            @ModelAttribute("request_info") SingleOrderRequest request, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -100,8 +101,8 @@ public class OrderController {
     }
 
     @PostMapping("/cancel_order/{orderId}")
-    public String cancelOrder(final Model model, @PathVariable long orderId) {
-        User user = userService.getUserFromAuth();
+    public String cancelOrder(final Model model, @PathVariable long orderId, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -116,8 +117,8 @@ public class OrderController {
 
     @PreAuthorize("@OrderSecurity.isOwner(#orderId, authentication)")
     @PostMapping("/received_order/{orderId}")
-    public String receivedOrder(final Model model, @PathVariable long orderId) {
-        User user = userService.getUserFromAuth();
+    public String receivedOrder(final Model model, @PathVariable long orderId, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -131,8 +132,8 @@ public class OrderController {
     }
 
     @GetMapping("/history")
-    public String getOrderHistory(final Model model, @RequestParam(defaultValue = "0") int pageNumber) {
-        User user = userService.getUserFromAuth();
+    public String getOrderHistory(final Model model, @RequestParam(defaultValue = "0") int pageNumber, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
@@ -146,8 +147,8 @@ public class OrderController {
     @GetMapping("/detail/{orderId}")
     public String getOrderDetail(
             final Model model, @PathVariable long orderId,
-            @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
-        User user = userService.getUserFromAuth();
+            @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable, Authentication auth) {
+        User user = userService.getUserFromAuth(auth);
         if (user == null) {
             return "redirect:/login";
         }
