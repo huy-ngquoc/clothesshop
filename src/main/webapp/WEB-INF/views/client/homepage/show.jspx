@@ -93,8 +93,8 @@
                     <c:forEach var="product" items="${productList.content}">
                         <div class="col-12 col-sm-6 col-lg-3">
                             <div class="card h-100 shadow-sm">
-                                <img src="/img/${product.imageFilePath}" class="card-img-top" alt="Minimalist Tee"
-                                    loading="lazy" />
+                                <img src="/img/productvariant/${product.imageFilePath}" class="card-img-top"
+                                    alt="Minimalist Tee" loading="lazy" />
                                 <div class="card-body d-flex flex-column">
                                     <h3 class="h6 mb-1">${product.name}</h3>
                                     <p class="text-secondary small mb-2">${product.shortDesc}</p>

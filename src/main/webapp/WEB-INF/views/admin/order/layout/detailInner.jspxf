@@ -28,11 +28,14 @@
                     <c:when test="${viewModel.getStatus() == 'PROGRESSING'}">
                         <div class="card-footer d-flex gap-2 justify-content-start">
 
-                            <form:form action="http://localhost:8080/admin/order/ship/${id}" method="post">
-                                <button class="btn btn-success">Ship to user</button>
+                            <form:form action="${pageContext.request.contextPath}/admin/order/ship/${id}" method="post">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <button class="btn btn-success" type="submit">Ship to user</button>
                             </form:form>
-                            <form:form action="http://localhost:8080/admin/order/cancel/${id}" method="post">
-                                <button class="btn btn-danger">Cancel order</button>
+                            <form:form action="${pageContext.request.contextPath}/admin/order/cancel/${id}"
+                                method="post">
+                                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                                <button class="btn btn-danger" type="submit">Cancel order</button>
                             </form:form>
                         </div>
                     </c:when>

@@ -47,13 +47,13 @@ public class OrderAdminController {
     }
 
     @PostMapping("/cancel/{orderId}")
-    public String cancelOrder(final Model model, @PathVariable long orderId) {
+    public String cancelOrder(@PathVariable long orderId) {
         orderAdminService.cancelOrder(orderId);
         return "redirect:/admin/order/" + orderId;
     }
 
     @PostMapping("/ship/{orderId}")
-    public String shipOrder(final Model model, @PathVariable long orderId) {
+    public String shipOrder(@PathVariable long orderId) {
         orderAdminService.shipOrder(orderId);
         return "redirect:/admin/order/" + orderId;
     }

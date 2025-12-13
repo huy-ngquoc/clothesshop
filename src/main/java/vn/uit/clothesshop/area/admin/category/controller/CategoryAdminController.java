@@ -57,6 +57,7 @@ public class CategoryAdminController {
             @RequestParam(required = false) @Nullable final String q,
             @PageableDefault(size = PagingConstraint.DEFAULT_SIZE) @NonNull final Pageable pageable) {
         final var safePageable = CategoryAdminController.pageableSanitizer.sanitize(pageable);
+
         final var spec = CategorySpecification.nameLike(q)
                 .or(CategorySpecification.descLike(q));
 
