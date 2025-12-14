@@ -72,8 +72,8 @@ class ClientOrderServiceImplementation implements ClientOrderService {
                     return new OrderDetail(
                             savedOrder,
                             pv,
-                            cart.getAmount(),
-                            pv.getPriceCents());
+                            pv.getPriceCents(),
+                            cart.getAmount());
                 })
                 .toList();
         orderDetailWritePort.saveAll(orderDetails);

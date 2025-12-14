@@ -1,10 +1,8 @@
 package vn.uit.clothesshop.area.admin.order.service;
 
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.lang.NonNull;
@@ -16,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import vn.uit.clothesshop.area.admin.order.mapper.OrderAdminMapper;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminBasicInfoViewModel;
 import vn.uit.clothesshop.area.admin.order.presentation.viewmodel.OrderAdminDetailInfoViewModel;
-import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.shared.exception.NotFoundException;
 import vn.uit.clothesshop.area.shared.exception.OrderException;
 import vn.uit.clothesshop.area.shared.service.StockAdjustmentService;
@@ -27,13 +24,11 @@ import vn.uit.clothesshop.feature.order.domain.port.OrderDetailReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderReadPort;
 import vn.uit.clothesshop.feature.order.domain.port.OrderWritePort;
 import vn.uit.clothesshop.feature.order.infra.jpa.spec.OrderDetailSpecification;
-import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.domain.port.ProductReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantReadPort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductVariantWritePort;
 import vn.uit.clothesshop.feature.product.domain.port.ProductWritePort;
-import vn.uit.clothesshop.feature.product.infra.jpa.repository.ProductRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -92,6 +87,7 @@ public class DefaultOrderAdminService implements OrderAdminService {
 
         stockAdjustmentService.adjustStockForOrder(orderId, (variant, product, amount) -> {
             int variantStock = variant.getStockQuantity();
+            
             if (variantStock < amount) {
                 throw new OrderException("Lack of variant stock");
             }
