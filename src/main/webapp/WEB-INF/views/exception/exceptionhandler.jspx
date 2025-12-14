@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+          xmlns:c="jakarta.tags.core"
+          version="2.0">
+
+    <jsp:directive.page contentType="text/html;charset=UTF-8" />
+    <jsp:output doctype-root-element="html"
+                doctype-public="-//W3C//DTD XHTML 1.0 Transitional//EN"
+                doctype-system="http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+                omit-xml-declaration="true" />
+
+    <html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Đã xảy ra lỗi</title>
+        <style type="text/css">
+            <![CDATA[
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    background-color: #f4f6f9;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                }
+                .error-card {
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 10px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                    max-width: 500px;
+                    width: 90%;
+                    text-align: center;
+                    border-top: 5px solid #e74c3c;
+                }
+                h1 { color: #e74c3c; margin-bottom: 1rem; font-size: 24px; }
+                .label { font-weight: bold; color: #555; display: block; margin-top: 10px; }
+                .message-box {
+                    background-color: #ffe6e6;
+                    color: #c0392b;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 10px 0 20px 0;
+                    word-wrap: break-word;
+                    font-family: monospace;
+                    font-size: 14px;
+                    border: 1px solid #ffcccc;
+                }
+                .btn {
+                    display: inline-block;
+                    padding: 10px 20px;
+                    background-color: #3498db;
+                    color: white;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    transition: background 0.3s;
+                }
+                .btn:hover { background-color: #2980b9; }
+            ]]>
+        </style>
+    </head>
+    <body>
+        <div class="error-card">
+            <h1>Rất tiếc! Đã xảy ra lỗi</h1>
+            
+            <p>Hệ thống gặp sự cố khi xử lý yêu cầu.</p>
+
+            <span class="label">Loại lỗi:</span>
+            <div>
+                <c:out value="${errorType}" default="Unknown Error" />
+            </div>
+
+            <span class="label">Chi tiết kỹ thuật:</span>
+            <div class="message-box">
+                <c:out value="${errorMessage}" default="Không có thông tin chi tiết (Lỗi có thể do dữ liệu NULL)" />
+            </div>
+
+            <a href="/" class="btn">Quay về trang chủ</a>
+        </div>
+    </body>
+    </html>
+</jsp:root>

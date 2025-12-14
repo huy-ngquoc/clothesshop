@@ -37,7 +37,7 @@ public class CartController {
         User user = userRepo.findByUsername(username).orElse(null);
         Cart cartDetail = cartService.addProductVariantToCart(user, request.getProductVariantId(),
                 request.getAmount());
-        return "redirect:/";
+        return "redirect:cart";
     }
 
     @GetMapping("/cart")
