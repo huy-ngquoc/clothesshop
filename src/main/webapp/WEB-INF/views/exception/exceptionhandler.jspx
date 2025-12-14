@@ -11,7 +11,7 @@
 
     <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Đã xảy ra lỗi</title>
+        <title>An error occured</title>
         <style type="text/css">
             <![CDATA[
                 body {
@@ -61,21 +61,21 @@
     </head>
     <body>
         <div class="error-card">
-            <h1>Rất tiếc! Đã xảy ra lỗi</h1>
+            <h1>Sorry! Something went wrong</h1>
             
-            <p>Hệ thống gặp sự cố khi xử lý yêu cầu.</p>
+            <p>Something went wrong when we try to process your request</p>
 
-            <span class="label">Loại lỗi:</span>
+            <span class="label">Error type:</span>
             <div>
                 <c:out value="${errorType}" default="Unknown Error" />
             </div>
 
-            <span class="label">Chi tiết kỹ thuật:</span>
+            <span class="label">Detail:</span>
             <div class="message-box">
-                <c:out value="${errorMessage}" default="Không có thông tin chi tiết (Lỗi có thể do dữ liệu NULL)" />
+                <c:out value="${errorMessage}" default="No info" />
             </div>
 
-            <a href="/" class="btn">Quay về trang chủ</a>
+            <a href="/" class="btn">Back to homepage</a>
         </div>
     </body>
     </html>

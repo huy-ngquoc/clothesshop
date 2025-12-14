@@ -50,6 +50,12 @@ public class CartController {
         User user = userRepo.findByUsername(username).orElse(null);
         List<Cart> listCartDetails = cartService.getCartOfUser(user);
         model.addAttribute("listCartDetails", listCartDetails);
+        long productPrice =0;
+        for(Cart cartDetail:listCartDetails) {
+            productPrice+=cartDetail.getAmount()*cartDetail.getProductVariant().getPriceCents();
+        }
+        model.addAttribute("productPrice",productPrice);
+        model.addAttribute("shippingFee",10000);
         model.addAttribute("user", user);
         return "client/cart/cart";
     }
