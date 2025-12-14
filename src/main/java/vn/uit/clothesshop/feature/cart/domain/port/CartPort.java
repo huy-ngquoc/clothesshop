@@ -9,4 +9,5 @@ public interface CartPort {
     Cart addProductVariantToCart(User user, long productVariantId, int amount);
     List<Cart> getCartsByUserId(long userId);
     void deleteAll(List<Cart> carts);
+    public long getCartAmount(long userId);
 }

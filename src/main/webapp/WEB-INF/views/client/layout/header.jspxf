@@ -25,7 +25,7 @@
                         aria-label="Search" />
                     <button class="btn btn-dark" type="submit">Search</button>
                 </form>
-                <a class="btn btn-outline-dark ms-3" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+                <a class="btn btn-outline-dark ms-3" href="/cart" role="button" aria-label="View cart">Cart (${cartAmount})</a>
             </div>
         </div>
     </nav>

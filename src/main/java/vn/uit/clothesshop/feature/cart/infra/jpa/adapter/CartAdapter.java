@@ -94,4 +94,9 @@ public class CartAdapter implements CartPort {
     public void deleteAll(List<Cart> carts) {
         cartDetailRepo.deleteAll(carts);
     }
+
+    @Override
+    public long getCartAmount(long userId) {
+        return cartDetailRepo.sumQuantityByUserId(userId);
+    }
 }

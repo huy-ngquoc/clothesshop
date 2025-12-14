@@ -28,9 +28,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import vn.uit.clothesshop.area.admin.category.service.CategoryAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductVariantAdminService;
+import vn.uit.clothesshop.feature.user.service.UserService;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.site.cart.presentation.request.CartRequest;
 import vn.uit.clothesshop.area.site.homepage.service.ProductClientService;
+import vn.uit.clothesshop.feature.cart.domain.port.CartPort;
 import vn.uit.clothesshop.feature.product.domain.Product;
 import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductSpecification;
@@ -53,7 +55,8 @@ public class HomepageController {
     private final CategoryAdminService categoryService;
     private final UserRepository userRepo;
     private final ProductClientService productClientService;
-
+    private final CartPort cartPort;
+    private final UserService userService;
     static {
         pageableSanitizer = new PageableSanitizer(ALLOWED_SORT, Product.Fields.id);
     }
@@ -62,27 +65,33 @@ public class HomepageController {
             final ProductAdminService productService,
             final ProductVariantAdminService productVariantService,
             final CategoryAdminService categoryService, final UserRepository userRepo,
-            final ProductClientService productClientService) {
+            final ProductClientService productClientService, CartPort cartPort, UserService userService) {
         this.productService = productService;
         this.productVariantService = productVariantService;
         this.categoryService = categoryService;
         this.userRepo = userRepo;
         this.productClientService = productClientService;
+        this.cartPort = cartPort;
+        this.userService = userService;
     }
 
     @GetMapping("/")
-    public String getHomepage(final Model model) {
+    public String getHomepage(final Model model, Authentication auth) {
         final var categoryList = this.categoryService.findRandomForHomepage(3);
 
         final var productSort = Sort.by(Sort.Order.desc(Product.Fields.createdAt));
         final var productPageRequest = PageRequest.of(0, 4, productSort);
         final var productList = this.productClientService.findAllBasic(null, productPageRequest);
-
+        long cartAmount=0;
+        User user = userService.getUserFromAuth(auth);
+        if(user!=null) {
+            cartAmount=cartPort.getCartAmount(user.getId());
+        }
         model.addAttribute("categoryList", categoryList);
         model.addAttribute("productList", productList);
         model.addAttribute("sizeCounts", productVariantService.countProductVariantBySize());
         model.addAttribute("colorCounts", productVariantService.countProductVariantByColor());
-
+        model.addAttribute("cartAmount",cartAmount);
         return "client/homepage/show";
     }
 
@@ -99,8 +108,11 @@ public class HomepageController {
         if (auth == null) {
             return "redirect:/login";
         }
-        String username = auth.getName();
-        User user = userRepo.findByEmail(username).orElse(null);
+        User user = userService.getUserFromAuth(auth);
+        long cartAmount=0;
+        if(user!=null) {
+            cartAmount=cartPort.getCartAmount(user.getId());
+        }
         model.addAttribute("user", user);
         final var safePageable = pageableSanitizer.sanitize(pageable);
 
@@ -117,7 +129,7 @@ public class HomepageController {
         model.addAttribute("totalPages", result.getTotalPages());
         model.addAttribute("sizeCounts", productVariantService.countProductVariantBySize());
         model.addAttribute("colorCounts", productVariantService.countProductVariantByColor());
-
+        model.addAttribute("cartAmount",cartAmount);
         return "client/homepage/shop";
     }
 

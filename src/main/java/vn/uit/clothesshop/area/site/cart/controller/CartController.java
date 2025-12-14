@@ -44,7 +44,7 @@ public class CartController {
     public String getCartPage(final Model model, Authentication auth) {
 
         if(auth==null) {
-            return "redirect:/auth/login";
+            return "redirect:auth/login";
         }
         String username = auth.getName();
         User user = userRepo.findByUsername(username).orElse(null);

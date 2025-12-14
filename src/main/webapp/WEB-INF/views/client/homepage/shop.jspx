@@ -51,7 +51,7 @@
                             </ul>
                         </div>
                     </c:if>
-                    <a class="btn btn-outline-dark" href="#cart" role="button" aria-label="View cart">Cart (0)</a>
+                    <a class="btn btn-outline-dark" href="cart" role="button" aria-label="View cart">Cart (${cartAmount})</a>
                 </div>
             </div>
         </nav>
@@ -171,7 +171,7 @@
                                                         <span class="fw-semibold">${product.minPriceCents} VND</span>
                                                         <span class="badge text-bg-light">Sold ${product.sold}</span>
                                                     </div>
-                                                    <a class="btn btn-dark w-100 mt-3" role="button">Add to Cart</a>
+                                                    <a href="/product/detail/${product.id}" class="btn btn-dark w-100 mt-3" role="button">View detail</a>
                                                 </div>
                                             </div>
                                         </c:forEach>
