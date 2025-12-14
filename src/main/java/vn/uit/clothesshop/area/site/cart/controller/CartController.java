@@ -58,7 +58,7 @@ public class CartController {
     public String deleteCart(@RequestParam("userId") long userId,
             @RequestParam("productVariantId") long productVariantId) {
         cartService.deleteCartDetail(userId, productVariantId);
-        return "redirect:/client/cart/cart";
+        return "redirect:cart";
     }
 
     @PostMapping("/increase_cart_detail")
