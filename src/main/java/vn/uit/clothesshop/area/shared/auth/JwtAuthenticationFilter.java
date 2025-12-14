@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -67,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             CookieUtil.addAuthCookies(response, newAccessToken, newRefreshToken);
 
             setAuthenticationForUser(userDetails);
-        } catch (final Exception exception) {
+        } catch (final AuthenticationException exception) {
             CookieUtil.clearAuthCookies(response);
             SecurityContextHolder.clearContext();
         }
