@@ -70,7 +70,7 @@
                                     </li>
                                     <li class="list-group-item d-flex justify-content-between fw-bold text-primary">
                                         <span>Total:</span> 
-                                        <span class="fs-5">${order.total} VND</span>
+                                        <span class="fs-5">${order.totalPrice} VND</span>
                                     </li>
                                 </ul>
 

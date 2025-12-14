@@ -115,7 +115,7 @@ public class OrderController {
         return "redirect:/order/detail/" + orderId;
     }
 
-    @PreAuthorize("@OrderSecurity.isOwner(#orderId, authentication)")
+    @PreAuthorize("@orderSiteSecurity.isOwner(#orderId)")
     @PostMapping("/received_order/{orderId}")
     public String receivedOrder(final Model model, @PathVariable long orderId, Authentication auth) {
         User user = userService.getUserFromAuth(auth);
@@ -143,7 +143,7 @@ public class OrderController {
     }
 
     // TODO: enhance this
-    @PreAuthorize("@OrderSecurity.isOwner(#orderId, authentication)")
+    @PreAuthorize("@orderSiteSecurity.isOwner(#orderId)")
     @GetMapping("/detail/{orderId}")
     public String getOrderDetail(
             final Model model, @PathVariable long orderId,
