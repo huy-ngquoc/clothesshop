@@ -31,6 +31,9 @@ public class CartAdapter implements CartPort {
         if (oldCartDetail == null) {
             ProductVariant pv = productVariantRepo.findById(productVariantId)
                     .orElseThrow(() -> new NotFoundException("Variant not found"));
+            if(amount<=0) {
+                amount=1;
+            }
             cartDetail = new Cart(user, pv, amount);
             cartDetail = cartDetailRepo.save(cartDetail);
             return cartDetail;
