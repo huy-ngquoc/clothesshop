@@ -20,7 +20,8 @@
             <c:if test="${not empty viewModel.imageFilePath}">
                 <div class="row g-3 mb-3">
                     <div class="col-12">
-                        <img id="imageFilePreview" src="/img/${viewModel.imageFilePath}" alt=""
+                    
+                        <img id="imageFilePreview" src="${viewModel.imageFilePath}" alt=""
                             style="max-width:100%; max-height:300px; height:auto; width:auto;" />
                     </div>
                 </div>

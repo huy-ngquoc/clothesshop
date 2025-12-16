@@ -1,11 +1,15 @@
 package vn.uit.clothesshop.area.site.homepage.controller;
 
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.lang.NonNull;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,20 +19,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
-import org.springframework.lang.NonNull;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import vn.uit.clothesshop.area.admin.category.service.CategoryAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductAdminService;
 import vn.uit.clothesshop.area.admin.product.service.ProductVariantAdminService;
-import vn.uit.clothesshop.feature.user.service.UserService;
 import vn.uit.clothesshop.area.shared.constraint.PagingConstraint;
 import vn.uit.clothesshop.area.site.cart.presentation.request.CartRequest;
 import vn.uit.clothesshop.area.site.homepage.service.ProductClientService;
@@ -38,6 +31,7 @@ import vn.uit.clothesshop.feature.product.domain.ProductVariant;
 import vn.uit.clothesshop.feature.product.infra.jpa.spec.ProductSpecification;
 import vn.uit.clothesshop.feature.user.domain.User;
 import vn.uit.clothesshop.feature.user.infra.jpa.repository.UserRepository;
+import vn.uit.clothesshop.feature.user.service.UserService;
 import vn.uit.clothesshop.shared.util.PageableSanitizer;
 
 @Controller

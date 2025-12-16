@@ -22,7 +22,7 @@
                     style="${empty viewModel.imageFilePath ? 'display:none;' : ''}">
                     <div class="col-12 text-center">
                         <img id="imageFilePreview"
-                            src="${not empty image ? '/img/'.concat(viewModel.imageFilePath) : ''}"
+                            src="${not empty image ? viewModel.imageFilePath : ''}"
                             style="max-width:100%; max-height:300px; height:auto; width:auto;" />
                     </div>
                 </div>

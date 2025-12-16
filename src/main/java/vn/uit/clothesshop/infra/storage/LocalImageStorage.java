@@ -89,7 +89,7 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
             return null;
         }
 
-        return sanitizeSegment(targetSubFolder) + "/" + fileName;
+        return  fileName;
     }
 
     public Path getPath(@Nullable final String fileName,

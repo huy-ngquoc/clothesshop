@@ -24,7 +24,7 @@
                             <c:if test="${not empty viewModel.imageFilePath}">
                                 <li class="list-group-item">
                                     <strong>Image:</strong><br />
-                                    <img src="/img/${viewModel.imageFilePath}" alt="Variant Image"
+                                    <img src="${viewModel.imageFilePath}" alt="Variant Image"
                                         style="max-width: 250px; border-radius: 8px; border: 1px solid #ccc; margin-top: 10px;" />
                                 </li>
                             </c:if>

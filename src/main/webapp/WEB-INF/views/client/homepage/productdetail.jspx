@@ -53,13 +53,13 @@
                 <div class="row g-4">
                     <!-- Gallery -->
                     <div class="col-12 col-lg-6">
-                        <img id="mainImage" src="/img/productvariant/${responseDto.image}"
+                        <img id="mainImage" src="${responseDto.image}"
                             class="img-fluid rounded gallery-main w-100" alt="Product main image" />
                         <div class="row g-2 mt-2">
                             <c:forEach var="variant" items="${responseDto.variants}">
                                 <div class="col-3">
-                                    <img data-img="/img/productvariant/${variant.image}"
-                                        class="img-fluid rounded thumb w-100" src="/img/productvariant/${variant.image}"
+                                    <img data-img="${variant.image}"
+                                        class="img-fluid rounded thumb w-100" src="${variant.image}"
                                         alt="Thumbnail 1" />
                                 </div>
                             </c:forEach>

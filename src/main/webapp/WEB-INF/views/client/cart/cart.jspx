@@ -101,7 +101,7 @@
                                             <td>
                                                 <div class="d-flex align-items-center gap-3">
                                                     <img class="cart-img"
-                                                        src="/img/productvariant/${cartDetail.productVariant.image}"
+                                                        src="${cartDetail.productVariant.image}"
                                                         alt="Blue T-Shirt"></img>
                                                     <div>
                                                         <div class="fw-semibold">${cartDetail.productVariant.name}</div>

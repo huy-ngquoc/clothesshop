@@ -29,7 +29,7 @@
             style="${empty viewModel.avatarFilePath ? 'display:none;' : ''}">
             <div class="col-12">
                 <img id="avatarFilePreview" style="max-width:100%; max-height:300px; height:auto; width:auto;"
-                    src="${not empty viewModel.avatarFilePath ? '/img/'.concat(avatarFilePath) : ''}" alt="" />
+                    src="${not empty viewModel.avatarFilePath ? avatarFilePath : ''}" alt="" />
 
                 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"
                     crossorigin="anonymous"></script>
