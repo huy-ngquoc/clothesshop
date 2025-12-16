@@ -5,16 +5,20 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Map;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
+
+import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.ServletContext;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
-
 @Component
 @Slf4j
 public class LocalImageStorage /* implements ImageStoragePort */ {
@@ -22,7 +26,8 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
 
     @NotNull
     private final Path imagesRoot;
-
+    private final Dotenv dotenv = Dotenv.load();
+    private final Cloudinary cloudinary=new Cloudinary(dotenv.get("CLOUDINARY_URL"));
     public LocalImageStorage(@NotNull final ServletContext servletContext) {
         final String realPath = servletContext.getRealPath(IMAGE_FOLDER_PATH);
         if (realPath == null) {
@@ -42,17 +47,19 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
         if ((avatarFile == null) || avatarFile.isEmpty()) {
             return null;
         }
-        final Path dir = ensureSubDir(targetSubFolder);
-        final String storedName = buildStoredFileName(avatarFile.getOriginalFilename());
-        final Path target = dir.resolve(storedName);
+        
 
         try {
-            Files.createDirectories(dir);
-            Files.copy(avatarFile.getInputStream(), target);
-            log.debug("Saved file to {}", target);
-            return storedName;
+            
+            Map imageMap = ObjectUtils.asMap(
+                "folder", targetSubFolder,  
+                "resource_type", "auto"
+            );
+            Map result = cloudinary.uploader().upload(avatarFile.getBytes(), imageMap);
+
+            return (String) result.get("secure_url");
         } catch (IOException e) {
-            log.error("Cannot write file: {}", target, e);
+            log.error("Cannot write file: {}");
             return null;
         }
     }

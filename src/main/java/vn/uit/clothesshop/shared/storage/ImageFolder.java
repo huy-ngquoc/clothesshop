@@ -1,9 +1,9 @@
 package vn.uit.clothesshop.shared.storage;
 
 public enum ImageFolder {
-    CATEGORY("category"),
+    CATEGORY("clothesshop_category"),
     PRODUCT("product"),
-    PRODUCT_VARIANT("productvariant"),
+    PRODUCT_VARIANT("clothesshop"),
     USER("user"),
     ;
 
