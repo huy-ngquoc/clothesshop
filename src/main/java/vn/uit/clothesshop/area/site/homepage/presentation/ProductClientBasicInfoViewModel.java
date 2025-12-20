@@ -24,7 +24,7 @@ public class ProductClientBasicInfoViewModel {
         this.imageFilePath = imageFilePath;
         this.minPriceCents = minPriceCents;
         this.maxPriceCents = maxPriceCents;
-        this.sold= 0;
+        this.sold= sold;
     } 
 
     public long getId() {

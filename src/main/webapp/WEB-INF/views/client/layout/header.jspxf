@@ -15,10 +15,10 @@
             </button>
             <div class="collapse navbar-collapse" id="primaryNav">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="#">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#new-arrivals">New Arrivals</a></li>
+                    <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Home</a></li>
+                    
                     <li class="nav-item"><a class="nav-link" href="#categories">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#newsletter">Newsletter</a></li>
+                    
                     <c:if test="${not empty cookie.ACCESS_TOKEN}">
     <li class="nav-item"><a class="nav-link" href="/order/history">Order History</a></li>
 </c:if>

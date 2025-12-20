@@ -10,7 +10,7 @@ import vn.uit.clothesshop.feature.recommendation.domain.Model;
 public class RecommendationUtil {
     public static List<ETarget> listTargetFromRecommendationModel(Model model) {
         List<ETarget> result = new ArrayList<>();
-        if (model.getGender() == false) { // Nam
+        if (model.getGender() == false) { 
             result.add(ETarget.MALE);
         } else {
             result.add(ETarget.FEMALE);

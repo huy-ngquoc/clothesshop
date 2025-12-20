@@ -1,10 +1,8 @@
 package vn.uit.clothesshop.infra.storage;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
@@ -13,7 +11,6 @@ import org.springframework.web.multipart.MultipartFile;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 
-import io.github.cdimascio.dotenv.Dotenv;
 import jakarta.annotation.Nullable;
 import jakarta.servlet.ServletContext;
 import jakarta.validation.constraints.NotBlank;
@@ -26,19 +23,11 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
 
     @NotNull
     private final Path imagesRoot;
-    private final Dotenv dotenv = Dotenv.load();
-    private final Cloudinary cloudinary=new Cloudinary(dotenv.get("CLOUDINARY_URL"));
+   
+    String cloudinaryURL="cloudinary://981316691563687:C-p2uGPu7XxodPu9_jf5n9_wD4g@drlr2usf0";
+    private final Cloudinary cloudinary = new Cloudinary(cloudinaryURL);
     public LocalImageStorage(@NotNull final ServletContext servletContext) {
-        final String realPath = servletContext.getRealPath(IMAGE_FOLDER_PATH);
-        if (realPath == null) {
-            throw new IllegalStateException("Cannot resolve real path for: " + IMAGE_FOLDER_PATH);
-        }
-        this.imagesRoot = Paths.get(realPath).toAbsolutePath().normalize();
-        try {
-            Files.createDirectories(this.imagesRoot);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Cannot create image root: " + this.imagesRoot, e);
-        }
+        this.imagesRoot=null;
     }
 
     @Nullable
@@ -64,17 +53,7 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
         }
     }
 
-    @Nullable
-    public String handleUpdateUploadFile(
-            @NotBlank final String oldFileName,
-            final MultipartFile avatarFile,
-            @NotBlank final String targetSubFolder) {
-        final String newFileName = handleSaveUploadFile(avatarFile, targetSubFolder);
-        if (newFileName != null) {
-            deleteQuietly(oldFileName, targetSubFolder);
-        }
-        return newFileName;
-    }
+    
 
     public void handleDeleteUploadFile(
             @NotBlank final String fileName,
@@ -156,6 +135,46 @@ public class LocalImageStorage /* implements ImageStoragePort */ {
             log.warn("Failed to delete old file '{}' in '{}'", fileName, subFolder, e);
         }
     }
+    public String getPublicIdFromUrl(String url) {
+    try {
+        if (url == null || url.isEmpty()) {
+            return null;
+        }
+
+       
+        String splitToken = "upload/";
+        int splitIndex = url.indexOf(splitToken);
+        
+        if (splitIndex == -1) {
+           
+            return null; 
+        }
+
+       
+        String pathAfterUpload = url.substring(splitIndex + splitToken.length());
+
+        
+        int slashIndex = pathAfterUpload.indexOf("/");
+        if (pathAfterUpload.startsWith("v") && slashIndex > -1) {
+            
+            pathAfterUpload = pathAfterUpload.substring(slashIndex + 1);
+        }
+        
+
+        
+        int dotIndex = pathAfterUpload.lastIndexOf(".");
+        if (dotIndex > -1) {
+            pathAfterUpload = pathAfterUpload.substring(0, dotIndex);
+        }
+
+       
+        return pathAfterUpload;
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
 
 }
 

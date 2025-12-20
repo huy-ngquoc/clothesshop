@@ -1,17 +1,16 @@
 package vn.uit.clothesshop.area.site.recommendation.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import vn.uit.clothesshop.area.site.recommendation.service.RecommendationService;
-import vn.uit.clothesshop.feature.product.domain.Product;
+import vn.uit.clothesshop.feature.recommendation.domain.CompositeResponse;
 
 @Controller
 public class RecommendationController {
@@ -29,9 +28,10 @@ public class RecommendationController {
     @PostMapping("/recommendation")
     public String recommendationProduct(@RequestParam("outfitImage") MultipartFile image, Model model)
             throws IOException {
-        List<Product> listRecommend = recommendationService.recommendProduct(image);
-        System.out.println(listRecommend.size());
-        model.addAttribute("recommendproducts", listRecommend);
+        CompositeResponse response = recommendationService.recommendProduct(image);
+        
+        model.addAttribute("recommendproducts", response.getProducts());
+        model.addAttribute("result", response.getModel());
         return "client/recommendation/recommendationresult";
     }
 }
