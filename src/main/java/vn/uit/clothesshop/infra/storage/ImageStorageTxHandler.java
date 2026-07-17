@@ -8,7 +8,6 @@ import vn.uit.clothesshop.shared.storage.event.ImageAdded;
 import vn.uit.clothesshop.shared.storage.event.ImageDeleted;
 import vn.uit.clothesshop.shared.storage.event.ImageReplaced;
 
-// package: com.yourapp.infrastructure.storage
 @Component
 public class ImageStorageTxHandler {
 
@@ -39,7 +38,6 @@ public class ImageStorageTxHandler {
         }
     }
 
-    // DELETE entity: chỉ xóa file sau khi commit DB
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onDeletedCommit(final ImageDeleted e) {
         if (e.fileName() != null && !e.fileName().isBlank()) {
